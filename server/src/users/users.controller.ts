@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Patch, Post, UsePipes } from '@nestjs/com
 import { UsersService } from './users.service';
 import { IUser } from './intefaces/user.interfaces';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
-import { createUserSchema } from './schemas/create-user.schema';
+import { createUserSchema } from 'src/schemas/create-user.schema';
 
 @Controller('user')
 export class UsersController {
