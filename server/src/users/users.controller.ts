@@ -12,6 +12,7 @@ export class UsersController {
   async getUsers():Promise<IUser[]>  {
     return await this.usersService.findAll();
   }
+  
 
   @Get('/users/:id')
   async getUserId(@Param('id')id:string):Promise<IUser|null> {
