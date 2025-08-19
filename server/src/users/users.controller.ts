@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post, UsePipes } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UsePipes,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { IUser } from './intefaces/user.interfaces';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
@@ -9,23 +17,23 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('/users')
-  async getUsers():Promise<IUser[]>  {
+  async getUsers(): Promise<IUser[]> {
     return await this.usersService.findAll();
   }
   
   @Get('/users/:id')
-  async getUserId(@Param('id')id:string):Promise<IUser|null> {
+  async getUserId(@Param('id') id: string): Promise<IUser | null> {
     return await this.usersService.findId(id);
   }
 
   @Post('/createuser')
   @UsePipes(new ZodValidationPipe(createUserSchema))
-  async createUser(@Body() Body):Promise<IUser> {
-    return await this.usersService.create(Body)
-  }
-  @Patch('/desativate/:id')
-  async desativateUser(@Param('id') id:string):Promise<IUser>{
-    return await this.usersService.deactivateUser(id);
+  async createUser(@Body() Body): Promise<IUser | null> {
+    return await this.usersService.create(Body);
   }
 
+  @Patch('/desativate/:id')
+  async desativateUser(@Param('id') id: string): Promise<IUser> {
+    return await this.usersService.deactivateUser(id);
+  }
 }
