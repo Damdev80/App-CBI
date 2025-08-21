@@ -5,6 +5,7 @@ import { IUser } from './intefaces/user.interfaces';
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
+
   async findAll(): Promise<IUser[]> {
     return await this.prisma.user.findMany();
   }
@@ -12,6 +13,7 @@ export class UsersService {
   async findId(id: string): Promise<IUser | null> {
     return await this.prisma.user.findUnique({
       where: { id },
+      // select user from db where id == id
     });
   }
 
