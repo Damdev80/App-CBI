@@ -20,19 +20,19 @@ export class UsersController {
   async getUsers(): Promise<IUser[]> {
     return await this.usersService.findAll();
   }
-
+  
   @Get('/users/:id')
   async getUserId(@Param('id') id: string): Promise<IUser | null> {
     return await this.usersService.findId(id);
   }
 
-  @Post('/createuser')
+  @Post('/users')
   @UsePipes(new ZodValidationPipe(createUserSchema))
-  async createUser(@Body() Body): Promise<IUser | null> {
-    return await this.usersService.create(Body);
+  async createUser(@Body() body): Promise<IUser> {
+    return await this.usersService.create(body);
   }
 
-  @Patch('/desativate/:id')
+  @Patch('/users/:id/deactivate')
   async desativateUser(@Param('id') id: string): Promise<IUser> {
     return await this.usersService.deactivateUser(id);
   }

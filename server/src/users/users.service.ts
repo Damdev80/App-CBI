@@ -17,7 +17,8 @@ export class UsersService {
     });
   }
 
-  async create(data: Omit<IUser, 'id | createAt'>): Promise<IUser> {
+  async create(data: Omit<IUser, 'id | createdAt | updatedAt'>): Promise<IUser> {
+    //const hasedPassword
     return await this.prisma.user.create({
       data,
     });
