@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { IUser } from './intefaces/user.interfaces';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -17,11 +18,39 @@ export class UsersService {
     });
   }
 
-  async create(data: Omit<IUser, 'id | createdAt | updatedAt'>): Promise<IUser> {
-    //const hasedPassword
+  async create(
+    data: Omit<IUser, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<IUser> {
+    if (!data.password) {
+      throw new BadRequestException('La contraseña es OBLIGATORIA');
+    }
+    const hashedPassword = await bcrypt.hash(data.password, 12);
     return await this.prisma.user.create({
-      data,
+      data: {
+        ...data,
+        password: hashedPassword,
+      },
     });
+  }
+
+  async validationUser(email: string, password: string): Promise<IUser | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    try {
+      if (!user || !user.password) return null;
+
+      // bcrypt.compare devuelve una promesa booleana → la resolvemos primero
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+
+      if (isPasswordValid) {
+        return user;
+      }
+    } catch (Error) {
+      throw new BadRequestException(`El usuario ya existe${Error}`);
+    }
+    return null;
   }
 
   async update(id: string, data: Partial<IUser>): Promise<IUser> {

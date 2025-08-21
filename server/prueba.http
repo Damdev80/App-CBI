@@ -1,0 +1,43 @@
+### Create User Request
+POST http://localhost:3000/user/users
+Content-Type: application/json
+
+{
+  "email": "usuario@example.com",
+  "name": "Juan Pérez",
+  "number": "+1234567890",
+  "age": 28,
+  "address": "123 Main St, City",
+  "password": "password123",
+  "happybirth": "1995-05-15T00:00:00.000Z",
+  "role": "user"
+}
+
+### Get All Users
+GET http://localhost:3000/user/users
+
+### Get User by ID (replace with actual UUID)
+GET http://localhost:3000/user/users/550e8400-e29b-41d4-a716-446655440000
+
+### Deactivate User (replace with actual UUID)
+PATCH http://localhost:3000/user/users/550e8400-e29b-41d4-a716-446655440000/deactivate
+
+### Create Admin User
+POST http://localhost:3000/user/users
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "name": "Admin User",
+  "password": "admin123",
+  "role": "admin"
+}
+
+### Create User with minimal data
+POST http://localhost:3000/user/users
+Content-Type: application/json
+
+{
+  "email": "simple@example.com",
+  "password": "simple123"
+}

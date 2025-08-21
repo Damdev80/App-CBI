@@ -1,5 +1,5 @@
-import {z} from 'zod';
+import { z } from 'zod';
 
 export const CreateIdSchema = z.object({
-    id: z.uuid()
-})
+  id: z.uuid(),
+});
