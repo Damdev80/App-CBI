@@ -17,7 +17,7 @@ Content-Type: application/json
 GET http://localhost:3000/user/users
 
 ### Get User by ID (replace with actual UUID)
-GET http://localhost:3000/user/users/550e8400-e29b-41d4-a716-446655440000
+GET http://localhost:3000/user/users/46121c72-ea05-43b9-91a5-b2651032516a
 
 ### Deactivate User (replace with actual UUID)
 PATCH http://localhost:3000/user/users/550e8400-e29b-41d4-a716-446655440000/deactivate
@@ -29,7 +29,7 @@ Content-Type: application/json
 {
   "email": "admin@example.com",
   "name": "Admin User",
-  "password": "admin123",
+  "password": "3016857648",
   "role": "admin"
 }
 

@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { IUser } from './intefaces/user.interfaces';
-import * as bcrypt from 'bcrypt';
+import { compare, encryp } from 'src/lib/bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -14,7 +14,6 @@ export class UsersService {
   async findId(id: string): Promise<IUser | null> {
     return await this.prisma.user.findUnique({
       where: { id },
-      // select user from db where id == id
     });
   }
 
@@ -24,7 +23,7 @@ export class UsersService {
     if (!data.password) {
       throw new BadRequestException('La contraseña es OBLIGATORIA');
     }
-    const hashedPassword = await bcrypt.hash(data.password, 12);
+    const hashedPassword = await encryp(data.password);
     return await this.prisma.user.create({
       data: {
         ...data,
@@ -42,7 +41,7 @@ export class UsersService {
       if (!user || !user.password) return null;
 
       // bcrypt.compare devuelve una promesa booleana → la resolvemos primero
-      const isPasswordValid = await bcrypt.compare(password, user.password);
+      const isPasswordValid = await compare(password, user.password);
 
       if (isPasswordValid) {
         return user;
