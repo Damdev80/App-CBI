@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { IUser } from './intefaces/user.interfaces';
 import { compare, encryp } from 'src/lib/bcrypt';
@@ -11,7 +16,7 @@ export class UsersService {
     return await this.prisma.user.findMany();
   }
 
-  async findId(id: string): Promise<IUser | null> {
+  async findById(id: string): Promise<IUser | null> {
     return await this.prisma.user.findUnique({
       where: { id },
     });
@@ -32,30 +37,44 @@ export class UsersService {
     });
   }
 
-  async validationUser(email: string, password: string): Promise<IUser | null> {
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-    });
-
+  async validationUser(
+    email: string,
+    password: string,
+  ): Promise<Omit<IUser, 'password'> | null> {
     try {
+      const user = await this.prisma.user.findUnique({
+        where: { email },
+      });
       if (!user || !user.password) return null;
 
-      // bcrypt.compare devuelve una promesa booleana → la resolvemos primero
       const isPasswordValid = await compare(password, user.password);
 
-      if (isPasswordValid) {
-        return user;
-      }
-    } catch (Error) {
-      throw new BadRequestException(`El usuario ya existe${Error}`);
+      if (!isPasswordValid) return null;
+
+      //Desestruturar el objecto user para que no traiga la contraseña
+      const { password: _, ...safeUser } = user;
+      return safeUser;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Error validando el usuario',
+        (error as Error).message,
+      );
     }
-    return null;
+  }
+
+  async findByEmail(email: string): Promise<IUser | null> {
+    return this.prisma.user.findUnique({ where: { email } });
   }
 
   async update(id: string, data: Partial<IUser>): Promise<IUser> {
+    const updateData = { ...data };
+
+    if (data.password) {
+      updateData.password = await encryp(data.password);
+    }
     return await this.prisma.user.update({
       where: { id },
-      data,
+      data: updateData,
     });
   }
 
