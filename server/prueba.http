@@ -41,3 +41,12 @@ Content-Type: application/json
   "email": "simple@example.com",
   "password": "simple123"
 }
+
+###
+POST http://localhost:3000/auth/log-in
+Content-Type: application/json
+
+{
+  "email": "usuario@example.com",
+  "password": "password123",
+}
