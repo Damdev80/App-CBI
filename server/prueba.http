@@ -42,11 +42,11 @@ Content-Type: application/json
   "password": "simple123"
 }
 
-###
+### Login Test
 POST http://localhost:3000/auth/log-in
 Content-Type: application/json
 
 {
   "email": "usuario@example.com",
-  "password": "password123",
+  "password": "password123"
 }

@@ -10,6 +10,6 @@ export class AuthController {
   @Post('/log-in')
   @UsePipes(new ZodValidationPipe(loginSchema))
   async logIn(@Body() loginData: LoginDto) {
-    return await this.authService.logIn(loginData.email, loginData.password);
+    return await this.authService.signIn(loginData.email, loginData.password);
   }
 }
