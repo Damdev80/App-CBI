@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="min-h-screen bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500">
+      <div class="container mx-auto px-4 py-16">
+        <!-- Hero Section -->
+        <div class="text-center text-white">
+          <h1 class="text-5xl md:text-7xl font-bold mb-6 animate-pulse">
+            Bienvenido a 
+            <span class="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+              CBI App
+            </span>
+          </h1>
+          <p class="text-xl md:text-2xl mb-8 opacity-90">
+            Tu aplicación moderna con Angular 20 y Tailwind CSS v4
+          </p>
+          
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button 
+              (click)="navigateTo('/auth/login')"
+              class="btn-primary text-lg px-8 py-4">
+              Iniciar Sesión
+            </button>
+            <button 
+              (click)="navigateTo('/auth/register')"
+              class="btn-secondary text-lg px-8 py-4">
+              Registrarse
+            </button>
+          </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="mt-20 grid md:grid-cols-3 gap-8">
+          <div class="card text-center">
+            <div class="text-4xl mb-4">🚀</div>
+            <h3 class="text-xl font-bold mb-2">Angular 20</h3>
+            <p class="text-gray-600">La última versión con Signals y SSR</p>
+          </div>
+          
+          <div class="card text-center">
+            <div class="text-4xl mb-4">🎨</div>
+            <h3 class="text-xl font-bold mb-2">Tailwind v4</h3>
+            <p class="text-gray-600">Diseño moderno y responsivo</p>
+          </div>
+          
+          <div class="card text-center">
+            <div class="text-4xl mb-4">⚡</div>
+            <h3 class="text-xl font-bold mb-2">NestJS Backend</h3>
+            <p class="text-gray-600">API robusta y escalable</p>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+</html>

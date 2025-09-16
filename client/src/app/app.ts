@@ -1,12 +1,20 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  standalone: true,
+  imports: [RouterOutlet, CommonModule],
+  template: `
+    <main class="min-h-screen">
+      <router-outlet />
+    </main>
+  `,
+  styles: [],
 })
 export class App {
-  protected readonly title = signal('client');
+  constructor() {
+    console.log('App component initialized');
+  }
 }
