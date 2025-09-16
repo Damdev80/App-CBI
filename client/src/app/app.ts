@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [RouterOutlet, CommonModule],
   template: `
-    <main class="min-h-screen">
+    <main class="">
       <router-outlet />
     </main>
   `,
