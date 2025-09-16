@@ -3,14 +3,15 @@ import { CommonModule } from "@angular/common";
 import { Router } from "@angular/router";
 
 @Component({
-    selector: 'app-404',
+    selector: 'app-login',
     standalone: true,
     imports: [CommonModule],
-    templateUrl: './404.component.html',
+    templateUrl: './login.component.html',
 })
 
-export class NotFoundComponent {
-    constructor(private router: Router) {}  
+export class LoginComponent {
+    constructor(private router: Router) {}
+
     navigateTo(path: string) {
         this.router.navigate([path]);
     }

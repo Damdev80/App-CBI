@@ -1,0 +1,27 @@
+<!-- HEADER -->
+<header class="bg-blue-600 text-white shadow-md">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+    <!-- Logo -->
+    <h1 class="text-2xl font-bold">Mi Iglesia</h1>
+
+    <!-- Navegación -->
+    <nav class="space-x-4">
+      <a routerLink="/" class="hover:underline">Inicio</a>
+      <a routerLink="/login" class="hover:underline">Iniciar Sesión</a>
+      <a routerLink="/register" class="hover:underline">Registrarse</a>
+    </nav>
+  </div>
+</header>
+
+<!-- CONTENIDO (se carga aquí cada página pública) -->
+<main class="min-h-[70vh] max-w-7xl mx-auto px-4 py-8">
+  <router-outlet></router-outlet>
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-gray-800 text-gray-200 mt-8">
+  <div class="max-w-7xl mx-auto px-4 py-6 text-center">
+    <p>&copy; {{ currentYear }} Mi Iglesia. Todos los derechos reservados.</p>
+    <p class="text-sm mt-1">"Un lugar para crecer en comunidad."</p>
+  </div>
+</footer>
