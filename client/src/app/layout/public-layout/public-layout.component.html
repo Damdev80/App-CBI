@@ -6,9 +6,9 @@
 
     <!-- Navegación -->
     <nav class="space-x-4">
-      <a routerLink="/" class="hover:underline">Inicio</a>
-      <a routerLink="/login" class="hover:underline">Iniciar Sesión</a>
-      <a routerLink="/register" class="hover:underline">Registrarse</a>
+      <button (click)="navigateTo('/')" class="hover:underline">Inicio</button>
+      <button (click)="navigateTo('/login')" class="hover:underline">Iniciar Sesión</button>
+      <button (click)="navigateTo('/register')" class="hover:underline">Registrarse</button>
     </nav>
   </div>
 </header>
