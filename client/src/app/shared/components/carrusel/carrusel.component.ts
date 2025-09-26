@@ -12,10 +12,10 @@ import { CarouselItem  } from "./carrusel.interface";
          [style.height]="height()">
       
       <!-- Carousel Container -->
-      <div class="relative h-auto w-full rounded-xl">
+      <div class="relative h-screen w-full rounded-xl">
         
         <!-- Slides -->
-        <div class="flex transition-transform duration-500 ease-in-out h-ful    l"
+        <div class="flex transition-transform duration-500 ease-in-out h-screen"
              [style.transform]="'translateX(-' + (currentIndex() * 100) + '%)'">
           
           @for (item of items(); track item.id; let i = $index) {
