@@ -1,16 +1,26 @@
 import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Router } from "@angular/router";
-
+import { CarouselComponent } from "../../shared/components/carrusel/carrusel.component";
+import { CarouselItem } from "@app/shared/components/carrusel/carrusel.interface";
 @Component({
     selector: 'app-welcome',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, CarouselComponent],
     templateUrl: './welcome.component.html',
 })
 
 export class WelcomeComponent {
     constructor(private router: Router) {}
+    
+    photos: CarouselItem[] = [
+        { id: 1, image: 'https://picsum.photos/seed/cbi1/1200/600', title: 'Bienvenido a CBI', description: 'Tu socio confiable en soluciones tecnológicas.', link: '/about' },
+        { id: 2, image: 'https://picsum.photos/seed/cbi2/1200/600', title: 'Innovación Continua', description: 'Transformamos ideas en realidad con tecnología de punta.', link: '/services' },
+        { id: 3, image: 'https://picsum.photos/seed/cbi3/1200/600', title: 'Compromiso con la Calidad', description: 'Entregamos excelencia en cada proyecto que emprendemos.', link: '/contact' },
+        { id: 4, image: 'https://picsum.photos/seed/cbi4/1200/600', title: 'Soluciones Personalizadas', description: 'Adaptamos nuestras soluciones a las necesidades únicas de tu negocio.', link: '/solutions' },
+        { id: 5, image: 'https://picsum.photos/seed/cbi5/1200/600', title: 'Equipo de Expertos', description: 'Nuestro equipo está compuesto por profesionales altamente capacitados.', link: '/team' },
+    ]
+
 
     navigateTo(path: string) {
         this.router.navigate([path]);

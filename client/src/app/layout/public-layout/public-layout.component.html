@@ -1,26 +1,26 @@
 <!-- HEADER -->
-<header class="w-4/5 bg-secondary text-white shadow-md mx-auto mt-5 rounded-2xl fixed left-1/2 -translate-x-1/2 top-0">
-  <div class="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
+<header class="w-[95%] bg-white/10 backdrop-blur-lg bg-clip-padding border border-white/10 shadow-lg mx-auto mt-5 rounded-2xl fixed left-1/2 -translate-x-1/2 top-0 z-50">
+  <div class="w-[95%] mx-auto py-3 flex items-center justify-between gap-4 text-white">
     <!-- Logo -->
-    <h1 class="text-2xl font-bold">Iglesia CBI</h1>
+    <h1 class="text-2xl font-bold tracking-tight text-white drop-shadow-sm">Iglesia CBI</h1>
 
     <!-- Navegación -->
-    <nav class="space-x-4">
-      <button (click)="navigateTo('/')" class="hover:underline">Inicio</button>
-      <button (click)="navigateTo('/login')" class="hover:underline">Iniciar Sesión</button>
-      <button (click)="navigateTo('/register')" class="hover:underline">Registrarse</button>
+    <nav class="flex items-center space-x-3">
+      <button (click)="navigateTo('/')" class="px-3 py-1 rounded-md text-sm font-medium text-white hover:underline hover:bg-white/10 transition-colors">Inicio</button>
+      <button (click)="navigateTo('/login')" class="px-3 py-1 rounded-md text-sm font-medium text-white hover:underline hover:bg-white/10 transition-colors">Iniciar Sesión</button>
+      <button (click)="navigateTo('/register')" class="px-3 py-1 rounded-md text-sm font-medium text-white bg-white/10 hover:bg-white/20 transition-colors">Registrarse</button>
     </nav>
   </div>
 </header>
 
 <!-- CONTENIDO (se carga aquí cada página pública) -->
-<main class="min-h-screen max-w-full mx-auto">
+<main class="">
   <router-outlet></router-outlet>
 </main>
 
 <!-- FOOTER -->
-<footer class="bg-gray-800 text-gray-200 mt-8">
-  <div class="max-w-7xl mx-auto px-4 py-6 text-center">
+<footer class="bg-gray-800 text-gray-200">
+  <div class="w-full mx-auto px-4 py-6 text-center"> 
     <p>&copy; {{ currentYear }} Mi Iglesia. Todos los derechos reservados.</p>
     <p class="text-sm mt-1">"Un lugar para crecer en comunidad."</p>
   </div>
