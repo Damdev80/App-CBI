@@ -1,8 +1,11 @@
 <!-- HEADER -->
-<header class="w-[95%] bg-white/10 backdrop-blur-lg bg-clip-padding border border-white/10 shadow-lg mx-auto mt-5 rounded-2xl fixed left-1/2 -translate-x-1/2 top-0 z-50">
+<header class="w-[95%] bg-transparent   mx-auto mt-1 rounded-2xl fixed left-1/2 -translate-x-1/2 top-0 z-50">
   <div class="w-[95%] mx-auto py-3 flex items-center justify-between gap-4 text-white">
-    <!-- Logo -->
-    <h1 class="text-2xl font-bold tracking-tight text-white drop-shadow-sm">Iglesia CBI</h1>
+    <div class="flex items-center gap-2">
+      <img src="img/cbiLogo.svg" alt="" class=" object-cover w-10 h-10"/>
+      <h1 class="text-2xl font-bold tracking-tight text-white drop-shadow-sm">Iglesia CBI</h1>
+    </div>
+    
 
     <!-- Navegación -->
     <nav class="flex items-center space-x-3">
@@ -14,7 +17,7 @@
 </header>
 
 <!-- CONTENIDO (se carga aquí cada página pública) -->
-<main class="">
+<main>
   <router-outlet></router-outlet>
 </main>
 
