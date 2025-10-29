@@ -3,10 +3,11 @@ import { CommonModule } from "@angular/common";
 import { Router } from "@angular/router";
 import { CarouselComponent } from "../../shared/components/carrusel/carrusel.component";
 import { CarouselItem } from "@app/shared/components/carrusel/carrusel.interface";
+import { CardComponent } from "@app/shared/components/card/card.component";
 @Component({
     selector: 'app-welcome',
     standalone: true,
-    imports: [CommonModule, CarouselComponent],
+    imports: [CommonModule, CarouselComponent, CardComponent],
     templateUrl: './welcome.component.html',
 })
 
@@ -16,7 +17,7 @@ export class WelcomeComponent {
     photos: CarouselItem[] = [
             {
                 id: 1,
-                image: 'https://picsum.photos/seed/cbi1/1200/600',
+                image: 'img/ImgBanner_Estableciendo_El_Reino.jpg',
                 title: 'Bienvenido a CBI',
                 description: 'Tu socio confiable en soluciones tecnológicas.',
                 link: '/register'
@@ -50,6 +51,8 @@ export class WelcomeComponent {
                 link: '/register'
             }
     ]
+
+
 
 
     navigateTo(path: string) {
