@@ -6,7 +6,7 @@ import { CarouselItem  } from "./carrusel.interface";
 @Component({
     selector: 'app-carrusel',
     standalone: true,
-    imports: [CarouselComponent, CommonModule],
+    imports: [CommonModule],
     template: `
     <div class="relative w-full overflow-hidden" 
          [style.height]="height()">
@@ -150,8 +150,6 @@ export class CarouselComponent implements OnInit, OnDestroy {
     // Effect para reaccionar a cambios en el índice actual
     effect(() => {
       const index = this.currentIndex();
-      // Aquí podrías emitir eventos o hacer logging
-      console.log(`Slide actual: ${index + 1}`);
     });
   }
 
@@ -241,16 +239,4 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Touch/Swipe support (básico)
-  onTouchStart(event: TouchEvent) {
-    // Implementar lógica de touch start
-  }
-
-  onTouchMove(event: TouchEvent) {
-    // Implementar lógica de touch move
-  }
-
-  onTouchEnd(event: TouchEvent) {
-    // Implementar lógica de touch end
-  }
 }
