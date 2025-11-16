@@ -11,4 +11,9 @@ export interface IUser {
   role: string;
   createdAt: Date;
   updatedAt: Date;
+  service_area: string | null;
+  hobbies: string | null;
+  dreams: string | null;
+  job: string | null;
+  vulnerable_area: string | null;
 }

@@ -13,4 +13,9 @@ export const createUserSchema = z.object({
   age: z.number().min(10).max(120).optional(),
   address: z.string().optional(),
   happybirth: z.coerce.date().optional(),
+  service_area: z.string(),
+  hobbies: z.string().optional(),
+  dreams: z.string().optional(),
+  job: z.string().optional(),
+  vulnerable_area: z.string().optional(),
 });
