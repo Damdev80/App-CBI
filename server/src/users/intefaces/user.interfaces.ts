@@ -1,3 +1,6 @@
+import type { Gender } from '@prisma/client';
+
+
 export interface IUser {
   id: string;
   name: string | null;
@@ -7,6 +10,7 @@ export interface IUser {
   age: number | null;
   address: string | null;
   happybirth: Date | null;
+  gender: Gender | null;
   isActive: boolean;
   role: string;
   createdAt: Date;

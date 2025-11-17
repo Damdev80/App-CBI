@@ -10,6 +10,7 @@ export const createUserSchema = z.object({
       8,
       'Su contraseña es muy corta porfavor la contraseña debe ser mayor a 8 caracteres',
     ),
+  gender: z.enum(['MASCULINO', 'FEMENINO']),
   age: z.number().min(10).max(120).optional(),
   address: z.string().optional(),
   happybirth: z.coerce.date().optional(),
