@@ -8,6 +8,11 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum Gender {
+  MASCULINO
+  FEMENINO
+}
+
 model User {
   id         String    @id @default(uuid())
   email      String    @unique
@@ -15,6 +20,7 @@ model User {
   number     String?
   password   String?
   happybirth DateTime?
+  gender     Gender?
   isActive   Boolean   @default(true)
   role       String    @default("user")
   createdAt  DateTime  @default(now())
@@ -27,3 +33,4 @@ model User {
   job       String? 
   vulnerable_area String? 
 }
+
