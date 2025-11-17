@@ -1,30 +1,47 @@
 <!-- HEADER -->
-<header class="navbar bg-base-200/80 backdrop-blur-md w-[95%] mx-auto mt-1 rounded-2xl fixed left-1/2 -translate-x-1/2 top-0 z-50 shadow-lg">
+<header class="navbar border-b border-base-300 sticky top-0 z-50 backdrop-blur-lg bg-base-100/80">
   <div class="navbar-start">
-    <div class="flex items-center gap-2">
-      <img src="img/cbiLogo.svg" alt="CBI Logo" class="object-cover w-10 h-10"/>
-      <h1 class="text-2xl font-bold tracking-tight">Iglesia CBI</h1>
+    <div class="dropdown lg:hidden">
+      <label tabindex="0" class="btn btn-ghost btn-circle">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </label>
+      <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow-lg border border-base-300">
+        <li><button (click)="navigateTo('/')">Inicio</button></li>
+        <li><button (click)="navigateTo('/login')">Iniciar Sesión</button></li>
+        <li><button (click)="navigateTo('/register')">Registrarse</button></li>
+      </ul>
     </div>
+    
+    <button (click)="navigateTo('/')" class="btn btn-ghost gap-2 normal-case text-xl px-2 hover:bg-transparent">
+      <img src="img/cbiLogo.svg" alt="CBI" class="w-8 h-8"/>
+      <span class="hidden sm:inline font-bold">Iglesia CBI</span>
+    </button>
   </div>
   
-  <div class="navbar-end">
-    <nav class="flex items-center gap-2">
-      <button (click)="navigateTo('/')" class="btn btn-ghost btn-sm">Inicio</button>
-      <button (click)="navigateTo('/login')" class="btn btn-ghost btn-sm">Iniciar Sesión</button>
-      <button (click)="navigateTo('/register')" class="btn btn-primary btn-sm">Registrarse</button>
+  <div class="navbar-end hidden lg:flex">
+    <nav class="menu menu-horizontal p-0 gap-1">
+      <li><button (click)="navigateTo('/')" class="btn btn-ghost btn-sm">Inicio</button></li>
+      <li><button (click)="navigateTo('/login')" class="btn btn-ghost btn-sm">Iniciar Sesión</button></li>
+      <li><button (click)="navigateTo('/register')" class="btn btn-primary btn-sm">Registrarse</button></li>
     </nav>
   </div>
 </header>
 
-<!-- CONTENIDO (se carga aquí cada página pública) -->
-<main>
+<!-- MAIN CONTENT -->
+<main class="min-h-screen overflow-x-hidden">
   <router-outlet></router-outlet>
 </main>
 
 <!-- FOOTER -->
-<footer class="footer footer-center bg-base-200 text-base-content p-6">
-  <div>
-    <p class="font-semibold">&copy; {{ currentYear }} Mi Iglesia. Todos los derechos reservados.</p>
-    <p class="text-sm">"Un lugar para crecer en comunidad."</p>
+<footer class="footer footer-center bg-base-200 text-base-content py-8 border-t border-base-300">
+  <div class="max-w-md">
+    <div class="flex items-center justify-center gap-2 mb-4">
+      <img src="img/cbiLogo.svg" alt="CBI" class="w-6 h-6 opacity-80"/>
+      <p class="font-semibold text-sm">Iglesia CBI</p>
+    </div>
+    <p class="text-xs opacity-70">&copy; {{ currentYear }} Todos los derechos reservados</p>
+    <p class="text-sm italic mt-2">"Un lugar para crecer en comunidad."</p>
   </div>
 </footer>
