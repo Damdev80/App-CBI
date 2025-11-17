@@ -28,6 +28,16 @@ export class UsersService {
     if (!data.password) {
       throw new BadRequestException('La contraseña es OBLIGATORIA');
     }
+
+    if(data.email){
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email: data.email },
+      });
+
+      if (existingUser) {
+        throw new BadRequestException('El email ya está en uso');
+      }
+    }
     const hashedPassword = await encryp(data.password);
     return await this.prisma.user.create({
       data: {
@@ -35,6 +45,8 @@ export class UsersService {
         password: hashedPassword,
       },
     });
+
+
   }
 
   async validationUser(

@@ -24,6 +24,6 @@ model User {
   service_area String? @default("Servidor")
   hobbies    String?
   dreams     String?
-  job       Int? 
+  job       String? 
   vulnerable_area String? 
 }
