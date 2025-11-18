@@ -13,6 +13,18 @@ enum Gender {
   FEMENINO
 }
 
+enum Dicupules {
+  SI
+  NO
+}
+
+enum LevelDicipules {
+  I
+  II
+  III
+  IV
+}
+
 model User {
   id         String    @id @default(uuid())
   email      String    @unique
@@ -21,6 +33,7 @@ model User {
   password   String?
   happybirth DateTime?
   gender     Gender?
+  baptized Boolean   @default(false)
   isActive   Boolean   @default(true)
   role       String    @default("user")
   createdAt  DateTime  @default(now())
@@ -31,6 +44,26 @@ model User {
   hobbies    String?
   dreams     String?
   job       String? 
-  vulnerable_area String? 
+  vulnerable_area String?
+  members Members[]
 }
+
+model Groups {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  members   Members[]
+}
+
+model Members {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  group     Groups   @relation(fields: [groupId], references: [id])
+  groupId   String
+  levelDicipules LevelDicipules
+  joinedAt  DateTime @default(now())
+}
+
 
