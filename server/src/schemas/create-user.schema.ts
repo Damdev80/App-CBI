@@ -20,3 +20,5 @@ export const createUserSchema = z.object({
   job: z.string().optional(),
   vulnerable_area: z.string().optional(),
 });
+
+

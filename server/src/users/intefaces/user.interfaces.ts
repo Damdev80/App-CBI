@@ -1,5 +1,5 @@
 import type { Gender } from '@prisma/client';
-
+import type { Dicipules } from '@prisma/client';
 
 export interface IUser {
   id: string;
@@ -9,7 +9,8 @@ export interface IUser {
   password: string | null;
   age: number | null;
   address: string | null;
-  happybirth: Date | null;
+  dicipules: Dicipules;
+  happybirth: Date | n  ull;
   gender: Gender | null;
   isActive: boolean;
   role: string;
