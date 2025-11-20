@@ -1,4 +1,4 @@
-import type { IUser } from 'src/users/intefaces/user.interfaces';
+import type { IUser } from 'src/users/user.interfaces';
 import type { IGroup } from 'src/groups/group.interfaces';
 import type { LevelDicipules } from '@prisma/client';
 
