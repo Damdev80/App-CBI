@@ -1,73 +1,84 @@
-<div class="max-w-md mx-auto bg-white shadow-lg rounded-xl p-6">
-  <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
-    Crear cuenta
-  </h2>
+<div class="max-w-2xl mx-auto p-4">
+  <form class="space-y-6">
+    <!-- Información Personal -->
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-6">
+      <legend class="fieldset-legend text-lg font-bold">Información Personal</legend>
 
-  <form>
-    <!-- Nombre -->
-    <div class="mb-4">
-      <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
-        Nombre completo
-      </label>
-      <input
-        type="text"
-        id="name"
-        placeholder="Juan Pérez"
-        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+      <label class="label">Nombre completo</label>
+      <input type="text" class="input" placeholder="Maria Núñez" id="name" />
+
+      <label class="label mt-4">Correo electrónico</label>
+      <input type="email" class="input" placeholder="maria.nunez@example.com" id="email" />
+
+      <label class="label mt-4">Teléfono</label>
+      <input type="tel" class="input" placeholder="+34987654321" id="number" />
+
+      <label class="label mt-4">Fecha de nacimiento</label>
+      <input type="date" class="input" id="happybirthday" value="1998-03-22" />
+    </fieldset>
+
+    <!-- Dirección -->
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-6">
+      <legend class="fieldset-legend text-lg font-bold">Dirección</legend>
+
+      <label class="label">Dirección</label>
+      <input type="text" class="input" placeholder="Avenida del Sol 45, Madrid" id="address" />
+
+      <label class="label mt-4">Edad</label>
+      <input type="number" class="input" placeholder="26" id="age" />
+    </fieldset>
+
+    <!-- Información Laboral -->
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-6">
+      <legend class="fieldset-legend text-lg font-bold">Información Laboral</legend>
+
+      <label class="label">Área de servicio</label>
+      <input type="text" class="input" placeholder="Atención al Cliente" id="service_area" />
+
+      <label class="label mt-4">Trabajo</label>
+      <input type="text" class="input" placeholder="Community Manager" id="job" />
+    </fieldset>
+
+    <!-- Intereses -->
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-6">
+      <legend class="fieldset-legend text-lg font-bold">Intereses</legend>
+
+      <label class="label">Hobbies</label>
+      <input type="text" class="input" placeholder="Leer, Senderismo" id="hobbies" />
+
+      <label class="label mt-4">Sueños</label>
+      <input type="text" class="input" placeholder="Publicar una novela" id="dreams" />
+
+      <label class="label mt-4">Área vulnerable</label>
+      <select class="select w-full" id="vulnerable_area">
+        <option disabled selected>Selecciona un área</option>
+        <option>Ninguna</option>
+        <option>Emocional</option>
+        <option>Física</option>
+        <option>Económica</option>
+        <option>Espiritual</option>
+      </select>
+    </fieldset>
+
+    <!-- Seguridad -->
+    <fieldset class="fieldset bg-base-200 border-base-300 rounded-box border p-6">
+      <legend class="fieldset-legend text-lg font-bold">Seguridad</legend>
+
+      <label class="label">Contraseña</label>
+      <input type="password" class="input" placeholder="********" id="password" />
+
+      <label class="label mt-4">Confirmar contraseña</label>
+      <input type="password" class="input" placeholder="********" id="confirmPassword" />
+    </fieldset>
+
+    <!-- Botones de acción -->
+    <div class="flex flex-col sm:flex-row gap-4 mt-6">
+      <button type="submit" class="btn btn-primary flex-1">
+        Registrarse
+      </button>
+      <button type="button" (click)="navigateTo('/login')" class="btn btn-ghost flex-1">
+        ¿Ya tienes cuenta? Inicia sesión
+      </button>
     </div>
-
-    <!-- Email -->
-    <div class="mb-4">
-      <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
-        Correo electrónico
-      </label>
-      <input
-        type="email"
-        id="email"
-        placeholder="correo@ejemplo.com"
-        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
-
-    <!-- Contraseña -->
-    <div class="mb-4">
-      <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
-        Contraseña
-      </label>
-      <input
-        type="password"
-        id="password"
-        placeholder="********"
-        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
-
-    <!-- Confirmar contraseña -->
-    <div class="mb-6">
-      <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">
-        Confirmar contraseña
-      </label>
-      <input
-        type="password"
-        id="confirmPassword"
-        placeholder="********"
-        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
-
-    <!-- Botón -->
-    <button
-      type="submit"
-      class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-    >
-      Registrarse
-    </button>
-
-    <!-- Link a login -->
-    <p class="text-center text-sm text-gray-600 mt-4">
-      ¿Ya tienes una cuenta?
-      <button (click)="navigateTo('/login')" class="text-blue-600 hover:underline">Inicia sesión</button>
-    </p>
   </form>
 </div>
