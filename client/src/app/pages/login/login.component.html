@@ -1,47 +1,80 @@
-<div class="max-w-md mx-auto bg-white shadow-lg rounded-xl p-6">
-  <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
-    Iniciar sesión
-  </h2>
+<div class="min-h-screen flex items-center justify-center md:justify-start p-6 md:pl-45 login-bg">
+  <div class="w-full max-w-md">
+    <div class="bg-white rounded-3xl border border-gray-100 shadow-lg p-8">
+      <h2 class="text-2xl font-semibold text-center text-gray-800 mb-6">Login</h2>
 
-  <form>
-    <!-- Email -->
-    <div class="mb-4">
-      <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
-        Correo electrónico
-      </label>
-      <input
-        type="email"
-        id="email"
-        placeholder="correo@ejemplo.com"
-        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+      <form>
+        <!-- Email -->
+        <div class="mb-4">
+          <label class="sr-only" for="email">Correo electrónico</label>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[#00c3ff] pointer-events-none">
+              <!-- email icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12H8m8 0l-4 4m4-4l-4-4M4 6h16v12H4z" />
+              </svg>
+            </span>
+            <input id="email" type="email" placeholder="correo@ejemplo.com" class="w-full pl-12 h-12 rounded-lg border-2 border-[#00c3ff] focus:outline-none z-10 text-black placeholder-gray-500" />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-2">
+          <label class="sr-only" for="password">Contraseña</label>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+              <!-- lock icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3 1.343 3 3v3H9v-3c0-1.657 1.343-3 3-3z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11V8a5 5 0 0110 0v3" />
+              </svg>
+            </span>
+            <input id="password" type="password" placeholder="********" class="w-full pl-12 h-12 rounded-lg bg-[#f5f5f5] border border-gray-200 focus:outline-none z-10 text-black placeholder-gray-500" />
+          </div>
+        </div>
+
+        <!-- Options row -->
+        <div class="flex items-center justify-between mt-2">
+          <label class="flex items-center gap-2">
+            <input type="checkbox" class="checkbox checkbox-sm" />
+            <span class="text-sm">Remember Password</span>
+          </label>
+
+          <button type="button" class="text-sm text-blue-600 hover:underline">Forget Password?</button>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="mt-6 w-full py-3 rounded-lg text-white" style="background-color: #020b33">Sign In</button>
+
+        <!-- Register text -->
+        <p class="text-center text-sm text-gray-600 mt-4">No account yet? <button type="button" (click)="navegateTo('/register')" class="text-blue-600 hover:underline">Register</button></p>
+
+        <!-- Or login with -->
+        <div class="mt-6">
+          <p class="text-center text-sm text-gray-500 mb-3">Or Login With:</p>
+          <div class="flex items-center justify-center gap-3">
+            <!-- Apple -->
+            <button type="button" aria-label="apple" class="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-gray-200 shadow-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16.365 1.43c0 1.02-.384 2.003-1.07 2.733-.71.76-1.878 1.44-2.94 1.296-.133-.02-.248-.043-.347-.068C9.88 4.99 8.465 5.35 7.657 6.23c-.99 1.09-1.02 2.933-.09 4.12.556.778 1.273 1.543 2.158 1.543.105 0 .215-.007.33-.02 1.052-.11 2.07.31 2.882 1.06.81.746 1.238 1.744 1.285 2.9.03.776.06 1.973-.49 2.95-.586 1.053-1.77 1.965-3.45 1.965-2.02 0-3.16-1.217-3.98-1.217-.77 0-1.94 1.18-3.18 1.18-.73 0-1.38-.447-1.98-1.15C1.637 18.24 3.51 12.66 8.35 10.6c.66-.27 1.38-.41 2.06-.41.9 0 1.77.2 2.51.58.54.28 1.44.07 2.05-.64.35-.39.6-.95.6-1.54 0-.79-.06-1.55-.08-1.86-.02-.4 0-.59.22-.7.45-.23 1.99-.89 3.02-2.07z"/></svg>
+            </button>
+
+            <!-- Twitter -->
+            <button type="button" aria-label="twitter" class="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-gray-200 shadow-sm text-[#1DA1F2]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22.46 6c-.77.35-1.6.59-2.46.7.89-.53 1.57-1.37 1.88-2.37-.83.5-1.75.86-2.72 1.05A4.15 4.15 0 0015.5 4c-2.3 0-4.15 1.86-4.15 4.15 0 .33.04.66.11.97-3.45-.17-6.51-1.82-8.56-4.33-.36.62-.57 1.34-.57 2.11 0 1.46.74 2.75 1.86 3.51-.69-.02-1.34-.21-1.9-.52v.05c0 2.03 1.45 3.72 3.36 4.11-.35.1-.72.16-1.12.16-.27 0-.53-.03-.79-.07.53 1.66 2.07 2.87 3.9 2.91A8.32 8.32 0 013 19.54a11.73 11.73 0 006.29 1.84c7.55 0 11.68-6.25 11.68-11.66v-.53A8.18 8.18 0 0022.46 6z"/></svg>
+            </button>
+
+            <!-- Facebook -->
+            <button type="button" aria-label="facebook" class="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-gray-200 shadow-sm text-[#1877F2]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 10-11.5 9.9v-7h-2.3v-2.9h2.3V9.3c0-2.3 1.37-3.6 3.47-3.6.99 0 2.03.18 2.03.18v2.24h-1.15c-1.13 0-1.48.7-1.48 1.42v1.7h2.52l-.4 2.9h-2.12v7A10 10 0 0022 12z"/></svg>
+            </button>
+
+            <!-- Google -->
+            <button type="button" aria-label="google" class="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-gray-200 shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 11.2c3.4 0 6.1 1.2 7.9 2.3l5.8-5.7C34.3 5 29.5 3.6 24 3.6 14.9 3.6 7.5 8.9 4 16.5l6.9 5.4C12.3 16 17.6 11.2 24 11.2z"/><path fill="#34A853" d="M46.5 24c0-1.5-.1-2.6-.4-3.8H24v7.2h12.7c-.5 2.6-1.9 4.6-4 6l6.8 5.3C44.6 35.2 46.5 30 46.5 24z"/><path fill="#4A90E2" d="M10.9 29.9c-.8-2.1-1.3-4.3-1.3-6.6s.5-4.5 1.3-6.6L4 11.6C2.2 15.4 1.2 19.6 1.2 24s1 8.6 2.8 12.4l6.1-6.5z"/><path fill="#FBBC05" d="M24 44.4c6.5 0 11.9-2.1 15.9-5.7l-7.6-6c-2.1 1.5-4.8 2.3-8.3 2.3-6.4 0-11.8-4.2-13.8-9.9l-6.9 5.4C7.5 39.1 14.9 44.4 24 44.4z"/></svg>
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
-
-    <!-- Contraseña -->
-    <div class="mb-6">
-      <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
-        Contraseña
-      </label>
-      <input
-        type="password"
-        id="password"
-        placeholder="********"
-        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
-
-    <!-- Botón -->
-    <button
-      type="submit"
-      class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-    >
-      Iniciar sesión
-    </button>
-
-    <!-- Link a register -->
-    <p class="text-center text-sm text-gray-600 mt-4">
-      ¿No tienes cuenta?
-      <button (click)="navegateTo('/register')" class="text-blue-600 hover:underline">Regístrate</button>
-    </p>
-  </form>
+  </div>
 </div>

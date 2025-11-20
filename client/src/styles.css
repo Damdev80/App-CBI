@@ -9,3 +9,19 @@
 }
 
 
+
+
+/* Login background image */
+.login-bg {
+    background-image: url('/img/libro-de-lectura-de-mujer-de-tiro-medio.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Slight overlay for fieldset to improve readability on background */
+.login-fieldset-bg {
+    background-color: rgba(255,255,255,0.85);
+}
+
+
