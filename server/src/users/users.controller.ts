@@ -8,7 +8,7 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { IUser } from './intefaces/user.interfaces';
+import { IUser } from './user.interfaces';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import { createUserSchema } from 'src/schemas/create-user.schema';
 

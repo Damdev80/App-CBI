@@ -5,7 +5,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { IUser } from './intefaces/user.interfaces';
+import { IUser } from './user.interfaces';
 import { compare, encryp } from 'src/lib/bcrypt';
 
 @Injectable()
