@@ -10,7 +10,7 @@ export interface IUser {
   age: number | null;
   address: string | null;
   dicipules: Dicipules;
-  happybirth: Date | n  ull;
+  happybirth: Date | null;
   gender: Gender | null;
   isActive: boolean;
   role: string;
