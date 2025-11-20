@@ -26,46 +26,46 @@ enum LevelDicipules {
 }
 
 model User {
-  id         String    @id @default(uuid())
-  email      String    @unique
-  name       String?
-  number     String?
-  password   String?
-  happybirth DateTime?
-  gender     Gender?
-  baptized Boolean   @default(false)
-  isActive   Boolean   @default(true)
-  dicipules  Dicipules @default(NO)
-  role       String    @default("user")
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  address    String?
-  age        Int?
-  service_area String? @default("Servidor")
-  hobbies    String?
-  dreams     String?
-  job       String? 
+  id              String    @id @default(uuid())
+  email           String    @unique
+  name            String?
+  number          String?
+  password        String?
+  happybirth      DateTime?
+  gender          Gender?
+  baptized        Boolean   @default(false)
+  isActive        Boolean   @default(true)
+  dicipules       Dicipules @default(NO)
+  role            String    @default("user")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  address         String?
+  age             Int?
+  service_area    String?   @default("Servidor")
+  hobbies         String?
+  dreams          String?
+  job             String?
   vulnerable_area String?
-  members Members[]
+  members         Members[] // un User puede tener muchos Members
 }
 
 model Groups {
-  id        String   @id @default(uuid())
-  name      String
+  id          String    @id @default(uuid())
+  name        String
   description String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  members   Members[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  members     Members[] // un Group puede tener muchos Members
 }
 
 model Members {
-  id        String   @id @default(uuid())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  group     Groups[]
-  groupId   String
+  id             String         @id @default(uuid())
+  userId         String
+  user           User           @relation(fields: [userId], references: [id])
+  groupId        String
+  group          Groups         @relation(fields: [groupId], references: [id])
   levelDicipules LevelDicipules
-  joinedAt  DateTime @default(now())
+  joinedAt       DateTime       @default(now())
+
+  @@unique([userId, groupId]) // un usuario solo puede estar una vez en un grupo
 }
-
-
