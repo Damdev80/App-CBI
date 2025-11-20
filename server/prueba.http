@@ -50,3 +50,24 @@ Content-Type: application/json
   "email": "usuario@example.com",
   "password": "password123"
 }
+
+### register Test
+POST http://localhost:3000/user/users
+Content-Type: application/json
+
+{
+  "email": "maria.nunez@example.com",
+  "name": "María Núñez",
+  "number": "+34987654321",
+  "password": "MiPasswordFuerte!456",
+  "gender": "MASCULINO",
+  "age": 26,
+  "address": "Avenida del Sol 45, Madrid",
+  "happybirth": "1998-03-22T00:00:00.000Z",
+  "role": "user",
+  "service_area": "Atención al Cliente",
+  "hobbies": "Leer, Senderismo",
+  "dreams": "Publicar una novela",
+  "job": "Community Manager",
+  "vulnerable_area": "Ninguna"
+}

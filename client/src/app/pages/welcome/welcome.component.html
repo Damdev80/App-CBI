@@ -1,43 +1,42 @@
-<div class="min-h-scree">  
-        <!-- Carrusel -->
-  <app-carrusel class="" 
-   [carouselItems]="photos"
-   [autoPlay]="false"
-   [autoPlayInterval]="10000"
-   [showArrows]="true"
-   [showDots]="false"
-   [showCounter]="false"
-   [carouselHeight]="'100%'"
-   [loading]="false"
+<!-- Hero Carousel -->
+<section class="w-full overflow-hidden">
+  <app-carrusel
+    [carouselItems]="photos"
+    [autoPlay]="false"
+    [autoPlayInterval]="10000"
+    [showArrows]="true"
+    [showDots]="false"
+    [showCounter]="false"
+    [carouselHeight]="'100vh'"
+    [loading]="false"
   >
   </app-carrusel>
-</div>
+</section>
 
-<div class="min-h-screen flex items-center justify-center  ">
-  <app-card
-  title="Bienvenido a la Iglesia"
-  description="Ministerio Juvenil"
-  imageUrl="https://source.unsplash.com/random/400x200?church"
-  >
-    
-  </app-card>
+<!-- Cards Section -->
+<section class="w-full overflow-hidden bg-base-200 py-12 px-4">
+  <div class="container mx-auto max-w-7xl">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <app-card
+        title="Bienvenido a la Iglesia"
+        description="Ministerio Juvenil"
+        imageUrl="https://source.unsplash.com/random/400x200?church"
+      >
+      </app-card>
 
-  <div class="min-h-screen flex items-center justify-center bg-gray-100 ">
-  <app-card
-  title="Bienvenido a la Iglesia"
-  description="Ministerio Juvenil"
-  imageUrl="https://source.unsplash.com/random/400x200?church"
-  >
-    
-  </app-card>
+      <app-card
+        title="Bienvenido a la Iglesia"
+        description="Ministerio Juvenil"
+        imageUrl="https://source.unsplash.com/random/400x200?church"
+      >
+      </app-card>
 
-
-  <div class="min-h-screen flex items-center justify-center bg-gray-100 ">
-  <app-card
-  title="Bienvenido a la Iglesia"
-  description="Ministerio Juvenil"
-  imageUrl="https://source.unsplash.com/random/400x200?church"
-  >
-    
-  </app-card>
-</div>
+      <app-card
+        title="Bienvenido a la Iglesia"
+        description="Ministerio Juvenil"
+        imageUrl="https://source.unsplash.com/random/400x200?church"
+      >
+      </app-card>
+    </div>
+  </div>
+</section>
