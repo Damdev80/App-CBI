@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { MembersService } from './members.service'; 
 @Controller('members')
 export class MembersController {
@@ -7,6 +7,11 @@ export class MembersController {
     @Get('/')
     async getAllMembers() {
         return await this.membersService.findAllMembers();
+    }
+
+    @Post('/create')
+    async createMember() {
+        return await this.membersService.createMember();
     }
 
     
