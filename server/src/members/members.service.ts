@@ -1,7 +1,6 @@
 import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { IMembers} from './member.interfaces';
-import { th } from 'zod/v4/locales/index.cjs';
 @Injectable()
 export class MembersService {
     constructor(private prisma: PrismaService) {}
