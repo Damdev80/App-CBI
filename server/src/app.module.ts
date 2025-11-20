@@ -9,7 +9,6 @@ import { UsersModule } from './users/users.module';
 import { MembersService } from './members/members.service';
 import { MembersController } from './members/members.controller';
 import { MembersModule } from './members/members.module';
-import { MembersModule } from './members/members.module';
 
 @Module({
   imports: [AuthModule, PrismaModule, UsersModule, MembersModule],
