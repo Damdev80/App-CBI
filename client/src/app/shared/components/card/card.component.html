@@ -1,16 +1,27 @@
-<div class="max-w-sm rounded-2xl shadow-lg bg-white dark:bg-gray-800 overflow-hidden">
-  <img *ngIf="imageUrl" [src]="imageUrl" alt="{{ title }}" class="w-full h-48 object-cover">
-
-  <div class="p-5">
-    <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ title }}</h3>
-    <p class="mt-3 text-gray-700 dark:text-gray-300">
-      {{ description }}
-    </p>
-
-    <div class="mt-4">
-      <button class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
-        Acción
-      </button>
+<div class="hover-3d my-8 mx-2">
+  <!-- content -->
+  <div class="card card-border bg-base-100 shadow-xl w-full">
+    <figure *ngIf="imageUrl" class="w-full">
+      <img [src]="imageUrl" [alt]="title" class="w-full h-48 object-cover rounded-t-2xl" />
+    </figure>
+    
+    <div class="card-body w-2xl h-2xl">
+      <h2 class="card-title text-lg">{{ title }}</h2>
+      <p class="text-sm opacity-80">{{ description }}</p>
+      
+      <div class="card-actions justify-end mt-4">
+        <button class="btn btn-primary btn-sm">Acción</button>
+      </div>
     </div>
   </div>
+  
+  <!-- 8 empty divs needed for the 3D effect -->
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
 </div>
