@@ -10,10 +10,10 @@ import { MembersController } from './members/members.controller';
 import { MembersModule } from './members/members.module';
 import { GroupsModule } from './groups/groups.module';
 import { EventModule } from './event/event.module';
-import { EventUserModule } from './event-user/event-user.module';
+import { UsersEventModule } from './users-event/users-event.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, UsersModule, MembersModule, GroupsModule, EventModule, EventUserModule],
+  imports: [AuthModule, PrismaModule, UsersModule, MembersModule, GroupsModule, EventModule, UsersEventModule],
   controllers: [AppController, MembersController],
   providers: [AppService, AuthService, MembersService],
 })
