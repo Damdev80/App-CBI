@@ -1,0 +1,165 @@
+<div class="min-h-screen bg-base-200 p-4">
+  <div class="max-w-7xl mx-auto">
+    
+    <div class="mb-4">
+      <h1 class="text-2xl font-bold mb-1">Registros de Eventos</h1>
+      <p class="text-sm text-base-content/70">Administra inscripciones y pagos</p>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3 mb-4">
+      <div class="card bg-base-100 shadow-sm p-3">
+        <div class="text-xs text-base-content/60">Total</div>
+        <div class="text-xl font-bold text-primary">{{ filteredRegistrations.length }}</div>
+      </div>
+      
+      <div class="card bg-base-100 shadow-sm p-3">
+        <div class="text-xs text-base-content/60">Pagados</div>
+        <div class="text-xl font-bold text-success">{{ getTotalPaid() }}</div>
+      </div>
+      
+      <div class="card bg-base-100 shadow-sm p-3">
+        <div class="text-xs text-base-content/60">Deuda</div>
+        <div class="text-xl font-bold text-error">${{ getTotalDebt().toFixed(2) }}</div>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-sm mb-4 p-4">
+      <div class="grid grid-cols-2 gap-3">
+        <input 
+          type="text" 
+          placeholder="Buscar..." 
+          class="input input-bordered input-sm"
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+        >
+        <select 
+          class="select select-bordered select-sm"
+          [(ngModel)]="filterPayStatus"
+          (change)="onFilterChange()"
+        >
+          <option value="ALL">Todos</option>
+          <option value="PAGO">Pagado</option>
+          <option value="DEBE">Pendiente</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="alert alert-success mb-3" *ngIf="successMessage">
+      <span>{{ successMessage }}</span>
+    </div>
+
+    <div class="alert alert-error mb-3" *ngIf="errorMessage">
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <div class="card bg-base-100 shadow-sm">
+      <div class="overflow-x-auto">
+        <div *ngIf="loading" class="flex justify-center py-8">
+          <span class="loading loading-spinner loading-lg"></span>
+        </div>
+
+        <div *ngIf="!loading && filteredRegistrations.length === 0" class="text-center py-8">
+          <p class="text-base-content/60">No hay registros</p>
+        </div>
+
+        <table class="table table-sm" *ngIf="!loading && filteredRegistrations.length > 0">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>F. Nac.</th>
+              <th>Pago</th>
+              <th>Monto</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let registration of filteredRegistrations">
+              <td>{{ registration.name }}</td>
+              <td>{{ registration.email }}</td>
+              <td>{{ registration.dateBorn | date:'dd/MM/yy' }}</td>
+              <td>
+                <span class="badge badge-sm" [class.badge-primary]="registration.wayPay === 'EFECTIVO'" [class.badge-secondary]="registration.wayPay === 'TRANSFERENCIA'">
+                  {{ registration.wayPay }}
+                </span>
+              </td>
+              <td class="font-bold">${{ registration.paymentAmount.toFixed(2) }}</td>
+              <td>
+                <span class="badge badge-sm" [class.badge-success]="registration.payStatus === 'PAGO'" [class.badge-error]="registration.payStatus === 'DEBE'">
+                  {{ registration.payStatus }}
+                </span>
+              </td>
+              <td>
+                <div class="flex gap-1">
+                  <button 
+                    *ngIf="registration.payStatus === 'DEBE'"
+                    class="btn btn-xs btn-primary"
+                    (click)="openPaymentModal(registration)"
+                  >
+                    Abonar
+                  </button>
+                  <button 
+                    class="btn btn-xs btn-error"
+                    (click)="deleteRegistration(registration.id, registration.name)"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div *ngIf="showPaymentModal" class="modal modal-open">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg mb-3">Registrar Pago</h3>
+    
+    <div *ngIf="selectedRegistration" class="space-y-3">
+      <div>
+        <p class="text-sm text-base-content/60">Nombre</p>
+        <p class="font-bold">{{ selectedRegistration.name }}</p>
+      </div>
+      
+      <div>
+        <p class="text-sm text-base-content/60">Deuda Actual</p>
+        <p class="text-2xl font-bold text-error">${{ selectedRegistration.paymentAmount.toFixed(2) }}</p>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Monto a Abonar</span>
+        </label>
+        <input 
+          type="number" 
+          placeholder="0.00" 
+          class="input input-bordered"
+          [(ngModel)]="paymentAmount"
+          step="0.01"
+          min="0"
+          [max]="selectedRegistration.paymentAmount"
+        >
+      </div>
+
+      <div *ngIf="paymentAmount > 0" class="alert alert-info">
+        <span>Nuevo saldo: ${{ (selectedRegistration.paymentAmount - paymentAmount).toFixed(2) }}</span>
+      </div>
+    </div>
+
+    <div class="modal-action">
+      <button class="btn btn-sm" (click)="closePaymentModal()">Cancelar</button>
+      <button 
+        class="btn btn-sm btn-primary" 
+        (click)="processPayment()"
+        [disabled]="paymentAmount <= 0"
+      >
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>

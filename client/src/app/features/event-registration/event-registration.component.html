@@ -1,0 +1,191 @@
+<div class="min-h-screen bg-base-200 py-8 px-4">
+  <div class="max-w-2xl mx-auto">
+    
+    <!-- Encabezado -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-base-content mb-2">
+        Inscripción a Evento
+      </h1>
+      <p class="text-base-content/60">
+        Completa el formulario para registrarte
+      </p>
+    </div>
+
+    <!-- Formulario Card -->
+    <div class="card bg-base-100 shadow-lg">
+      <div class="card-body">
+        
+        <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+          
+          <!-- Seleccionar Evento -->
+          <div class="form-control mb-4">
+            <label class="label">
+              <span class="label-text font-medium">Evento <span class="text-error">*</span></span>
+            </label>
+            <select 
+              formControlName="eventId" 
+              class="select select-bordered w-full"
+              [class.select-error]="f['eventId'].touched && f['eventId'].invalid"
+            >
+              <option value="">Selecciona un evento</option>
+              <option *ngFor="let event of events" [value]="event.id">
+                {{ event.title }} - {{ event.eventDate | date:'dd/MM/yyyy' }}
+              </option>
+            </select>
+            <label class="label" *ngIf="f['eventId'].touched && f['eventId'].invalid">
+              <span class="label-text-alt text-error">Debes seleccionar un evento</span>
+            </label>
+          </div>
+
+          <!-- Nombre -->
+          <div class="form-control mb-4">
+            <label class="label">
+              <span class="label-text font-medium">Nombre Completo <span class="text-error">*</span></span>
+            </label>
+            <input 
+              type="text" 
+              formControlName="name" 
+              class="input input-bordered w-full"
+              [class.input-error]="f['name'].touched && f['name'].invalid"
+            >
+            <label class="label" *ngIf="f['name'].touched && f['name'].invalid">
+              <span class="label-text-alt text-error">
+                <span *ngIf="f['name'].errors?.['required']">El nombre es requerido</span>
+                <span *ngIf="f['name'].errors?.['minlength']">Mínimo 3 caracteres</span>
+              </span>
+            </label>
+          </div>
+
+          <!-- Email -->
+          <div class="form-control mb-4">
+            <label class="label">
+              <span class="label-text font-medium">Correo Electrónico <span class="text-error">*</span></span>
+            </label>
+            <input 
+              type="email" 
+              formControlName="email" 
+              class="input input-bordered w-full"
+              [class.input-error]="f['email'].touched && f['email'].invalid"
+            >
+            <label class="label" *ngIf="f['email'].touched && f['email'].invalid">
+              <span class="label-text-alt text-error">
+                <span *ngIf="f['email'].errors?.['required']">El correo es requerido</span>
+                <span *ngIf="f['email'].errors?.['email']">Ingresa un correo válido</span>
+              </span>
+            </label>
+          </div>
+
+          <!-- Fecha de Nacimiento -->
+          <div class="form-control mb-4">
+            <label class="label">
+              <span class="label-text font-medium">Fecha de Nacimiento <span class="text-error">*</span></span>
+            </label>
+            <input 
+              type="date" 
+              formControlName="dateBorn" 
+              class="input input-bordered w-full"
+              [class.input-error]="f['dateBorn'].touched && f['dateBorn'].invalid"
+            >
+            <label class="label" *ngIf="f['dateBorn'].touched && f['dateBorn'].invalid">
+              <span class="label-text-alt text-error">La fecha de nacimiento es requerida</span>
+            </label>
+          </div>
+
+          <!-- Grid para Forma de Pago y Monto -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            
+            <!-- Forma de Pago -->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-medium">Forma de Pago <span class="text-error">*</span></span>
+              </label>
+              <select 
+                formControlName="wayPay" 
+                class="select select-bordered w-full"
+                [class.select-error]="f['wayPay'].touched && f['wayPay'].invalid"
+              >
+                <option value="">Selecciona</option>
+                <option value="EFECTIVO">Efectivo</option>
+                <option value="TRANSFERENCIA">Transferencia</option>
+              </select>
+              <label class="label" *ngIf="f['wayPay'].touched && f['wayPay'].invalid">
+                <span class="label-text-alt text-error">Selecciona forma de pago</span>
+              </label>
+            </div>
+
+            <!-- Monto -->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-semibold">Monto <span class="text-error">*</span></span>
+              </label>
+              <input 
+                type="number" 
+                formControlName="paymentAmount" 
+                step="0.01"
+                class="input input-bordered w-full"
+                [class.input-error]="f['paymentAmount'].touched && f['paymentAmount'].invalid"
+              >
+              <label class="label" *ngIf="f['paymentAmount'].touched && f['paymentAmount'].invalid">
+                <span class="label-text-alt text-error">Ingresa el monto</span>
+              </label>
+            </div>
+
+          </div>
+
+          <!-- Estado de Pago -->
+          <div class="form-control mb-6">
+            <label class="label">
+              <span class="label-text font-medium">Estado de Pago</span>
+            </label>
+            <select 
+              formControlName="payStatus" 
+              class="select select-bordered w-full"
+            >
+              <option value="DEBE">Debe</option>
+              <option value="PAGO">Pagado</option>
+            </select>
+          </div>
+
+          <!-- Botones -->
+          <div class="flex gap-3">
+            <button 
+              type="submit" 
+              class="btn btn-primary flex-1"
+              [disabled]="loading"
+            >
+              <span *ngIf="!loading">Inscribirse</span>
+              <span *ngIf="loading" class="loading loading-spinner"></span>
+            </button>
+            
+            <button 
+              type="button" 
+              class="btn btn-ghost"
+              (click)="resetForm()"
+              [disabled]="loading"
+            >
+              Limpiar
+            </button>
+          </div>
+
+        </form>
+
+        <!-- Mensajes -->
+        <div *ngIf="successMessage" class="alert alert-success mt-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{{ successMessage }}</span>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-error mt-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
