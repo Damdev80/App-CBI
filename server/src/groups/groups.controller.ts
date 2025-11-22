@@ -20,8 +20,6 @@ export class GroupsController {
     @Post('/create')
     @UsePipes(new ZodValidationPipe(createGroupSchema))
     async createGroup(@Body() body: Omit<IGroup, 'id' | 'createdAt' | 'updatedAt'>,): Promise<IGroup> {
-        
-        
         return await this.groupsService.createGroup(body);
     }
 
