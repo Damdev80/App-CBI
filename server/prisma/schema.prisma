@@ -62,7 +62,8 @@ model User {
   dreams          String?
   job             String?
   vulnerable_area String?
-  members         Members[] // un User puede tener muchos Members
+  members         Members[]    // un User puede tener muchos Members
+  usersEvent      UsersEvent[] // Un usuario puede ir a muchos eventos
 }
 
 model Groups {
@@ -86,20 +87,22 @@ model Members {
   @@unique([userId, groupId]) // un usuario solo puede estar una vez en un grupo
 }
 
-// Hacer una tabla de visitantes sin creacion de usuario o sesion solo guardar en l
-
 model UsersEvent {
   id            String   @id @default(uuid())
-  eventId       String               // <-- debe existir
-  event         Event    @relation(fields: [eventId], references: [id])
+  userId        String?              
+  eventId       String               
   name          String
   email         String
-  phone         String
-  visitedAt     DateTime @default(now())
-  wayPay        WayPay
   dateBorn      DateTime
+  wayPay        WayPay
   paymentAmount Float
   payStatus     Pay      @default(DEBE)
+  createdAt     DateTime @default(now())
+
+  user  User?  @relation(fields: [userId], references: [id])
+  event Event  @relation(fields: [eventId], references: [id])
+
+  @@map("users_event")
 }
 
 model Event {
