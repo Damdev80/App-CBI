@@ -22,6 +22,16 @@ export const routes: Routes = [
             {
                 path: 'register', 
                 component: RegisterComponent
+            },
+            {
+              path: 'event-registration',
+              loadComponent: () => import('./features/event-registration/event-registration.component')
+                .then(m => m.EventRegistrationComponent)
+            },
+            {
+                path: 'event-registrations-list',
+                loadComponent: () => import('./features/event-table-users/event-table-users')
+                  .then(m => m.EventRegistrationListComponent)
             }
         ]
     },
