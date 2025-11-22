@@ -25,6 +25,16 @@ enum LevelDicipules {
   IV
 }
 
+enum WayPay {
+  EFECTIVO
+  TRANSFERENCIA
+}
+
+enum Pay {
+  PAGO
+  DEBE
+}
+
 model User {
   id              String    @id @default(uuid())
   email           String    @unique
@@ -51,7 +61,7 @@ model User {
 
 model Groups {
   id          String    @id @default(uuid())
-  name        String
+  name        String     @unique
   description String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -69,3 +79,22 @@ model Members {
 
   @@unique([userId, groupId]) // un usuario solo puede estar una vez en un grupo
 }
+
+// Hacer una tabla de visitantes sin creacion de usuario o sesion solo guardar en l
+
+model UsersEvent {
+  id            String   @id @default(uuid())
+  name          String
+  email         String
+  phone         String
+  visitedAt     DateTime @default(now()) // se auto‑setea si no se envía
+  wayPay        WayPay
+  dateBorn      DateTime
+  paymentAmount Float
+  payStatus     Pay      @default(DEBE)
+}
+
+
+
+
+
