@@ -16,6 +16,12 @@ export class GroupsService {
     }
 
     async createGroup(data: Omit<IGroup, 'id' | 'createdAt' | 'updatedAt'>): Promise<IGroup> {
+        if(data.name){
+            const existingGroup =  await this.prisma.groups.findUnique({
+            where: { name: data.name },
+            })
+        }
+
         return await this.prisma.groups.create({
             data: {
                 ...data,
