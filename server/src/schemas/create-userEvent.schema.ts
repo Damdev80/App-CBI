@@ -1,6 +1,6 @@
 import { z } from 'zod';
 export const createUserEventSchema = z.object({
-  userId: z.string().uuid(),
+  userId: z.string().uuid().optional(),
   eventId: z.string().uuid(),
   name: z.string().min(1),
   email: z.string().email(),

@@ -14,6 +14,7 @@ export enum Pay {
 
 export interface IUserEvent {
   id: string;
+  userId?: string | null;
   eventId: string;
   event?: IEvent;
   name: string;
