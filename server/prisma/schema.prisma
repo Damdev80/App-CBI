@@ -84,15 +84,29 @@ model Members {
 
 model UsersEvent {
   id            String   @id @default(uuid())
+  eventId       String               // <-- debe existir
+  event         Event    @relation(fields: [eventId], references: [id])
   name          String
   email         String
   phone         String
-  visitedAt     DateTime @default(now()) // se auto‑setea si no se envía
+  visitedAt     DateTime @default(now())
   wayPay        WayPay
   dateBorn      DateTime
   paymentAmount Float
   payStatus     Pay      @default(DEBE)
 }
+
+model Event {
+  id          String        @id @default(uuid())
+  title       String
+  description String?
+  eventDate   DateTime
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  usersEvent  UsersEvent[]
+}
+
+
 
 
 
