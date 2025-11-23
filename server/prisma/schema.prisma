@@ -98,6 +98,7 @@ model UsersEvent {
   paymentAmount Float
   payStatus     Pay      @default(DEBE)
   createdAt     DateTime @default(now())
+  hasSiblings   Boolean  @default(false)
 
   user  User?  @relation(fields: [userId], references: [id])
   event Event  @relation(fields: [eventId], references: [id])
