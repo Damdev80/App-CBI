@@ -30,6 +30,11 @@ export class UsersEventService {
       }
     }
 
+    // Aplicar descuento si vienen hermanos juntos
+    const baseAmount = 60000;
+    const discount = 10000;
+    const finalAmount = createDto.hasSiblings ? baseAmount - discount : baseAmount;
+
     return this.prisma.usersEvent.create({
       data: {
         userId: createDto.userId,
@@ -38,8 +43,9 @@ export class UsersEventService {
         email: createDto.email,
         dateBorn: new Date(createDto.dateBorn),
         wayPay: createDto.wayPay,
-        paymentAmount: createDto.paymentAmount,
+        paymentAmount: finalAmount,
         payStatus: createDto.payStatus || 'DEBE',
+        hasSiblings: createDto.hasSiblings || false,
       },
       include: {
         event: true,

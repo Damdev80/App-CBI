@@ -7,6 +7,7 @@ export interface CreateUsersEventDto {
   wayPay: 'EFECTIVO' | 'TRANSFERENCIA';
   paymentAmount: number;
   payStatus?: 'PAGO' | 'DEBE';
+  hasSiblings?: boolean;
 }
 
 export interface UpdateUsersEventDto {

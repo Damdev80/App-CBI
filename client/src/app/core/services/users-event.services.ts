@@ -10,7 +10,7 @@ import { CreateUsersEventDto, UsersEvent, Event } from '../../shared/models/user
 export class UsersEventService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/users-event`;
-  private eventUrl = `${environment.apiUrl}/event/events`;
+  private eventUrl = `${environment.apiUrl}/event`;
 
   createRegistration(data: CreateUsersEventDto): Observable<UsersEvent> {
     return this.http.post<UsersEvent>(`${this.apiUrl}/create`, data);
@@ -37,7 +37,7 @@ export class UsersEventService {
   }
 
   getAllEvents(): Observable<Event[]> {
-  return this.http.get<Event[]>(`${this.eventUrl}/events`);
+    return this.http.get<Event[]>(`${this.eventUrl}/events`);
   }   
 
   
