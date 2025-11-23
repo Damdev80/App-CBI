@@ -32,6 +32,7 @@ export class EventRegistrationComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       dateBorn: ['', Validators.required],
       wayPay: ['', Validators.required],
+      hasSiblings: [false],
       paymentAmount: [0, [Validators.required, Validators.min(0)]],
       payStatus: ['DEBE']
     });
@@ -65,7 +66,7 @@ export class EventRegistrationComponent implements OnInit {
         next: (response: any) => {
           this.loading = false;
           this.successMessage = '¡Inscripción exitosa! Te esperamos en el evento.';
-          this.registrationForm.reset({ payStatus: 'DEBE' });
+          this.registrationForm.reset({ payStatus: 'DEBE', hasSiblings: false });
           
           setTimeout(() => {
             this.successMessage = '';
@@ -83,9 +84,16 @@ export class EventRegistrationComponent implements OnInit {
   }
 
   resetForm() {
-    this.registrationForm.reset({ payStatus: 'DEBE' });
+    this.registrationForm.reset({ payStatus: 'DEBE', hasSiblings: false });
     this.successMessage = '';
     this.errorMessage = '';
+  }
+
+  getCalculatedPrice(): number {
+    const hasSiblings = this.registrationForm.get('hasSiblings')?.value;
+    const basePrice = 60000;
+    const discount = 10000;
+    return hasSiblings ? basePrice - discount : basePrice;
   }
 
   private markFormGroupTouched(formGroup: FormGroup) {

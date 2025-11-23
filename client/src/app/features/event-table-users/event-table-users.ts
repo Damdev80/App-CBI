@@ -94,7 +94,7 @@ export class EventRegistrationListComponent implements OnInit {
       return;
     }
 
-    const currentAmount = this.selectedRegistration.paymentAmount;
+    const currentAmount = this.selectedRegistration.paymentAmount ?? 0;
     const newAmount = currentAmount - this.paymentAmount;
     const newStatus = newAmount <= 0 ? 'PAGO' : 'DEBE';
 
@@ -143,7 +143,7 @@ export class EventRegistrationListComponent implements OnInit {
   getTotalDebt(): number {
     return this.filteredRegistrations
       .filter(reg => reg.payStatus === 'DEBE')
-      .reduce((sum, reg) => sum + reg.paymentAmount, 0);
+      .reduce((sum, reg) => sum + (reg.paymentAmount ?? 0), 0);
   }
 
   getTotalPaid(): number {

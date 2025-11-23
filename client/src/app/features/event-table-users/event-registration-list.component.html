@@ -84,7 +84,7 @@
                   {{ registration.wayPay }}
                 </span>
               </td>
-              <td class="font-bold">${{ registration.paymentAmount.toFixed(2) }}</td>
+                <td class="font-bold">${{ registration.paymentAmount.toFixed(2) }}</td>
               <td>
                 <span class="badge badge-sm" [class.badge-success]="registration.payStatus === 'PAGO'" [class.badge-error]="registration.payStatus === 'DEBE'">
                   {{ registration.payStatus }}

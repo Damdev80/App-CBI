@@ -1,23 +1,16 @@
 <div class="min-h-screen bg-base-200 py-8 px-4">
-  <div class="max-w-2xl mx-auto">
+  <div class="max-w-lg mx-auto">
     
-    <!-- Encabezado -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-base-content mb-2">
-        Inscripción a Evento
-      </h1>
-      <p class="text-base-content/60">
-        Completa el formulario para registrarte
-      </p>
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-bold text-base-content mb-2">Inscripción a Evento</h1>
+      <p class="text-base-content/60">Completa tus datos para registrarte</p>
     </div>
 
-    <!-- Formulario Card -->
-    <div class="card bg-base-100 shadow-lg">
+    <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
         
         <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
           
-          <!-- Seleccionar Evento -->
           <div class="form-control mb-4">
             <label class="label">
               <span class="label-text font-medium">Evento <span class="text-error">*</span></span>
@@ -27,7 +20,7 @@
               class="select select-bordered w-full"
               [class.select-error]="f['eventId'].touched && f['eventId'].invalid"
             >
-              <option value="">Selecciona un evento</option>
+              <option value="" disabled>Selecciona un evento</option>
               <option *ngFor="let event of events" [value]="event.id">
                 {{ event.title }} - {{ event.eventDate | date:'dd/MM/yyyy' }}
               </option>
@@ -37,45 +30,38 @@
             </label>
           </div>
 
-          <!-- Nombre -->
           <div class="form-control mb-4">
             <label class="label">
               <span class="label-text font-medium">Nombre Completo <span class="text-error">*</span></span>
             </label>
             <input 
               type="text" 
+              placeholder="Ingresa tu nombre completo"
               formControlName="name" 
               class="input input-bordered w-full"
               [class.input-error]="f['name'].touched && f['name'].invalid"
             >
             <label class="label" *ngIf="f['name'].touched && f['name'].invalid">
-              <span class="label-text-alt text-error">
-                <span *ngIf="f['name'].errors?.['required']">El nombre es requerido</span>
-                <span *ngIf="f['name'].errors?.['minlength']">Mínimo 3 caracteres</span>
-              </span>
+              <span class="label-text-alt text-error">El nombre es requerido (mínimo 3 caracteres)</span>
             </label>
           </div>
 
-          <!-- Email -->
           <div class="form-control mb-4">
             <label class="label">
               <span class="label-text font-medium">Correo Electrónico <span class="text-error">*</span></span>
             </label>
             <input 
               type="email" 
+              placeholder="ejemplo@correo.com"
               formControlName="email" 
               class="input input-bordered w-full"
               [class.input-error]="f['email'].touched && f['email'].invalid"
             >
             <label class="label" *ngIf="f['email'].touched && f['email'].invalid">
-              <span class="label-text-alt text-error">
-                <span *ngIf="f['email'].errors?.['required']">El correo es requerido</span>
-                <span *ngIf="f['email'].errors?.['email']">Ingresa un correo válido</span>
-              </span>
+              <span class="label-text-alt text-error">Ingresa un correo válido</span>
             </label>
           </div>
 
-          <!-- Fecha de Nacimiento -->
           <div class="form-control mb-4">
             <label class="label">
               <span class="label-text font-medium">Fecha de Nacimiento <span class="text-error">*</span></span>
@@ -91,49 +77,54 @@
             </label>
           </div>
 
-          <!-- Grid para Forma de Pago y Monto -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            
-            <!-- Forma de Pago -->
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text font-medium">Forma de Pago <span class="text-error">*</span></span>
-              </label>
-              <select 
-                formControlName="wayPay" 
-                class="select select-bordered w-full"
-                [class.select-error]="f['wayPay'].touched && f['wayPay'].invalid"
-              >
-                <option value="">Selecciona</option>
-                <option value="EFECTIVO">Efectivo</option>
-                <option value="TRANSFERENCIA">Transferencia</option>
-              </select>
-              <label class="label" *ngIf="f['wayPay'].touched && f['wayPay'].invalid">
-                <span class="label-text-alt text-error">Selecciona forma de pago</span>
-              </label>
-            </div>
-
-            <!-- Monto -->
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text font-semibold">Monto <span class="text-error">*</span></span>
-              </label>
-              <input 
-                type="number" 
-                formControlName="paymentAmount" 
-                step="0.01"
-                class="input input-bordered w-full"
-                [class.input-error]="f['paymentAmount'].touched && f['paymentAmount'].invalid"
-              >
-              <label class="label" *ngIf="f['paymentAmount'].touched && f['paymentAmount'].invalid">
-                <span class="label-text-alt text-error">Ingresa el monto</span>
-              </label>
-            </div>
-
+          <div class="form-control mb-4">
+            <label class="label">
+              <span class="label-text font-medium">Forma de Pago <span class="text-error">*</span></span>
+            </label>
+            <select 
+              formControlName="wayPay" 
+              class="select select-bordered w-full"
+              [class.select-error]="f['wayPay'].touched && f['wayPay'].invalid"
+            >
+              <option value="" disabled>Selecciona una opción</option>
+              <option value="EFECTIVO">Efectivo</option>
+              <option value="TRANSFERENCIA">Transferencia Bancaria</option>
+            </select>
+            <label class="label" *ngIf="f['wayPay'].touched && f['wayPay'].invalid">
+              <span class="label-text-alt text-error">Debes seleccionar una forma de pago</span>
+            </label>
           </div>
 
-          <!-- Estado de Pago -->
-          <div class="form-control mb-6">
+          <div class="form-control mb-4">
+            <label class="label cursor-pointer justify-start gap-3">
+              <input 
+                type="checkbox" 
+                formControlName="hasSiblings" 
+                class="checkbox checkbox-primary"
+              >
+              <span class="label-text">¿Va a inscribir a su hermano/a también?</span>
+            </label>
+          </div>
+
+          <div class="form-control mb-4">
+            <label class="label">
+              <span class="label-text font-medium">Monto a Pagar <span class="text-error">*</span></span>
+            </label>
+            <input 
+              type="number" 
+              placeholder="0"
+              formControlName="paymentAmount" 
+              class="input input-bordered w-full"
+              step="1000"
+              min="0"
+              [class.input-error]="f['paymentAmount']?.touched && f['paymentAmount']?.invalid"
+            >
+            <label class="label" *ngIf="f['paymentAmount']?.touched && f['paymentAmount']?.invalid">
+              <span class="label-text-alt text-error">El monto es requerido</span>
+            </label>
+          </div>
+
+          <div class="form-control mb-4">
             <label class="label">
               <span class="label-text font-medium">Estado de Pago</span>
             </label>
@@ -146,17 +137,23 @@
             </select>
           </div>
 
-          <!-- Botones -->
-          <div class="flex gap-3">
-            <button 
-              type="submit" 
-              class="btn btn-primary flex-1"
-              [disabled]="loading"
-            >
-              <span *ngIf="!loading">Inscribirse</span>
-              <span *ngIf="loading" class="loading loading-spinner"></span>
-            </button>
-            
+          <div class="divider"></div>
+
+          <div class="alert alert-success mb-4" *ngIf="successMessage">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ successMessage }}</span>
+          </div>
+
+          <div class="alert alert-error mb-4" *ngIf="errorMessage">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ errorMessage }}</span>
+          </div>
+
+          <div class="card-actions justify-end gap-2 mt-6">
             <button 
               type="button" 
               class="btn btn-ghost"
@@ -165,24 +162,17 @@
             >
               Limpiar
             </button>
+            <button 
+              type="submit" 
+              class="btn btn-primary"
+              [disabled]="loading"
+            >
+              <span *ngIf="loading" class="loading loading-spinner loading-sm"></span>
+              <span *ngIf="!loading">Registrarse</span>
+            </button>
           </div>
 
         </form>
-
-        <!-- Mensajes -->
-        <div *ngIf="successMessage" class="alert alert-success mt-4">
-          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>{{ successMessage }}</span>
-        </div>
-
-        <div *ngIf="errorMessage" class="alert alert-error mt-4">
-          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>{{ errorMessage }}</span>
-        </div>
 
       </div>
     </div>

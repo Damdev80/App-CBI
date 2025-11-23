@@ -5,12 +5,22 @@ export interface CreateUsersEventDto {
   email: string;
   dateBorn: string;
   wayPay: 'EFECTIVO' | 'TRANSFERENCIA';
-  paymentAmount: number;
+  paymentAmount?: number;
   payStatus?: 'PAGO' | 'DEBE';
+  hasSiblings?: boolean;
 }
 
-export interface UsersEvent extends CreateUsersEventDto {
+export interface UsersEvent {
   id: string;
+  userId?: string;
+  eventId: string;
+  name: string;
+  email: string;
+  dateBorn: string;
+  wayPay: 'EFECTIVO' | 'TRANSFERENCIA';
+  paymentAmount: number;
+  payStatus: 'PAGO' | 'DEBE';
+  hasSiblings: boolean;
   createdAt: string;
   event?: Event;
   user?: User;
