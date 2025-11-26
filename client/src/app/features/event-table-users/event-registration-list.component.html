@@ -67,7 +67,9 @@
             <tr>
               <th>Nombre</th>
               <th>Email</th>
+              <th>Teléfono</th>
               <th>F. Nac.</th>
+              <th>Hermanos</th>
               <th>Pago</th>
               <th>Monto</th>
               <th>Estado</th>
@@ -78,7 +80,13 @@
             <tr *ngFor="let registration of filteredRegistrations">
               <td>{{ registration.name }}</td>
               <td>{{ registration.email }}</td>
+              <td>{{ registration.phone || 'N/A' }}</td>
               <td>{{ registration.dateBorn | date:'dd/MM/yy' }}</td>
+              <td>
+                <span class="badge badge-sm" [class.badge-info]="registration.hasSiblings" [class.badge-ghost]="!registration.hasSiblings">
+                  {{ registration.hasSiblings ? 'Sí' : 'No' }}
+                </span>
+              </td>
               <td>
                 <span class="badge badge-sm" [class.badge-primary]="registration.wayPay === 'EFECTIVO'" [class.badge-secondary]="registration.wayPay === 'TRANSFERENCIA'">
                   {{ registration.wayPay }}

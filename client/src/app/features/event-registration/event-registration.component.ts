@@ -30,6 +30,7 @@ export class EventRegistrationComponent implements OnInit {
       eventId: ['', Validators.required],
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
+      phone: [''],
       dateBorn: ['', Validators.required],
       wayPay: ['', Validators.required],
       hasSiblings: [false],
@@ -57,16 +58,25 @@ export class EventRegistrationComponent implements OnInit {
       this.errorMessage = '';
 
       const formValue = this.registrationForm.value;
+      
+      // Validar y formatear la fecha correctamente
+      const dateBorn = formValue.dateBorn ? new Date(formValue.dateBorn) : new Date();
+      if (isNaN(dateBorn.getTime())) {
+        this.errorMessage = 'Fecha de nacimiento inválida';
+        this.loading = false;
+        return;
+      }
+      
       const data = {
         ...formValue,
-        dateBorn: new Date(formValue.dateBorn).toISOString()
+        dateBorn: dateBorn.toISOString()
       };
 
       this.usersEventService.createRegistration(data).subscribe({
         next: (response: any) => {
           this.loading = false;
           this.successMessage = '¡Inscripción exitosa! Te esperamos en el evento.';
-          this.registrationForm.reset({ payStatus: 'DEBE', hasSiblings: false });
+          this.registrationForm.reset({ payStatus: 'DEBE', hasSiblings: false, paymentAmount: 0 });
           
           setTimeout(() => {
             this.successMessage = '';

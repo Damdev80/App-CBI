@@ -3,6 +3,7 @@ export interface CreateUsersEventDto {
   eventId: string;
   name: string;
   email: string;
+  phone?: string;
   dateBorn: string;
   wayPay: 'EFECTIVO' | 'TRANSFERENCIA';
   paymentAmount?: number;
@@ -16,6 +17,7 @@ export interface UsersEvent {
   eventId: string;
   name: string;
   email: string;
+  phone?: string;
   dateBorn: string;
   wayPay: 'EFECTIVO' | 'TRANSFERENCIA';
   paymentAmount: number;
