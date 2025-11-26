@@ -1,25 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { IEvent } from './event.interfaces';
+import { Event, Prisma } from '@prisma/client';
+
+export type CreateEventDto = Prisma.EventCreateInput;
+export type UpdateEventDto = Prisma.EventUpdateInput;
+
 @Injectable()
 export class EventService {
     constructor(private prisma: PrismaService) {}
 
-    async getAllEvents(): Promise<IEvent[]> {
+    async getAllEvents(): Promise<Event[]> {
         return await this.prisma.event.findMany();
     }
 
-    async getByIdEvent(id: string): Promise<IEvent | null> {
+    async getByIdEvent(id: string): Promise<Event | null> {
         return await this.prisma.event.findUnique({
             where: { id },
         });
     }
 
-    async createEvent(data: Omit< IEvent, 'id' | 'createdAt' | 'updatedAt'>): Promise<IEvent> {
+    async createEvent(data: CreateEventDto): Promise<Event> {
         return await this.prisma.event.create({
-            data: {
-                ...data,
-            },
+            data,
         });
     }
 
