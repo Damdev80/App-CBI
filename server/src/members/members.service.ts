@@ -1,11 +1,15 @@
 import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { IMembers} from './member.interfaces';
+import { Members, Prisma } from '@prisma/client';
+
+export type CreateMemberDto = Prisma.MembersCreateInput;
+export type UpdateMemberDto = Prisma.MembersUpdateInput;
+
 @Injectable()
 export class MembersService {
     constructor(private prisma: PrismaService) {}
 
-    async findAllMembers(): Promise<IMembers[]> {
+    async findAllMembers(): Promise<Members[]> {
         try {
             return await this.prisma.members.findMany();
         } catch (error) {
@@ -14,22 +18,20 @@ export class MembersService {
     }
 
 
-    async findByIdMember(id: string): Promise<IMembers | null> {
+    async findByIdMember(id: string): Promise<Members | null> {
         try {
             return await this.prisma.members.findUnique({
                 where: { id },
-            })
+            });
         } catch (error) {
             throw new InternalServerErrorException('Error al obtener el miembro por ID');
         }
     }
 
-    async createMember(data: Omit<IMembers, 'id' | 'joinedAt' | 'user' | 'group'>): Promise<IMembers> {
+    async createMember(data: Prisma.MembersUncheckedCreateInput): Promise<Members> {
         try {
             return await this.prisma.members.create({
-                data: {
-                    ...data,
-                },
+                data,
             });
         } catch (error) {
             throw new InternalServerErrorException('Error al crear el miembro');
