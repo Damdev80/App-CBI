@@ -95,6 +95,7 @@ model UsersEvent {
   email         String
   dateBorn      DateTime
   wayPay        WayPay
+  phone        String?
   paymentAmount Float
   payStatus     Pay      @default(DEBE)
   createdAt     DateTime @default(now())
