@@ -41,6 +41,7 @@ export class UsersEventService {
         eventId: createDto.eventId,
         name: createDto.name,
         email: createDto.email,
+        phone: createDto.phone,
         dateBorn: new Date(createDto.dateBorn),
         wayPay: createDto.wayPay,
         paymentAmount: finalAmount,

@@ -1,8 +1,11 @@
+import { number } from "zod";
+
 export interface CreateUsersEventDto {
   userId?: string;
   eventId: string;
   name: string;
   email: string;
+  phone?: string;
   dateBorn: string | Date;
   wayPay: 'EFECTIVO' | 'TRANSFERENCIA';
   paymentAmount: number;
@@ -15,6 +18,7 @@ export interface UpdateUsersEventDto {
   email?: string;
   dateBorn?: string | Date;
   wayPay?: 'EFECTIVO' | 'TRANSFERENCIA';
+  phone?: string;
   paymentAmount?: number;
   payStatus?: 'PAGO' | 'DEBE';
 }
