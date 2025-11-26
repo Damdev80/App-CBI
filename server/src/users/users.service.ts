@@ -5,26 +5,29 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { IUser } from './user.interfaces';
+import { User, Prisma } from '@prisma/client';
 import { compare, encryp } from 'src/lib/bcrypt';
+
+export type CreateUserDto = Prisma.UserCreateInput;
+export type UpdateUserDto = Prisma.UserUpdateInput;
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(): Promise<IUser[]> {
+  async findAll(): Promise<User[]> {
     return await this.prisma.user.findMany();
   }
 
-  async findById(id: string): Promise<IUser | null> {
+  async findById(id: string): Promise<User | null> {
     return await this.prisma.user.findUnique({
       where: { id },
     });
   }
 
   async create(
-    data: Omit<IUser, 'id' | 'createdAt' | 'updatedAt'>,
-  ): Promise<IUser> {
+    data: CreateUserDto,
+  ): Promise<User> {
     if (!data.password) {
       throw new BadRequestException('La contraseña es OBLIGATORIA');
     }
@@ -52,7 +55,7 @@ export class UsersService {
   async validationUser(
     email: string,
     password: string,
-  ): Promise<Omit<IUser, 'password'> | null> {
+  ): Promise<Omit<User, 'password'> | null> {
     try {
       const user = await this.prisma.user.findUnique({
         where: { email },
@@ -74,14 +77,14 @@ export class UsersService {
     }
   }
 
-  async findByEmail(email: string): Promise<IUser | null> {
+  async findByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findUnique({ where: { email } });
   }
 
-  async update(id: string, data: Partial<IUser>): Promise<IUser> {
+  async update(id: string, data: UpdateUserDto): Promise<User> {
     const updateData = { ...data };
 
-    if (data.password) {
+    if (data.password && typeof data.password === 'string') {
       updateData.password = await encryp(data.password);
     }
     return await this.prisma.user.update({
@@ -90,7 +93,7 @@ export class UsersService {
     });
   }
 
-  async deactivateUser(id: string): Promise<IUser> {
+  async deactivateUser(id: string): Promise<User> {
     return await this.prisma.user.update({
       where: { id },
       data: { isActive: false },

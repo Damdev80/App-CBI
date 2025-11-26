@@ -7,11 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { UsersEventService } from './users-event.service';
-import {
-  CreateUsersEventDto,
-  UpdateUsersEventDto,
-} from './users-event.interfaces';
+import { UsersEventService, CreateUsersEventDto, UpdateUsersEventDto } from './users-event.service';
 
 @Controller('users-event')
 export class UsersEventController {

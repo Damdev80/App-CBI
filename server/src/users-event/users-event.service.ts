@@ -1,9 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import {
-  CreateUsersEventDto,
-  UpdateUsersEventDto,
-} from './users-event.interfaces';
+import { Prisma, UsersEvent } from '@prisma/client';
+
+export type CreateUsersEventDto = Omit<Prisma.UsersEventCreateInput, 'event' | 'user'> & {
+  eventId: string;
+  userId?: string;
+  dateBorn: string | Date;
+};
+
+export type UpdateUsersEventDto = Partial<Omit<Prisma.UsersEventUpdateInput, 'event' | 'user'>> & {
+  dateBorn?: string | Date;
+};
 
 @Injectable()
 export class UsersEventService {
@@ -37,11 +44,7 @@ export class UsersEventService {
 
     return this.prisma.usersEvent.create({
       data: {
-        userId: createDto.userId,
-        eventId: createDto.eventId,
-        name: createDto.name,
-        email: createDto.email,
-        phone: createDto.phone,
+        ...createDto,
         dateBorn: new Date(createDto.dateBorn),
         wayPay: createDto.wayPay,
         paymentAmount: finalAmount,
