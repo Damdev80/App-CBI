@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { UsersEventService, CreateUsersEventDto, UpdateUsersEventDto } from './users-event.service';
+import { UsersEventService, CreateUsersEventDto, UpdateUsersEventDto, AddPaymentDto } from './users-event.service';
 
 @Controller('users-event')
 export class UsersEventController {
@@ -28,6 +28,11 @@ export class UsersEventController {
     return this.usersEventService.findOne(id);
   }
 
+  @Get(':id/payment-info')
+  getPaymentInfo(@Param('id') id: string) {
+    return this.usersEventService.getPaymentInfo(id);
+  }
+
   @Get('event/:eventId')
   findByEvent(@Param('eventId') eventId: string) {
     return this.usersEventService.findByEvent(eventId);
@@ -36,6 +41,11 @@ export class UsersEventController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDto: UpdateUsersEventDto) {
     return this.usersEventService.update(id, updateDto);
+  }
+
+  @Patch(':id/add-payment')
+  addPayment(@Param('id') id: string, @Body() paymentDto: AddPaymentDto) {
+    return this.usersEventService.addPayment(id, paymentDto);
   }
 
   @Delete(':id')
