@@ -5,10 +5,12 @@ export interface CreateUsersEventDto {
   email: string;
   phone?: string;
   dateBorn: string;
-  wayPay: 'EFECTIVO' | 'TRANSFERENCIA';
-  paymentAmount?: number;
-  payStatus?: 'PAGO' | 'DEBE';
   hasSiblings?: boolean;
+}
+
+export interface AddPaymentDto {
+  amount: number;
+  wayPay: 'EFECTIVO' | 'TRANSFERENCIA';
 }
 
 export interface UsersEvent {
@@ -19,7 +21,7 @@ export interface UsersEvent {
   email: string;
   phone?: string;
   dateBorn: string;
-  wayPay: 'EFECTIVO' | 'TRANSFERENCIA';
+  wayPay?: 'EFECTIVO' | 'TRANSFERENCIA';
   paymentAmount: number;
   payStatus: 'PAGO' | 'DEBE';
   hasSiblings: boolean;
@@ -28,10 +30,18 @@ export interface UsersEvent {
   user?: User;
 }
 
+export interface PaymentInfo extends UsersEvent {
+  totalPrice: number;
+  amountPaid: number;
+  amountRemaining: number;
+  isPaid: boolean;
+}
+
 export interface Event {
   id: string;
   title: string;
   description?: string;
+  price: number;
   eventDate: string;
   createdAt?: string;
   updatedAt?: string;

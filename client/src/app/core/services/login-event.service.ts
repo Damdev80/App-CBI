@@ -13,7 +13,7 @@ export class LoginEventService {
     private apiUrl = `${environment.apiUrl}/auth`;
 
     login(credentials: LoginModel) {
-        return this.http.post<{ token: string }>(`${this.apiUrl}/login`, credentials);
+        return this.http.post<{ token: string }>(`${this.apiUrl}/log-in`, credentials);
     }
 
     register(credentials: LoginModel) {
