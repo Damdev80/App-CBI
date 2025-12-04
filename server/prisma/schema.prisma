@@ -88,18 +88,18 @@ model Members {
 }
 
 model UsersEvent {
-  id            String   @id @default(uuid())
+  id            String    @id @default(uuid())
   userId        String?              
   eventId       String               
   name          String
   email         String
   dateBorn      DateTime
-  wayPay        WayPay
-  phone        String?
-  paymentAmount Float
-  payStatus     Pay      @default(DEBE)
-  createdAt     DateTime @default(now())
-  hasSiblings   Boolean  @default(false)
+  wayPay        WayPay?
+  phone         String?
+  paymentAmount Float     @default(0)
+  payStatus     Pay       @default(DEBE)
+  createdAt     DateTime  @default(now())
+  hasSiblings   Boolean   @default(false)
 
   user  User?  @relation(fields: [userId], references: [id])
   event Event  @relation(fields: [eventId], references: [id])
@@ -111,6 +111,7 @@ model Event {
   id          String        @id @default(uuid())
   title       String
   description String?
+  price       Float         @default(0)
   eventDate   DateTime
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
