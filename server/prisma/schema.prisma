@@ -43,7 +43,7 @@ enum Pay {
 
 model User {
   id              String    @id @default(uuid())
-  email           String    @unique
+  email           String?    @unique
   name            String?
   number          String?
   password        String?
@@ -57,7 +57,6 @@ model User {
   updatedAt       DateTime  @updatedAt
   address         String?
   age             Int?
-  service_area    String?   @default("Servidor")
   hobbies         String?
   dreams          String?
   job             String?
