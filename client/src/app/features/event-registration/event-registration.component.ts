@@ -32,10 +32,7 @@ export class EventRegistrationComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       phone: [''],
       dateBorn: ['', Validators.required],
-      wayPay: ['', Validators.required],
-      hasSiblings: [false],
-      paymentAmount: [0, [Validators.required, Validators.min(0)]],
-      payStatus: ['DEBE']
+      hasSiblings: [false]
     });
   }
 
@@ -49,6 +46,22 @@ export class EventRegistrationComponent implements OnInit {
         this.errorMessage = 'Error al cargar eventos. Intenta nuevamente.';
       }
     });
+  }
+
+  // Obtener el evento seleccionado
+  getSelectedEvent(): Event | undefined {
+    const eventId = this.registrationForm.get('eventId')?.value;
+    return this.events.find(e => e.id === eventId);
+  }
+
+  // Obtener el precio calculado basado en el evento y descuento
+  getCalculatedPrice(): number {
+    const selectedEvent = this.getSelectedEvent();
+    if (!selectedEvent) return 0;
+    
+    const hasSiblings = this.registrationForm.get('hasSiblings')?.value;
+    const discount = 10000;
+    return hasSiblings ? selectedEvent.price - discount : selectedEvent.price;
   }
 
   onSubmit() {
@@ -68,15 +81,19 @@ export class EventRegistrationComponent implements OnInit {
       }
       
       const data = {
-        ...formValue,
-        dateBorn: dateBorn.toISOString()
+        eventId: formValue.eventId,
+        name: formValue.name,
+        email: formValue.email,
+        phone: formValue.phone,
+        dateBorn: dateBorn.toISOString(),
+        hasSiblings: formValue.hasSiblings || false
       };
 
       this.usersEventService.createRegistration(data).subscribe({
         next: (response: any) => {
           this.loading = false;
           this.successMessage = '¡Inscripción exitosa! Te esperamos en el evento.';
-          this.registrationForm.reset({ payStatus: 'DEBE', hasSiblings: false, paymentAmount: 0 });
+          this.registrationForm.reset({ hasSiblings: false });
           
           setTimeout(() => {
             this.successMessage = '';
@@ -94,16 +111,9 @@ export class EventRegistrationComponent implements OnInit {
   }
 
   resetForm() {
-    this.registrationForm.reset({ payStatus: 'DEBE', hasSiblings: false });
+    this.registrationForm.reset({ hasSiblings: false });
     this.successMessage = '';
     this.errorMessage = '';
-  }
-
-  getCalculatedPrice(): number {
-    const hasSiblings = this.registrationForm.get('hasSiblings')?.value;
-    const basePrice = 60000;
-    const discount = 10000;
-    return hasSiblings ? basePrice - discount : basePrice;
   }
 
   private markFormGroupTouched(formGroup: FormGroup) {

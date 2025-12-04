@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-base-200 p-4">
   <div class="max-w-7xl mx-auto">
-    
+
     <div class="mb-4">
       <h1 class="text-2xl font-bold mb-1">Registros de Eventos</h1>
       <p class="text-sm text-base-content/70">Administra inscripciones y pagos</p>
@@ -8,38 +8,32 @@
 
     <div class="grid grid-cols-3 gap-3 mb-4">
       <div class="card bg-base-100 shadow-sm p-3">
-        <div class="text-xs text-base-content/60">Total</div>
+        <div class="text-xs text-base-content/60">Total Inscritos</div>
         <div class="text-xl font-bold text-primary">{{ filteredRegistrations.length }}</div>
       </div>
-      
+
       <div class="card bg-base-100 shadow-sm p-3">
-        <div class="text-xs text-base-content/60">Pagados</div>
+        <div class="text-xs text-base-content/60">Pagos Completos</div>
         <div class="text-xl font-bold text-success">{{ getTotalPaid() }}</div>
       </div>
-      
+
       <div class="card bg-base-100 shadow-sm p-3">
-        <div class="text-xs text-base-content/60">Deuda</div>
-        <div class="text-xl font-bold text-error">${{ getTotalDebt().toFixed(2) }}</div>
+        <div class="text-xs text-base-content/60">Total Recaudado</div>
+        <div class="text-xl font-bold text-info">{{ getTotalCollected() | currency:'COP':'symbol':'1.0-0' }}</div>
       </div>
     </div>
 
     <div class="card bg-base-100 shadow-sm mb-4 p-4">
-      <div class="grid grid-cols-2 gap-3">
-        <input 
-          type="text" 
-          placeholder="Buscar..." 
-          class="input input-bordered input-sm"
-          [(ngModel)]="searchTerm"
-          (input)="onSearchChange()"
-        >
-        <select 
-          class="select select-bordered select-sm"
-          [(ngModel)]="filterPayStatus"
-          (change)="onFilterChange()"
-        >
+      <div class="grid grid-cols-3 gap-3">
+        <input type="text" placeholder="Buscar..." class="input input-bordered input-sm" [(ngModel)]="searchTerm"
+          (input)="onSearchChange()">
+        <select class="select select-bordered select-sm" [(ngModel)]="filterPayStatus" (change)="onFilterChange()">
           <option value="ALL">Todos</option>
           <option value="PAGO">Pagado</option>
           <option value="DEBE">Pendiente</option>
+        </select>
+        <select class="select select-bordered select-sm" [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange()">
+          <option *ngFor="let size of pageSizeOptions" [ngValue]="size">{{ size }} por página</option>
         </select>
       </div>
     </div>
@@ -68,49 +62,42 @@
               <th>Nombre</th>
               <th>Email</th>
               <th>Teléfono</th>
-              <th>F. Nac.</th>
+              <th>Evento</th>
               <th>Hermanos</th>
-              <th>Pago</th>
-              <th>Monto</th>
+              <th>Abonado</th>
+              <th>Pendiente</th>
               <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let registration of filteredRegistrations">
+            <tr *ngFor="let registration of paginatedRegistrations">
               <td>{{ registration.name }}</td>
               <td>{{ registration.email }}</td>
               <td>{{ registration.phone || 'N/A' }}</td>
-              <td>{{ registration.dateBorn | date:'dd/MM/yy' }}</td>
+              <td>{{ registration.event?.title || 'N/A' }}</td>
               <td>
-                <span class="badge badge-sm" [class.badge-info]="registration.hasSiblings" [class.badge-ghost]="!registration.hasSiblings">
-                  {{ registration.hasSiblings ? 'Sí' : 'No' }}
+                <span class="badge badge-sm" [class.badge-info]="registration.hasSiblings"
+                  [class.badge-ghost]="!registration.hasSiblings">
+                  {{ registration.hasSiblings ? 'Sí (-$10,000)' : 'No' }}
                 </span>
               </td>
-              <td>
-                <span class="badge badge-sm" [class.badge-primary]="registration.wayPay === 'EFECTIVO'" [class.badge-secondary]="registration.wayPay === 'TRANSFERENCIA'">
-                  {{ registration.wayPay }}
-                </span>
+              <td class="font-bold text-success">{{ registration.paymentAmount | currency:'COP':'symbol':'1.0-0' }}</td>
+              <td class="font-bold text-error">{{ getAmountRemaining(registration) | currency:'COP':'symbol':'1.0-0' }}
               </td>
-                <td class="font-bold">${{ registration.paymentAmount.toFixed(2) }}</td>
               <td>
-                <span class="badge badge-sm" [class.badge-success]="registration.payStatus === 'PAGO'" [class.badge-error]="registration.payStatus === 'DEBE'">
-                  {{ registration.payStatus }}
+                <span class="badge badge-sm" [class.badge-success]="registration.payStatus === 'PAGO'"
+                  [class.badge-error]="registration.payStatus === 'DEBE'">
+                  {{ registration.payStatus === 'PAGO' ? 'Pagado' : 'Debe' }}
                 </span>
               </td>
               <td>
                 <div class="flex gap-1">
-                  <button 
-                    *ngIf="registration.payStatus === 'DEBE'"
-                    class="btn btn-xs btn-primary"
-                    (click)="openPaymentModal(registration)"
-                  >
+                  <button *ngIf="registration.payStatus === 'DEBE'" class="btn btn-xs btn-primary"
+                    (click)="openPaymentModal(registration)">
                     Abonar
                   </button>
-                  <button 
-                    class="btn btn-xs btn-error"
-                    (click)="deleteRegistration(registration.id, registration.name)"
-                  >
+                  <button class="btn btn-xs btn-error" (click)="deleteRegistration(registration.id, registration.name)">
                     Eliminar
                   </button>
                 </div>
@@ -119,6 +106,34 @@
           </tbody>
         </table>
       </div>
+      <div class="flex items-center justify-between p-4 border-t" *ngIf="filteredRegistrations.length > 0">
+        <div class="text-sm text-base-content/60">
+          Mostrando {{ (currentPage - 1) * pageSize + 1 }} - {{ currentPage * pageSize > filteredRegistrations.length ?
+          filteredRegistrations.length : currentPage * pageSize }} de {{ filteredRegistrations.length }}
+        </div>
+
+        <div class="join">
+          <button class="join-item btn btn-sm" [disabled]="currentPage === 1" (click)="goToPage(1)">
+            «
+          </button>
+          <button class="join-item btn btn-sm" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+            ‹
+          </button>
+
+          <button *ngFor="let page of getPageNumbers()" class="join-item btn btn-sm"
+            [class.btn-active]="page === currentPage" (click)="goToPage(page)">
+            {{ page }}
+          </button>
+
+          <button class="join-item btn btn-sm" [disabled]="currentPage === totalPages"
+            (click)="goToPage(currentPage + 1)">
+            ›
+          </button>
+          <button class="join-item btn btn-sm" [disabled]="currentPage === totalPages" (click)="goToPage(totalPages)">
+            »
+          </button>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -126,47 +141,65 @@
 
 <div *ngIf="showPaymentModal" class="modal modal-open">
   <div class="modal-box">
-    <h3 class="font-bold text-lg mb-3">Registrar Pago</h3>
-    
+    <h3 class="font-bold text-lg mb-3">Registrar Abono</h3>
+
     <div *ngIf="selectedRegistration" class="space-y-3">
       <div>
         <p class="text-sm text-base-content/60">Nombre</p>
         <p class="font-bold">{{ selectedRegistration.name }}</p>
       </div>
-      
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <p class="text-sm text-base-content/60">Total a Pagar</p>
+          <p class="text-lg font-bold">{{ calculateFinalPrice(selectedRegistration) | currency:'COP':'symbol':'1.0-0' }}
+          </p>
+        </div>
+        <div>
+          <p class="text-sm text-base-content/60">Ya Abonado</p>
+          <p class="text-lg font-bold text-success">{{ selectedRegistration.paymentAmount |
+            currency:'COP':'symbol':'1.0-0' }}</p>
+        </div>
+      </div>
+
       <div>
-        <p class="text-sm text-base-content/60">Deuda Actual</p>
-        <p class="text-2xl font-bold text-error">${{ selectedRegistration.paymentAmount.toFixed(2) }}</p>
+        <p class="text-sm text-base-content/60">Saldo Pendiente</p>
+        <p class="text-2xl font-bold text-error">{{ getAmountRemaining(selectedRegistration) |
+          currency:'COP':'symbol':'1.0-0' }}</p>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Forma de Pago</span>
+        </label>
+        <select class="select select-bordered" [(ngModel)]="wayPay">
+          <option value="EFECTIVO">Efectivo</option>
+          <option value="TRANSFERENCIA">Transferencia</option>
+        </select>
       </div>
 
       <div class="form-control">
         <label class="label">
           <span class="label-text">Monto a Abonar</span>
         </label>
-        <input 
-          type="number" 
-          placeholder="0.00" 
-          class="input input-bordered"
-          [(ngModel)]="paymentAmount"
-          step="0.01"
-          min="0"
-          [max]="selectedRegistration.paymentAmount"
-        >
+        <input type="number" placeholder="0" class="input input-bordered" [(ngModel)]="paymentAmount" step="1000"
+          min="0">
       </div>
 
       <div *ngIf="paymentAmount > 0" class="alert alert-info">
-        <span>Nuevo saldo: ${{ (selectedRegistration.paymentAmount - paymentAmount).toFixed(2) }}</span>
+        <span>
+          Nuevo saldo pendiente:
+          {{ (getAmountRemaining(selectedRegistration) - paymentAmount) | currency:'COP':'symbol':'1.0-0' }}
+          <span *ngIf="paymentAmount >= getAmountRemaining(selectedRegistration)" class="badge badge-success ml-2">¡Pago
+            completo!</span>
+        </span>
       </div>
     </div>
 
     <div class="modal-action">
       <button class="btn btn-sm" (click)="closePaymentModal()">Cancelar</button>
-      <button 
-        class="btn btn-sm btn-primary" 
-        (click)="processPayment()"
-        [disabled]="paymentAmount <= 0"
-      >
-        Confirmar
+      <button class="btn btn-sm btn-primary" (click)="processPayment()" [disabled]="paymentAmount <= 0">
+        Confirmar Abono
       </button>
     </div>
   </div>

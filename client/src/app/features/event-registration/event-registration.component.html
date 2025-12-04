@@ -22,7 +22,7 @@
             >
               <option value="" disabled>Selecciona un evento</option>
               <option *ngFor="let event of events" [value]="event.id">
-                {{ event.title }} - {{ event.eventDate | date:'dd/MM/yyyy' }}
+                {{ event.title }} - {{ event.eventDate | date:'dd/MM/yyyy' }} - {{ event.price | currency:'COP':'symbol':'1.0-0' }}
               </option>
             </select>
             <label class="label" *ngIf="f['eventId'].touched && f['eventId'].invalid">
@@ -90,63 +90,26 @@
           </div>
 
           <div class="form-control mb-4">
-            <label class="label">
-              <span class="label-text font-medium">Forma de Pago <span class="text-error">*</span></span>
-            </label>
-            <select 
-              formControlName="wayPay" 
-              class="select select-bordered w-full"
-              [class.select-error]="f['wayPay'].touched && f['wayPay'].invalid"
-            >
-              <option value="" disabled>Selecciona una opción</option>
-              <option value="EFECTIVO">Efectivo</option>
-              <option value="TRANSFERENCIA">Transferencia Bancaria</option>
-            </select>
-            <label class="label" *ngIf="f['wayPay'].touched && f['wayPay'].invalid">
-              <span class="label-text-alt text-error">Debes seleccionar una forma de pago</span>
-            </label>
-          </div>
-
-          <div class="form-control mb-4">
             <label class="label cursor-pointer justify-start gap-3">
               <input 
                 type="checkbox" 
                 formControlName="hasSiblings" 
                 class="checkbox checkbox-primary"
               >
-              <span class="label-text">¿Va a inscribir a su hermano/a también?</span>
+              <span class="label-text">¿Va a inscribir a su hermano/a también? (Descuento de $10,000)</span>
             </label>
           </div>
 
-          <div class="form-control mb-4">
-            <label class="label">
-              <span class="label-text font-medium">Monto a Pagar <span class="text-error">*</span></span>
-            </label>
-            <input 
-              type="number" 
-              placeholder="0"
-              formControlName="paymentAmount" 
-              class="input input-bordered w-full"
-              step="1000"
-              min="0"
-              [class.input-error]="f['paymentAmount']?.touched && f['paymentAmount']?.invalid"
-            >
-            <label class="label" *ngIf="f['paymentAmount']?.touched && f['paymentAmount']?.invalid">
-              <span class="label-text-alt text-error">El monto es requerido</span>
-            </label>
-          </div>
-
-          <div class="form-control mb-4">
-            <label class="label">
-              <span class="label-text font-medium">Estado de Pago</span>
-            </label>
-            <select 
-              formControlName="payStatus" 
-              class="select select-bordered w-full"
-            >
-              <option value="DEBE">Debe</option>
-              <option value="PAGO">Pagado</option>
-            </select>
+          <!-- Precio calculado -->
+          <div class="alert alert-info mb-4" *ngIf="getSelectedEvent()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div>
+              <span class="font-medium">Precio a pagar: </span>
+              <span class="font-bold">{{ getCalculatedPrice() | currency:'COP':'symbol':'1.0-0' }}</span>
+              <span *ngIf="registrationForm.get('hasSiblings')?.value" class="text-sm ml-2">(Descuento hermanos aplicado)</span>
+            </div>
           </div>
 
           <div class="divider"></div>

@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UsersEventService } from '../../core/services/users-event.services';
-import { UsersEvent } from '../../shared/models/userEvent.model';
+import { UsersEvent, PaymentInfo, AddPaymentDto } from '../../shared/models/userEvent.model';
 
 @Component({
   selector: 'app-event-registration-list',
@@ -15,14 +15,23 @@ export class EventRegistrationListComponent implements OnInit {
 
   registrations: UsersEvent[] = [];
   filteredRegistrations: UsersEvent[] = [];
+  paginatedRegistrations: UsersEvent[] = [];
   loading = false;
   successMessage = '';
   errorMessage = '';
+
+  //paginacion 
+  currentPage = 1;
+  pageSize = 10;
+  totalPages = 1;
+  pageSizeOptions = [5, 10, 25, 50];
   
   // Modal state
   showPaymentModal = false;
   selectedRegistration: UsersEvent | null = null;
+  selectedPaymentInfo: PaymentInfo | null = null;
   paymentAmount = 0;
+  wayPay: 'EFECTIVO' | 'TRANSFERENCIA' = 'EFECTIVO';
 
   // Filtros
   searchTerm = '';
@@ -66,6 +75,47 @@ export class EventRegistrationListComponent implements OnInit {
     }
 
     this.filteredRegistrations = filtered;
+    this.currentPage = 1;
+    this.updatePagination();
+  }
+
+  updatePagination() {
+    this.totalPages = Math.ceil(this.filteredRegistrations.length / this.pageSize);
+    if (this.totalPages === 0) this.totalPages = 1;
+
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedRegistrations = this.filteredRegistrations.slice(startIndex, endIndex);
+  }
+
+  goToPage(page: number) {
+    if(page >= 1 && page <= this.totalPages){
+      this.currentPage = page;
+      this.updatePagination();
+    }
+  }
+
+  onPageSizeChange() {
+    this.currentPage = 1;
+    this.updatePagination();
+  }
+
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxVisiblePages = 5;
+
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
+
+    if(endPage - startPage + 1 < maxVisiblePages){
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages; 
   }
 
   onSearchChange() {
@@ -79,12 +129,24 @@ export class EventRegistrationListComponent implements OnInit {
   openPaymentModal(registration: UsersEvent) {
     this.selectedRegistration = registration;
     this.paymentAmount = 0;
+    this.wayPay = 'EFECTIVO';
     this.showPaymentModal = true;
+    
+    // Cargar información detallada del pago
+    this.usersEventService.getPaymentInfo(registration.id).subscribe({
+      next: (info: PaymentInfo) => {
+        this.selectedPaymentInfo = info;
+      },
+      error: (error: any) => {
+        console.error('Error loading payment info:', error);
+      }
+    });
   }
 
   closePaymentModal() {
     this.showPaymentModal = false;
     this.selectedRegistration = null;
+    this.selectedPaymentInfo = null;
     this.paymentAmount = 0;
   }
 
@@ -94,19 +156,15 @@ export class EventRegistrationListComponent implements OnInit {
       return;
     }
 
-    const currentAmount = this.selectedRegistration.paymentAmount ?? 0;
-    const newAmount = currentAmount - this.paymentAmount;
-    const newStatus = newAmount <= 0 ? 'PAGO' : 'DEBE';
+    const payment: AddPaymentDto = {
+      amount: this.paymentAmount,
+      wayPay: this.wayPay
+    };
 
-    this.usersEventService.updateRegistration(
-      this.selectedRegistration.id,
-      {
-        paymentAmount: Math.max(0, newAmount),
-        payStatus: newStatus
-      }
-    ).subscribe({
+    this.usersEventService.addPayment(this.selectedRegistration.id, payment).subscribe({
       next: (updated: UsersEvent) => {
-        this.successMessage = `Pago registrado exitosamente. ${newStatus === 'PAGO' ? '¡Completado!' : `Pendiente: $${newAmount.toFixed(2)}`}`;
+        const isPaid = updated.payStatus === 'PAGO';
+        this.successMessage = `Abono de $${this.paymentAmount.toLocaleString()} registrado. ${isPaid ? '¡Pago completado!' : 'Aún hay saldo pendiente.'}`;
         this.loadRegistrations();
         this.closePaymentModal();
         
@@ -115,7 +173,7 @@ export class EventRegistrationListComponent implements OnInit {
         }, 5000);
       },
       error: (error: any) => {
-        this.errorMessage = 'Error al procesar el pago';
+        this.errorMessage = 'Error al procesar el abono';
         console.error('Error:', error);
       }
     });
@@ -140,9 +198,21 @@ export class EventRegistrationListComponent implements OnInit {
     }
   }
 
-  getTotalDebt(): number {
+  // Calcular precio final del evento (con descuento si aplica)
+  calculateFinalPrice(registration: UsersEvent): number {
+    const eventPrice = registration.event?.price ?? 0;
+    const discount = 10000;
+    return registration.hasSiblings ? eventPrice - discount : eventPrice;
+  }
+
+  // Calcular monto pendiente
+  getAmountRemaining(registration: UsersEvent): number {
+    const finalPrice = this.calculateFinalPrice(registration);
+    return Math.max(0, finalPrice - registration.paymentAmount);
+  }
+
+  getTotalCollected(): number {
     return this.filteredRegistrations
-      .filter(reg => reg.payStatus === 'DEBE')
       .reduce((sum, reg) => sum + (reg.paymentAmount ?? 0), 0);
   }
 
