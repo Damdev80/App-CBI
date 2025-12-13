@@ -24,6 +24,11 @@ export const routes: Routes = [
                 component: RegisterComponent
             },
             {
+                path: 'dashboard',
+                loadComponent: () => import('./layout/private-layout/private-layout.component')
+                .then(m => m.PrivateLayoutComponent)
+            },
+            {
               path: 'event-registration',
               loadComponent: () => import('./features/event-registration/event-registration.component')
                 .then(m => m.EventRegistrationComponent)
