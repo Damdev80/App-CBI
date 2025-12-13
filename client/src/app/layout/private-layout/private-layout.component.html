@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <div class="min-h-screen">
+        <h1>Welcome to the Dashboard</h1>
+        <p>This is the private layout component.</p>
+         @if (notification$ | async; as notification) {
+            <div class="toast toast-top toast-end z-50">
+              <div class="alert" [ngClass]="{
+                'alert-success': notification.type === 'success',
+                'alert-error': notification.type === 'error'
+              }">
+                <span>{{ notification.message }}</span>
+              </div>
+            </div>
+         }
+    </div>
+
+   
+</body>
+</html>
