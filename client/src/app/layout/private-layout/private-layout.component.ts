@@ -1,11 +1,11 @@
 import { Component, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { Router } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 import { NotificationService, Notification } from "@app/core/services/notification.service";
 @Component({
     selector: 'app-private-layout',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, RouterModule],
     templateUrl: './private-layout.component.html',
 })
 
