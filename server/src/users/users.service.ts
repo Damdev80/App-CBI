@@ -32,24 +32,48 @@ export class UsersService {
       throw new BadRequestException('La contraseña es OBLIGATORIA');
     }
 
-    if(data.email){
-      const existingUser = await this.prisma.user.findUnique({
+    // Validar que el número sea obligatorio
+    if (!data.number) {
+      throw new BadRequestException('El número de teléfono es obligatorio.');
+    }
+
+    // Buscar si el número existe en la base de datos
+    const existingNumber = await this.prisma.user.findUnique({
+      where: { number: data.number },
+    });
+
+    // Si NO existe el número, rechazar el registro
+    if (!existingNumber) {
+      throw new BadRequestException('Este número no está autorizado para registrarse. Contacta al administrador.');
+    }
+
+    // Si ya tiene email y password, ya está registrado
+    if (existingNumber.email && existingNumber.password) {
+      throw new BadRequestException('Este número ya está registrado. Por favor, inicia sesión.');
+    }
+
+    // Validar que el email sea único (si lo envían)
+    if (data.email) {
+      const existingEmail = await this.prisma.user.findUnique({
         where: { email: data.email },
       });
 
-      if (existingUser) {
+      if (existingEmail) {
         throw new BadRequestException('El email ya está en uso');
       }
     }
+
+    // Hashear la contraseña
     const hashedPassword = await encryp(data.password);
-    return await this.prisma.user.create({
+
+    // ACTUALIZAR el usuario existente (NO crear uno nuevo)
+    return await this.prisma.user.update({
+      where: { number: data.number },
       data: {
-        ...data,
+        email: data.email,
         password: hashedPassword,
       },
     });
-
-
   }
 
   async validationUser(
