@@ -7,4 +7,20 @@ export class DashboardService {
     async numberUserExists(): Promise<number> {
     return await this.prisma.user.count();
   }
+
+    async numberPersonBautized(): Promise<number> {
+        return await this.prisma.user.count({
+          where: {
+            baptized: true,
+        }
+      })
+  }
+
+    async numberwomenRegistered(): Promise<number> {
+      return await this.prisma.user.count({
+        where: {
+          gender: 'FEMENINO',
+        }
+      })
+    }
 }

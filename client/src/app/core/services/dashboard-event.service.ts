@@ -15,4 +15,13 @@ export class DashboardEventService {
     getNumberUser(): Observable<number> {
         return this.http.get<number>(`${this.apiUrl}/dashboard/numberUser`);
     }
+
+    getNumberBautized(): Observable<number> {
+        return this.http.get<number>(`${this.apiUrl}/dashboard/bautized`);
+    }
+
+    getNumberWomenRegistered(): Observable<number> {
+        return this.http.get<number>(`${this.apiUrl}/dashboard/womenRegistered`);
+    }
+
 }

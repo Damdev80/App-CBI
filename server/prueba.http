@@ -235,4 +235,4 @@ Content-Type: application/json
 
 
 ###
-GET http://localhost:3000/dashboard/numberUser
+GET http://localhost:3000/dashboard/bautized

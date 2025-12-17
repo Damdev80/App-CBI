@@ -9,4 +9,16 @@ export class DashboardController {
     async numberUserExists(): Promise<number> {
         return await this.dashboardService.numberUserExists();
     }
+
+    @Get('/bautized')
+    async numberPersonBautized(): Promise<number> {
+        return await this.dashboardService.numberPersonBautized();
+    }
+
+
+    @Get('/womenRegistered')
+    async numberwomenRegistered(): Promise<number> {
+        return await this.dashboardService.numberwomenRegistered();
+    }
+    
 }
