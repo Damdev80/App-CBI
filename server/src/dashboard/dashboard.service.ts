@@ -23,4 +23,12 @@ export class DashboardService {
         }
       })
     }
+
+    async countUnpaidParticipants(): Promise<number> {
+      return await this.prisma.usersEvent.count({
+        where: {
+          payStatus: 'DEBE',
+        }
+      })
+    }
 }

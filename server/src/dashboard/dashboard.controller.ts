@@ -21,4 +21,9 @@ export class DashboardController {
         return await this.dashboardService.numberwomenRegistered();
     }
     
+    @Get('/countUnpaid')
+    async countUnpaidParticipants(): Promise<number> {
+        return await this.dashboardService.countUnpaidParticipants();
+    }
+    
 }
