@@ -19,6 +19,70 @@ GET http://localhost:3000/user/users
 ### Get User by ID (replace with actual UUID)
 GET http://localhost:3000/user/users/46121c72-ea05-43b9-91a5-b2651032516a
 
+### ========================================
+### USERS EVENT - Inscripción a Eventos
+### ========================================
+
+### 1️⃣ Crear un evento primero
+POST http://localhost:3000/event/create
+Content-Type: application/json
+
+{
+  "title": "Retiro Espiritual 2025",
+  "description": "Retiro de fin de semana en las montañas",
+  "eventDate": "2025-12-15T09:00:00.000Z"
+}
+
+### 2️⃣ Inscribir VISITANTE (sin userId) - Solo requiere estos datos
+POST http://localhost:3000/users-event/create
+Content-Type: application/json
+
+{
+  "eventId": "c4620729-c9cb-4122-bae9-f65fb2801e96",
+  "name": "Pedro Ramírez",
+  "email": "pedro.ramirez@gmail.com",
+  "dateBorn": "1992-08-10T00:00:00.000Z",
+  "wayPay": "EFECTIVO",
+  "paymentAmount": 50000
+}
+
+### Inscribir USUARIO REGISTRADO (con userId)
+POST http://localhost:3000/users-event/create
+Content-Type: application/json
+
+{
+  "userId": "PEGA_ID_DEL_USUARIO",
+  "eventId": "PEGA_ID_DEL_EVENTO",
+  "name": "María Pérez",
+  "email": "maria@example.com",
+  "dateBorn": "1995-08-20T00:00:00.000Z",
+  "wayPay": "TRANSFERENCIA",
+  "paymentAmount": 25000,
+  "payStatus": "PAGO"
+}
+
+### Ver todas las inscripciones
+GET http://localhost:3000/users-event
+
+### Ver inscripciones de un evento específico
+GET http://localhost:3000/users-event/event/PEGA_ID_DEL_EVENTO
+
+### Ver una inscripción específica
+GET http://localhost:3000/users-event/PEGA_ID_DE_LA_INSCRIPCION
+
+### Actualizar estado de pago
+PATCH http://localhost:3000/users-event/PEGA_ID_DE_LA_INSCRIPCION
+Content-Type: application/json
+
+{
+  "payStatus": "PAGO"
+}
+
+### Eliminar inscripción
+DELETE http://localhost:3000/users-event/PEGA_ID_DE_LA_INSCRIPCION
+
+### ========================================
+
 ### Deactivate User (replace with actual UUID)
 PATCH http://localhost:3000/user/users/550e8400-e29b-41d4-a716-446655440000/deactivate
 
@@ -42,13 +106,33 @@ Content-Type: application/json
   "password": "simple123"
 }
 
-### Login Test
+### Create Daniel User for Testing
+POST http://localhost:3000/user/users
+Content-Type: application/json
+
+{
+  "email": "daniel@example.com",
+  "name": "Daniel Andres Buelvas Perez",
+  "number": "+573001234567",
+  "password": "123456789",
+  "gender": "MASCULINO",
+  "age": 25,
+  "address": "Cartagena, Colombia",
+  "happybirth": "1999-01-15T00:00:00.000Z",
+  "role": "user",
+  "hobbies": "Programación, Videojuegos",
+  "dreams": "Crear una startup tecnológica",
+  "job": "Desarrollador Full Stack",
+  "vulnerable_area": "Ninguna"
+}
+
+### Login Test - Daniel
 POST http://localhost:3000/auth/log-in
 Content-Type: application/json
 
 {
-  "email": "usuario@example.com",
-  "password": "password123"
+  "email": "daniel@example.com",
+  "password": "123456789"
 }
 
 ### register Test
@@ -71,3 +155,84 @@ Content-Type: application/json
   "job": "Community Manager",
   "vulnerable_area": "Ninguna"
 }
+
+### Create group
+POST http://localhost:3000/group/create
+Content-Type: application/json
+
+{
+  "name":"Grupo Alpha",
+  "description":"Grupo de prueba"
+}
+###
+POST http://localhost:3000/member/create
+Content-Type: application/json
+
+{
+  "userId":"540cebde-d1e1-47d6-8e06-d4d59d48d3b0",
+  "groupId":"2460ade5-78b6-4b76-8f53-c34559d1af5c",
+  "levelDicipules":"I"
+}
+
+### Create Event
+POST http://localhost:3000/event/create
+Content-Type: application/json
+
+{
+  "title": "Conferencia Tecnología 2025",
+  "description": "Evento sobre novedades en infraestructura y desarrollo.",
+  "eventDate": "2025-12-05T18:30:00.000Z"
+}
+### Create Event-User Association
+POST http://localhost:3000/event-user/create
+Content-Type: application/json
+
+
+
+### 1. Crear un evento primero
+POST http://localhost:3000/event/create
+Content-Type: application/json
+
+{
+  "title": "Conferencia Tecnología 2025",
+  "description": "Gran evento de tecnología",
+  "eventDate": "2025-12-15T18:00:00.000Z"
+}
+
+### 2. Inscribir VISITANTE (sin userId)
+POST http://localhost:3000/event-user/create
+Content-Type: application/json
+
+{
+  "eventId": "8d47aec7-eba1-4095-8ed2-ffbbcad5d8ac",
+  "eventName": "Conferencia Tecnología 2025",
+  "name": "Juan Visitante",
+  "email": "visitante@example.com",
+  "phone": "+34123456789",
+  "dateBorn": "1990-05-15T00:00:00.000Z",
+  "wayPay": "EFECTIVO",
+  "paymentAmount": 25000,
+  "payStatus": "DEBE"
+}
+
+### 3. Ver todos los registros
+GET http://localhost:3000/event-user
+
+### 4. Ver registros de un evento específico
+GET http://localhost:3000/event-user/event/PEGA_EL_ID_DEL_EVENTO_AQUI
+
+
+
+###
+POST http://localhost:3000/event/create
+Content-Type: application/json
+
+{
+  "title": "Congreso de Jovenes 2026",
+  "description": "Congreso anual para jóvenes con temantica de Influencers y redes sociales.",
+  "eventDate": "2026-01-23T18:00:00.000Z"
+}
+
+
+###
+GET http://localhost:3000/dashboard/numberUser

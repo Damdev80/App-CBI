@@ -3,30 +3,12 @@
   <div class="navbar-start">
     <!-- Logo -->
     <button (click)="navigateTo('/')" class="flex items-center gap-2 px-2">
-      <img src="img/cbiLogo.svg" alt="CBI" class="w-8 h-8"/>
-      <span class="font-semibold text-lg hidden sm:inline">CBI</span>
+      <img src="/img/cbiLogo.svg" alt="CBI" class="w-15 h-15"/>
     </button>
   </div>
 
-  <!-- Menú hamburguesa (solo móvil) -->
-  <div class="navbar-end lg:hidden">
-    <div class="dropdown dropdown-end">
-      <label tabindex="0" class="btn btn-ghost btn-circle">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-      </label>
-      <ul tabindex="0" class="menu dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow-lg border border-base-300">
-        <li><a (click)="navigateTo('/')">Inicio</a></li>
-        <li><a (click)="navigateTo('/login')">Iniciar Sesión</a></li>
-        <li><a (click)="navigateTo('/register')">Registrarse</a></li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- Menú desktop -->
-  <div class="navbar-end hidden lg:flex gap-2">
-    <button (click)="navigateTo('/')" class="btn btn-ghost btn-sm">Inicio</button>
+  <!-- Menú (mismo para móvil y desktop) -->
+  <div class="navbar-end flex gap-2">
     <button (click)="navigateTo('/login')" class="btn btn-ghost btn-sm">Iniciar Sesión</button>
     <button (click)="navigateTo('/register')" class="btn btn-primary btn-sm">Registrarse</button>
   </div>
@@ -41,7 +23,7 @@
 <footer class="footer footer-center bg-base-200 text-base-content py-8 border-t border-base-300">
   <div class="max-w-md">
     <div class="flex items-center justify-center gap-2 mb-4">
-      <img src="img/cbiLogo.svg" alt="CBI" class="w-6 h-6 opacity-80"/>
+      <img src="/img/cbiLogo.svg" alt="CBI" class="w-6 h-6 opacity-80"/>
       <p class="font-semibold text-sm">Iglesia CBI</p>
     </div>
     <p class="text-xs opacity-70">&copy; {{ currentYear }} Todos los derechos reservados</p>

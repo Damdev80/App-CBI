@@ -1,0 +1,12 @@
+<div class="stats shadow hover:shadow-lg transition-shadow">
+  <div class="stat" [ngClass]="[bgColor(), textColor()]">
+    <div class="stat-figure text-4xl opacity-80">
+      {{ icon() }}
+    </div>
+    <div class="stat-title" [ngClass]="textColor() + '/80'">{{ title() }}</div>
+    <div class="stat-value">{{ value() }}</div>
+    <div class="stat-desc" *ngIf="description()" [ngClass]="textColor() + '/70'">
+      {{ description() }}
+    </div>
+  </div>
+</div>
