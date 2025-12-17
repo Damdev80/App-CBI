@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StatCardComponent } from '@app/shared/components/dashboard-cards/stat-card.component';
 import { DashboardEventService } from '@app/core/services/dashboard-event.service';
+import { count } from 'console';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,6 +16,7 @@ export class DashboardComponent {
   totalUsers = signal<number>(0);
   totalBautized = signal<number>(0);
   totalWomenRegistered = signal<number>(0);
+  totalcountUnpaid = signal<number>(0);
   isLoading = signal<boolean>(true);
   error = signal<string | null>(null);
 
@@ -22,6 +24,7 @@ export class DashboardComponent {
     this.LoadDashboardDataUser();
     this.LoadDashboardBautized();
     this.LoadDashboardWomenRegistered();
+    this.LoadDahboardcountUnpaid();
   }
 
   LoadDashboardDataUser(){
@@ -78,4 +81,23 @@ export class DashboardComponent {
       }
     })
   }
+  LoadDahboardcountUnpaid(){
+    this.isLoading.set(false)
+    this.error.set(null)
+
+    this.dashboardEventService.getcountUnpaid().subscribe({
+      next:(count) => {
+        this.totalcountUnpaid.set(count)
+        this.isLoading.set(false)
+      },
+
+      error:(err) => {
+        this.error.set('Error loading dashboard data');
+        this.error.set(err.message || 'Unknown error');
+        this.isLoading.set(false);
+      }
+    })
+
+  }
+
 }

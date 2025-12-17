@@ -24,4 +24,8 @@ export class DashboardEventService {
         return this.http.get<number>(`${this.apiUrl}/dashboard/womenRegistered`);
     }
 
+    getcountUnpaid(): Observable<number> {
+        return this.http.get<number>(`${this.apiUrl}/dashboard/countUnpaid`)
+    }
+
 }

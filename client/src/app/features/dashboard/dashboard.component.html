@@ -23,36 +23,30 @@
   }
 
   @if (!isLoading()) {
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       
       <app-stat-card
-        class="hover:shadow-lg transition-shadow duration-300 rounded-lg"
         [title]="'Total Usuarios'"
         [value]="totalUsers()"
-        [icon]="'👥'"
-        [bgColor]="'bg-gradient-to-br from-blue-500 to-blue-600'"
-        [textColor]="'text-white'"
         [description]="'Usuarios registrados'"
       />
 
       <app-stat-card
-        class="hover:shadow-lg transition-shadow duration-300 rounded-lg"
-        [title]="'Total Usuarios Bautizados'"
+        [title]="'Usuarios Bautizados'"
         [value]="totalBautized()"
-        [icon]="'✝️'"
-        [bgColor]="'bg-gradient-to-br from-green-500 to-green-600'"
-        [textColor]="'text-white'"
-        [description]="'Usuarios bautizados'"
+        [description]="'Total bautizados'"
       />
 
       <app-stat-card
-        class="hover:shadow-lg transition-shadow duration-300 rounded-lg"
         [title]="'Total Mujeres'"
         [value]="totalWomenRegistered()"
-        [icon]="'👩'"
-        [bgColor]="'bg-gradient-to-br from-purple-500 to-purple-600'"
-        [textColor]="'text-white'"
         [description]="'Usuarios mujeres'"
+      />
+
+      <app-stat-card
+        [title]="'Congreso Juvenil'"
+        [value]="totalcountUnpaid()"
+        [description]="'Usuarios no han pagado'"
       />
       
     </div>
