@@ -10,7 +10,7 @@ import { environment } from "src/environments/environment";
 export class DashboardEventService {
     private http = inject(HttpClient);
     private apiUrl = environment.apiUrl;
-
+    
 
     getNumberUser(): Observable<number> {
         return this.http.get<number>(`${this.apiUrl}/dashboard/numberUser`);

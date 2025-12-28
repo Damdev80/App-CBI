@@ -1,0 +1,53 @@
+<div style="display:flex;gap:8px;align-items:center;">
+  <label>
+    Libro
+    <select [(ngModel)]="selectedBook" (change)="onBookChange()">
+      <option *ngFor="let b of books" [value]="b">{{ b }}</option>
+    </select>
+  </label>
+
+  <label>
+    Capítulo
+    <select [(ngModel)]="selectedChapter">
+      <option [ngValue]="undefined">--</option>
+      <option *ngFor="let c of chapters" [value]="c">{{ c }}</option>
+    </select>
+  </label>
+
+  <label>
+    Versión
+    <input [(ngModel)]="version" placeholder="nvi (opcional)" />
+  </label>
+
+  <button (click)="fetchChapter()">Cargar capítulo</button>
+</div>
+
+<div style="margin-top:8px;">
+  <label>
+    Rango (ej. 5-10)
+    <input #rangeInput />
+  </label>
+  <button (click)="fetchRange(rangeInput.value)">Cargar rango</button>
+
+  <label style="margin-left:12px;">
+    Versículo #
+    <input #verseInput type="number" />
+  </label>
+  <button (click)="fetchVerse(+verseInput.value)">Cargar versículo</button>
+</div>
+
+<div *ngIf="error" style="color:red;margin-top:8px">{{ error }}</div>
+
+<div *ngIf="result" style="margin-top:8px">
+  <h3>{{ selectedBook }} {{ selectedChapter }}</h3>
+
+  <div *ngIf="result.verses; else raw">
+    <div *ngFor="let v of result.verses" style="margin-bottom:6px">
+      <strong>{{ v.number }}</strong> — {{ v.verse }}
+    </div>
+  </div>
+
+  <ng-template #raw>
+    <pre>{{ result | json }}</pre>
+  </ng-template>
+</div>
