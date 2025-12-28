@@ -10,6 +10,5 @@ import { CommonModule } from "@angular/common";
 })
 
 export class grafPieComponent {
-    name = input<string>('null')
-    value = input<number>(0)
+    
 }
