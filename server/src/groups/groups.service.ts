@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Groups, Prisma } from '@prisma/client';
-
 export type CreateGroupDto = Prisma.GroupsCreateInput;
 export type UpdateGroupDto = Prisma.GroupsUpdateInput;
 
@@ -30,4 +29,13 @@ export class GroupsService {
             data,
         });
     }
+
+    // Obtiene solo los nombres de los grupos (SELECT name from "Groups")
+    async findAllGroupNames(): Promise<{ name: string }[]> {
+        return await this.prisma.groups.findMany({
+            select: { name: true },
+        });
+    }
+
+    
 }

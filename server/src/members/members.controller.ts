@@ -18,9 +18,16 @@ export class MembersController {
         return await this.membersService.findByIdMember(id);
     }
 
+    @Get('/members/group/:groupId')
+    async getByGroupIdMembers(@Param('groupId') groupId: string): Promise<Members[]> {
+        return await this.membersService.findMenberByGroupId(groupId);
+    }
+
     @Post('/create')
     @UsePipes(new ZodValidationPipe(createMemberSchema))
     async createMember(@Body() body: Prisma.MembersUncheckedCreateInput): Promise<Members> {
         return await this.membersService.createMember(body);
     }
+
+
 }

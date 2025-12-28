@@ -17,6 +17,17 @@ export class MembersService {
         }
     }
 
+    async findMenberByGroupId(groupId: string): Promise<Members[]> {
+        try {
+            return await this.prisma.members.findMany({
+                where: { groupId },
+            });
+        } catch (error) {
+            throw new InternalServerErrorException('Error al obtener los miembros por ID de grupo');
+        }
+        
+    }
+
 
     async findByIdMember(id: string): Promise<Members | null> {
         try {
@@ -37,4 +48,6 @@ export class MembersService {
             throw new InternalServerErrorException('Error al crear el miembro');
         }
     }
+
+    async 
 }

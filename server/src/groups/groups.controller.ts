@@ -23,4 +23,9 @@ export class GroupsController {
     async createGroup(@Body() body: CreateGroupDto): Promise<Groups> {
         return await this.groupsService.createGroup(body);
     }
+
+    @Get('/groups/names')
+    async getAllGroupNames(): Promise<{ name: string }[]> {
+        return await this.groupsService.findAllGroupNames();
+    }
 }
