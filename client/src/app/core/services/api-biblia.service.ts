@@ -1,7 +1,6 @@
 import { Inject, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { profileEnd } from "console";
 
 @Inject({
     providedIn: "root",
