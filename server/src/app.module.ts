@@ -12,9 +12,10 @@ import { GroupsModule } from './groups/groups.module';
 import { EventModule } from './event/event.module';
 import { UsersEventModule } from './users-event/users-event.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { PreRegisterModule } from './pre-register/pre-register.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, UsersModule, MembersModule, GroupsModule, EventModule, UsersEventModule, DashboardModule],
+  imports: [AuthModule, PrismaModule, UsersModule, MembersModule, GroupsModule, EventModule, UsersEventModule, DashboardModule, PreRegisterModule],
   controllers: [AppController, MembersController],
   providers: [AppService, AuthService, MembersService],
 })
