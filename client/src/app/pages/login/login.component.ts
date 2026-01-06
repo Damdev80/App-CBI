@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, signal } from "@angular/core";
 import { Router } from "@angular/router";
-import { CommonModule, isPlatformBrowser } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { LoginEventService } from "@app/core/services/login-event.service";
 import { LoginResponse, HttpErrorResponse } from "@app/shared/models/login.model";
