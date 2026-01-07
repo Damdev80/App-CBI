@@ -1,9 +1,14 @@
 {
   "version": 2,
-  "buildCommand": "cd client && pnpm install && pnpm run build",
-  "outputDirectory": "client/dist/client/browser",
-  "installCommand": "echo 'Skipping install'",
-  "framework": null,
+  "builds": [
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist/client/browser"
+      }
+    }
+  ],
   "routes": [
     {
       "src": "/(.*)",
