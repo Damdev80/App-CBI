@@ -10,6 +10,7 @@ export interface PreRegisterUserDto {
     address: string;
     baptized: boolean;
     group: string;
+    happybirth: Date;
 }
 
 @Injectable()
@@ -31,15 +32,6 @@ export class PreRegisterService {
       throw new BadRequestException('Este número ya está pre-registrado.');
     }
 
-    // Verificar que el grupo exista
-    const group = await this.prisma.groups.findUnique({
-      where: { name: data.group },
-    });
-
-    if (!group) {
-      throw new BadRequestException('El grupo especificado no existe.');
-    }
-
     // Convertir el sexo a Gender enum de Prisma
     const gender: Gender = data.sexo === 'Masculino' ? 'MASCULINO' : 'FEMENINO';
 
@@ -51,17 +43,28 @@ export class PreRegisterService {
         number: data.number,
         address: data.address,
         baptized: data.baptized,
+        happybirth: data.happybirth,
       },
     });
 
-    // Crear la relación en Members (asumiendo nivel I por defecto)
-    await this.prisma.members.create({
-      data: {
-        userId: user.id,
-        groupId: group.id,
-        levelDicipules: 'I', // Nivel por defecto
-      },
-    });
+    // Si especificó un grupo, crear la relación en Members
+    if (data.group && data.group.trim() !== '') {
+      const group = await this.prisma.groups.findUnique({
+        where: { name: data.group },
+      });
+
+      if (!group) {
+        throw new BadRequestException('El grupo especificado no existe.');
+      }
+
+      await this.prisma.members.create({
+        data: {
+          userId: user.id,
+          groupId: group.id,
+          levelDicipules: 'I', // Nivel por defecto
+        },
+      });
+    }
 
     return user;
   }

@@ -235,4 +235,10 @@ Content-Type: application/json
 
 
 ###
-GET http://localhost:3000/dashboard/bautized
+GET http://localhost:3000/dashboard/countUnpaid
+
+### Get Members by Group ID (replace with actual Group UUID)
+GET http://localhost:3000/member/members/group/1a6def74-d335-4c66-892d-ee02cd5cb96c
+
+### Get All Group Names
+GET http://localhost:3000/group/groups/names

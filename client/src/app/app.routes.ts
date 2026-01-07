@@ -5,6 +5,7 @@ import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { NotFoundComponent } from './pages/not-found/404.component';
+import { PreRegisterComponent } from './pages/pre-register/preRegister.component';
 
 export const routes: Routes = [
     // Rutas públicas
@@ -24,7 +25,12 @@ export const routes: Routes = [
             {
                 path: 'register', 
                 component: RegisterComponent
+            },
+            {
+                path: 'pre-register',
+                component: PreRegisterComponent
             }
+
         ]
     },
     // Rutas privadas (Dashboard)

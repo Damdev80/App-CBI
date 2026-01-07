@@ -8,7 +8,8 @@ export const preRegisterSchema = z.object({
     number: z.string().min(10, 'El número debe tener al menos 10 dígitos'),
     address: z.string().min(5, 'La dirección es demasiado corta'),
     baptized: z.boolean(),
-    group: z.string().min(1, 'Debes seleccionar un grupo'),
+    group: z.string().optional().default(''),
+    happybirth: z.date
 });
 
 export type PreRegisterDto = z.infer<typeof preRegisterSchema>;
