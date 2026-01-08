@@ -1,34 +1,46 @@
 import 'tsconfig-paths/register';
+import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from '../src/app.module';
-import express, { Request, Response } from 'express';
 import { INestApplication } from '@nestjs/common';
+import type { Request, Response } from 'express';
 
-const server = express();
-let app: INestApplication;
+let cachedServer: INestApplication | null = null;
 
 async function bootstrap() {
-  if (!app) {
-    app = await NestFactory.create(
+  if (!cachedServer) {
+    const expressAdapter = new ExpressAdapter();
+    
+    cachedServer = await NestFactory.create(
       AppModule,
-      new ExpressAdapter(server),
-      { logger: console }
+      expressAdapter,
+      {
+        logger: ['error', 'warn', 'log'],
+      }
     );
 
-    app.enableCors({
+    cachedServer.enableCors({
       origin: true,
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
       credentials: true,
-      allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
     });
 
-    await app.init();
+    await cachedServer.init();
   }
-  return server;
+  
+  return cachedServer;
 }
 
 export default async (req: Request, res: Response) => {
-  await bootstrap();
-  server(req, res);
+  try {
+    const app = await bootstrap();
+    const expressApp = app.getHttpAdapter().getInstance();
+    return expressApp(req, res);
+  } catch (error) {
+    console.error('Serverless function error:', error);
+    return res.status(500).json({ 
+      error: 'Internal Server Error',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
 };
