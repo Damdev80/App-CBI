@@ -1,52 +1,25 @@
-import 'tsconfig-paths/register';
-import 'reflect-metadata';
-import { NestFactory } from '@nestjs/core';
-import { ExpressAdapter } from '@nestjs/platform-express';
-import { AppModule } from '../src/app.module';
-import { INestApplication } from '@nestjs/common';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-let cachedServer: INestApplication | null = null;
-
-async function bootstrap() {
-  if (!cachedServer) {
-    console.log('Initializing NestJS application...');
-    
-    const adapter = new ExpressAdapter();
-    
-    cachedServer = await NestFactory.create(AppModule, adapter, {
-      logger: ['error', 'warn'],
-      abortOnError: false,
-    });
-
-    cachedServer.enableCors({
-      origin: true,
-      credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-    });
-
-    await cachedServer.init();
-    console.log('NestJS application initialized successfully');
-  }
-  
-  return cachedServer;
-}
-
+// Handler de diagnóstico simple
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
-    const app = await bootstrap();
-    const server = app.getHttpAdapter().getInstance();
+    // Log básico
+    console.log('Request received:', req.method, req.url);
     
-    return server(req, res);
+    // Respuesta de diagnóstico
+    return res.status(200).json({
+      status: 'Server is alive',
+      message: 'Backend básico funcionando - NestJS temporalmente deshabilitado',
+      method: req.method,
+      url: req.url,
+      timestamp: new Date().toISOString(),
+      note: 'NestJS requiere un servidor tradicional, no serverless'
+    });
   } catch (error) {
-    console.error('Handler error:', error);
-    
+    console.error('Error:', error);
     return res.status(500).json({ 
       error: 'Internal Server Error',
-      message: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
-      timestamp: new Date().toISOString()
+      message: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 }
