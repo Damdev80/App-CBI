@@ -4,6 +4,21 @@
     <h1 class="text-3xl font-bold">Dashboard</h1>
     <p class="text-base-content/60 mt-2">Bienvenido al panel de administración</p>
   </div>
+
+  <!-- Botones de navegación -->
+  <div class="flex gap-4 mb-8">
+    <button 
+      class="btn btn-primary" 
+      (click)="navigateToEventsList()">
+      Ver Eventos
+    </button>
+    <button 
+      class="btn btn-secondary" 
+      (click)="navigateToEventRegistration()">
+      Nueva Inscripción
+    </button>
+  </div>
+
     <!-- Contenido del dashboard -->
 
 

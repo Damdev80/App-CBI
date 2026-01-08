@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { StatCardComponent } from '@app/shared/components/dashboard-cards/stat-card.component';
 import { DashboardEventService } from '@app/core/services/dashboard-event.service';
 import { count } from 'console';
@@ -12,6 +13,7 @@ import { count } from 'console';
 })
 export class DashboardComponent {
   private dashboardEventService = inject(DashboardEventService);
+  private router = inject(Router);
 
   totalUsers = signal<number>(0);
   totalBautized = signal<number>(0);
@@ -100,4 +102,13 @@ export class DashboardComponent {
 
   }
 
+  navigateToEventRegistration() {
+    this.router.navigate(['/dashboard/event-registration']);
+  }
+
+  navigateToEventsList() {
+    this.router.navigate(['/dashboard/event-registrations-list']);
+  }
+
 }
+
