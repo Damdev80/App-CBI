@@ -4,8 +4,8 @@ services:
     env: node
     region: oregon
     rootDir: server
-    buildCommand: npm install -g pnpm && pnpm install && pnpm run build && pnpm exec prisma generate
-    startCommand: pnpm run start:prod
+    buildCommand: npm install -g pnpm && cd /opt/render/project/src && pnpm install --filter=server && pnpm --filter=server run build && pnpm --filter=server exec prisma generate
+    startCommand: cd /opt/render/project/src/server && pnpm run start:prod
     envVars:
       - key: DATABASE_URL
         sync: false
