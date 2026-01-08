@@ -21,7 +21,14 @@ export class RegisterEventService {
 
     getAllGroups(): Observable<string[]> {
         return this.http.get<{ name: string }[]>(`${environment.apiUrl}/group/groups/names`).pipe(
-            map(groups => groups.map(g => g.name))
+            map(groups => {
+                // Validar que groups sea un array
+                if (!Array.isArray(groups)) {
+                    console.error('La respuesta no es un array:', groups);
+                    return [];
+                }
+                return groups.map(g => g.name);
+            })
         );
     }
 

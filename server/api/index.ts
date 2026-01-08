@@ -5,29 +5,29 @@ import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from '../src/app.module';
 import { INestApplication } from '@nestjs/common';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import express from 'express';
 
 let cachedServer: INestApplication | null = null;
 
 async function bootstrap() {
   if (!cachedServer) {
-    const expressApp = express();
-    const expressAdapter = new ExpressAdapter(expressApp);
+    console.log('Initializing NestJS application...');
     
-    cachedServer = await NestFactory.create(
-      AppModule,
-      expressAdapter,
-      {
-        logger: ['error', 'warn', 'log'],
-      }
-    );
+    const adapter = new ExpressAdapter();
+    
+    cachedServer = await NestFactory.create(AppModule, adapter, {
+      logger: ['error', 'warn'],
+      abortOnError: false,
+    });
 
     cachedServer.enableCors({
       origin: true,
       credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     });
 
     await cachedServer.init();
+    console.log('NestJS application initialized successfully');
   }
   
   return cachedServer;
@@ -36,16 +36,17 @@ async function bootstrap() {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const app = await bootstrap();
-    const expressApp = app.getHttpAdapter().getInstance();
+    const server = app.getHttpAdapter().getInstance();
     
-    // Convertir VercelRequest/Response a formato Express
-    return expressApp(req as any, res as any);
+    return server(req, res);
   } catch (error) {
-    console.error('Serverless function error:', error);
+    console.error('Handler error:', error);
+    
     return res.status(500).json({ 
       error: 'Internal Server Error',
       message: error instanceof Error ? error.message : 'Unknown error',
-      stack: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.stack : undefined) : undefined
+      stack: error instanceof Error ? error.stack : undefined,
+      timestamp: new Date().toISOString()
     });
   }
 }
