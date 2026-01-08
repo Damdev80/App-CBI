@@ -12,5 +12,10 @@
       "dest": "api/index.ts",
       "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
     }
-  ]
+  ],
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "DIRECT_URL": "@direct_url",
+    "TOKEN_SECRET": "@token_secret"
+  }
 }
