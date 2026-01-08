@@ -51,3 +51,7 @@ server/yarn.lock
 # Ignore test output
 server/test-results/
 client/test-results/
+
+# Ignore api documentation
+api/index.ts
+api/tsconfig.json
