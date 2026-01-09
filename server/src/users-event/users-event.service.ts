@@ -21,15 +21,13 @@ export type AddPaymentDto = {
   wayPay: 'EFECTIVO' | 'TRANSFERENCIA';
 };
 
+export type UpdatePayStatusDto = {
+  payStatus: 'PAGO' | 'DEBE';
+};
+
 @Injectable()
 export class UsersEventService {
   constructor(private prisma: PrismaService) {}
-
-  // Calcula el precio final del evento para un usuario
-  private calculateFinalPrice(eventPrice: number, hasSiblings: boolean): number {
-    const siblingDiscount = 10000;
-    return hasSiblings ? eventPrice - siblingDiscount : eventPrice;
-  }
 
   async create(createDto: CreateUsersEventDto) {
     // Validar que el evento existe
@@ -88,24 +86,36 @@ export class UsersEventService {
       throw new BadRequestException('Payment amount must be greater than 0');
     }
 
-    // Calcular precio final (con descuento si aplica)
-    const finalPrice = this.calculateFinalPrice(
-      registration.event.price,
-      registration.hasSiblings
-    );
-
-    // Nuevo monto total pagado
+    // Nuevo monto total pagado (sin cambiar el estado automáticamente)
     const newPaymentAmount = registration.paymentAmount + paymentDto.amount;
-
-    // Determinar si ya está pagado
-    const newPayStatus: Pay = newPaymentAmount >= finalPrice ? 'PAGO' : 'DEBE';
 
     return this.prisma.usersEvent.update({
       where: { id },
       data: {
         paymentAmount: newPaymentAmount,
-        payStatus: newPayStatus,
         wayPay: paymentDto.wayPay,
+      },
+      include: {
+        event: true,
+        user: true,
+      },
+    });
+  }
+
+  // Actualizar estado de pago directamente
+  async updatePayStatus(id: string, updateDto: UpdatePayStatusDto) {
+    const registration = await this.prisma.usersEvent.findUnique({
+      where: { id },
+    });
+
+    if (!registration) {
+      throw new NotFoundException('Registration not found');
+    }
+
+    return this.prisma.usersEvent.update({
+      where: { id },
+      data: {
+        payStatus: updateDto.payStatus,
       },
       include: {
         event: true,
@@ -125,17 +135,10 @@ export class UsersEventService {
       throw new NotFoundException('Registration not found');
     }
 
-    const finalPrice = this.calculateFinalPrice(
-      registration.event.price,
-      registration.hasSiblings
-    );
-
     return {
       ...registration,
-      totalPrice: finalPrice,
       amountPaid: registration.paymentAmount,
-      amountRemaining: Math.max(0, finalPrice - registration.paymentAmount),
-      isPaid: registration.paymentAmount >= finalPrice,
+      isPaid: registration.payStatus === 'PAGO',
     };
   }
 

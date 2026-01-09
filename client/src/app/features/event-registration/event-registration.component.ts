@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { UsersEventService } from '../../core/services/users-event.services';
 import { Event } from '../../shared/models/userEvent.model';
 
@@ -13,6 +14,7 @@ import { Event } from '../../shared/models/userEvent.model';
 export class EventRegistrationComponent implements OnInit {
   private fb = inject(FormBuilder);
   private usersEventService = inject(UsersEventService);
+  private router = inject(Router);
 
   registrationForm!: FormGroup;
   events: Event[] = [];
@@ -46,22 +48,6 @@ export class EventRegistrationComponent implements OnInit {
         this.errorMessage = 'Error al cargar eventos. Intenta nuevamente.';
       }
     });
-  }
-
-  // Obtener el evento seleccionado
-  getSelectedEvent(): Event | undefined {
-    const eventId = this.registrationForm.get('eventId')?.value;
-    return this.events.find(e => e.id === eventId);
-  }
-
-  // Obtener el precio calculado basado en el evento y descuento
-  getCalculatedPrice(): number {
-    const selectedEvent = this.getSelectedEvent();
-    if (!selectedEvent) return 0;
-    
-    const hasSiblings = this.registrationForm.get('hasSiblings')?.value;
-    const discount = 10000;
-    return hasSiblings ? selectedEvent.price - discount : selectedEvent.price;
   }
 
   onSubmit() {
@@ -125,5 +111,9 @@ export class EventRegistrationComponent implements OnInit {
 
   get f() {
     return this.registrationForm.controls;
+  }
+
+  goBack() {
+    this.router.navigate(['/dashboard/event-registrations-list']);
   }
 }

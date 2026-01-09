@@ -1,6 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UsersEventService } from '../../core/services/users-event.services';
 import { UsersEvent, PaymentInfo, AddPaymentDto } from '../../shared/models/userEvent.model';
 
@@ -12,57 +13,46 @@ import { UsersEvent, PaymentInfo, AddPaymentDto } from '../../shared/models/user
 })
 export class EventRegistrationListComponent implements OnInit {
   private usersEventService = inject(UsersEventService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
-  registrations: UsersEvent[] = [];
-  filteredRegistrations: UsersEvent[] = [];
-  paginatedRegistrations: UsersEvent[] = [];
-  loading = false;
-  successMessage = '';
-  errorMessage = '';
+  // Signals para reactividad
+  registrations = signal<UsersEvent[]>([]);
+  selectedEventId = signal<string | null>(null);
+  loading = signal<boolean>(false);
+  successMessage = signal<string>('');
+  errorMessage = signal<string>('');
 
-  //paginacion 
-  currentPage = 1;
-  pageSize = 10;
-  totalPages = 1;
+  // Paginación con signals
+  currentPage = signal<number>(1);
+  pageSize = signal<number>(10);
   pageSizeOptions = [5, 10, 25, 50];
   
-  // Modal state
-  showPaymentModal = false;
-  selectedRegistration: UsersEvent | null = null;
-  selectedPaymentInfo: PaymentInfo | null = null;
-  paymentAmount = 0;
-  wayPay: 'EFECTIVO' | 'TRANSFERENCIA' = 'EFECTIVO';
+  // Modal state con signals
+  showPaymentModal = signal<boolean>(false);
+  selectedRegistration = signal<UsersEvent | null>(null);
+  selectedPaymentInfo = signal<PaymentInfo | null>(null);
+  paymentAmount = signal<number>(0);
+  wayPay = signal<'EFECTIVO' | 'TRANSFERENCIA'>('EFECTIVO');
 
-  // Filtros
-  searchTerm = '';
-  filterPayStatus: 'ALL' | 'PAGO' | 'DEBE' = 'ALL';
+  // Filtros con signals
+  searchTerm = signal<string>('');
+  filterPayStatus = signal<'ALL' | 'PAGO' | 'DEBE'>('ALL');
 
-  ngOnInit() {
-    this.loadRegistrations();
-  }
+  // Computed signals para filtrado y paginación
+  filteredRegistrations = computed(() => {
+    let filtered = [...this.registrations()];
+    const term = this.searchTerm().toLowerCase();
+    const status = this.filterPayStatus();
+    const eventId = this.selectedEventId();
 
-  loadRegistrations() {
-    this.loading = true;
-    this.usersEventService.getAllRegistrations().subscribe({
-      next: (data: UsersEvent[]) => {
-        this.registrations = data;
-        this.applyFilters();
-        this.loading = false;
-      },
-      error: (error: any) => {
-        console.error('Error loading registrations:', error);
-        this.errorMessage = 'Error al cargar los registros';
-        this.loading = false;
-      }
-    });
-  }
-
-  applyFilters() {
-    let filtered = [...this.registrations];
+    // Filtrar por evento si viene de un enlace directo
+    if (eventId) {
+      filtered = filtered.filter(reg => reg.eventId === eventId);
+    }
 
     // Filtrar por término de búsqueda
-    if (this.searchTerm) {
-      const term = this.searchTerm.toLowerCase();
+    if (term) {
       filtered = filtered.filter(reg => 
         reg.name.toLowerCase().includes(term) ||
         reg.email.toLowerCase().includes(term)
@@ -70,42 +60,77 @@ export class EventRegistrationListComponent implements OnInit {
     }
 
     // Filtrar por estado de pago
-    if (this.filterPayStatus !== 'ALL') {
-      filtered = filtered.filter(reg => reg.payStatus === this.filterPayStatus);
+    if (status !== 'ALL') {
+      filtered = filtered.filter(reg => reg.payStatus === status);
     }
 
-    this.filteredRegistrations = filtered;
-    this.currentPage = 1;
-    this.updatePagination();
+    return filtered;
+  });
+
+  totalPages = computed(() => 
+    Math.max(1, Math.ceil(this.filteredRegistrations().length / this.pageSize()))
+  );
+
+  paginatedRegistrations = computed(() => {
+    const startIndex = (this.currentPage() - 1) * this.pageSize();
+    const endIndex = startIndex + this.pageSize();
+    return this.filteredRegistrations().slice(startIndex, endIndex);
+  });
+
+  // Effect para resetear página cuando cambian los filtros
+  private filterEffect = effect(() => {
+    // Trigger cuando cambien los filtros
+    this.searchTerm();
+    this.filterPayStatus();
+    this.currentPage.set(1);
+  });
+
+  ngOnInit() {
+    // Verificar si viene con un eventId en los query params
+    this.route.queryParams.subscribe(params => {
+      if (params['eventId']) {
+        this.selectedEventId.set(params['eventId']);
+      }
+    });
+    
+    this.loadRegistrations();
   }
 
-  updatePagination() {
-    this.totalPages = Math.ceil(this.filteredRegistrations.length / this.pageSize);
-    if (this.totalPages === 0) this.totalPages = 1;
-
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.paginatedRegistrations = this.filteredRegistrations.slice(startIndex, endIndex);
+  loadRegistrations() {
+    this.loading.set(true);
+    this.usersEventService.getAllRegistrations().subscribe({
+      next: (data: UsersEvent[]) => {
+        this.registrations.set(data);
+        this.loading.set(false);
+      },
+      error: (error: any) => {
+        console.error('Error loading registrations:', error);
+        this.errorMessage.set('Error al cargar los registros');
+        this.loading.set(false);
+      }
+    });
   }
 
   goToPage(page: number) {
-    if(page >= 1 && page <= this.totalPages){
-      this.currentPage = page;
-      this.updatePagination();
+    const total = this.totalPages();
+    if(page >= 1 && page <= total){
+      this.currentPage.set(page);
     }
   }
 
-  onPageSizeChange() {
-    this.currentPage = 1;
-    this.updatePagination();
+  onPageSizeChange(newSize: number) {
+    this.pageSize.set(newSize);
+    this.currentPage.set(1);
   }
 
   getPageNumbers(): number[] {
     const pages: number[] = [];
     const maxVisiblePages = 5;
+    const total = this.totalPages();
+    const current = this.currentPage();
 
-    let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
+    let startPage = Math.max(1, current - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(total, startPage + maxVisiblePages - 1);
 
     if(endPage - startPage + 1 < maxVisiblePages){
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
@@ -118,24 +143,24 @@ export class EventRegistrationListComponent implements OnInit {
     return pages; 
   }
 
-  onSearchChange() {
-    this.applyFilters();
+  onSearchChange(value: string) {
+    this.searchTerm.set(value);
   }
 
-  onFilterChange() {
-    this.applyFilters();
+  onFilterChange(value: 'ALL' | 'PAGO' | 'DEBE') {
+    this.filterPayStatus.set(value);
   }
 
   openPaymentModal(registration: UsersEvent) {
-    this.selectedRegistration = registration;
-    this.paymentAmount = 0;
-    this.wayPay = 'EFECTIVO';
-    this.showPaymentModal = true;
+    this.selectedRegistration.set(registration);
+    this.paymentAmount.set(0);
+    this.wayPay.set('EFECTIVO');
+    this.showPaymentModal.set(true);
     
     // Cargar información detallada del pago
     this.usersEventService.getPaymentInfo(registration.id).subscribe({
       next: (info: PaymentInfo) => {
-        this.selectedPaymentInfo = info;
+        this.selectedPaymentInfo.set(info);
       },
       error: (error: any) => {
         console.error('Error loading payment info:', error);
@@ -144,36 +169,56 @@ export class EventRegistrationListComponent implements OnInit {
   }
 
   closePaymentModal() {
-    this.showPaymentModal = false;
-    this.selectedRegistration = null;
-    this.selectedPaymentInfo = null;
-    this.paymentAmount = 0;
+    this.showPaymentModal.set(false);
+    this.selectedRegistration.set(null);
+    this.selectedPaymentInfo.set(null);
+    this.paymentAmount.set(0);
   }
 
   processPayment() {
-    if (!this.selectedRegistration || this.paymentAmount <= 0) {
-      this.errorMessage = 'Ingresa un monto válido';
+    const selected = this.selectedRegistration();
+    const amount = this.paymentAmount();
+    
+    if (!selected || amount <= 0) {
+      this.errorMessage.set('Ingresa un monto válido');
       return;
     }
 
     const payment: AddPaymentDto = {
-      amount: this.paymentAmount,
-      wayPay: this.wayPay
+      amount: amount,
+      wayPay: this.wayPay()
     };
 
-    this.usersEventService.addPayment(this.selectedRegistration.id, payment).subscribe({
+    this.usersEventService.addPayment(selected.id, payment).subscribe({
       next: (updated: UsersEvent) => {
-        const isPaid = updated.payStatus === 'PAGO';
-        this.successMessage = `Abono de $${this.paymentAmount.toLocaleString()} registrado. ${isPaid ? '¡Pago completado!' : 'Aún hay saldo pendiente.'}`;
+        this.successMessage.set(`Abono de $${amount.toLocaleString()} registrado exitosamente.`);
         this.loadRegistrations();
         this.closePaymentModal();
         
         setTimeout(() => {
-          this.successMessage = '';
+          this.successMessage.set('');
         }, 5000);
       },
       error: (error: any) => {
-        this.errorMessage = 'Error al procesar el abono';
+        this.errorMessage.set('Error al procesar el abono');
+        console.error('Error:', error);
+      }
+    });
+  }
+
+  // Método para cambiar el estado de pago directamente
+  updatePayStatus(registration: UsersEvent, newStatus: 'PAGO' | 'DEBE') {
+    this.usersEventService.updatePayStatus(registration.id, newStatus).subscribe({
+      next: () => {
+        this.successMessage.set(`Estado actualizado a ${newStatus}`);
+        this.loadRegistrations();
+        
+        setTimeout(() => {
+          this.successMessage.set('');
+        }, 3000);
+      },
+      error: (error: any) => {
+        this.errorMessage.set('Error al actualizar el estado');
         console.error('Error:', error);
       }
     });
@@ -183,48 +228,33 @@ export class EventRegistrationListComponent implements OnInit {
     if (confirm(`¿Estás seguro de eliminar la inscripción de ${name}?`)) {
       this.usersEventService.deleteRegistration(id).subscribe({
         next: () => {
-          this.successMessage = 'Registro eliminado exitosamente';
+          this.successMessage.set('Registro eliminado exitosamente');
           this.loadRegistrations();
           
           setTimeout(() => {
-            this.successMessage = '';
+            this.successMessage.set('');
           }, 3000);
         },
         error: (error: any) => {
-          this.errorMessage = 'Error al eliminar el registro';
+          this.errorMessage.set('Error al eliminar el registro');
           console.error('Error:', error);
         }
       });
     }
   }
 
-  // Calcular precio final del evento (con descuento si aplica)
-  calculateFinalPrice(registration: UsersEvent): number {
-    const eventPrice = registration.event?.price ?? 0;
-    const discount = 10000;
-    return registration.hasSiblings ? eventPrice - discount : eventPrice;
-  }
-
-  // Calcular monto pendiente
-  getAmountRemaining(registration: UsersEvent): number {
-    const finalPrice = this.calculateFinalPrice(registration);
-    return Math.max(0, finalPrice - registration.paymentAmount);
-  }
-
   getTotalCollected(): number {
-    return this.filteredRegistrations
+    return this.filteredRegistrations()
       .reduce((sum, reg) => sum + (reg.paymentAmount ?? 0), 0);
   }
 
   getTotalPaid(): number {
-    return this.filteredRegistrations
+    return this.filteredRegistrations()
       .filter(reg => reg.payStatus === 'PAGO')
       .length;
   }
 
-  getTotalPending(): number {
-    return this.filteredRegistrations
-      .filter(reg => reg.payStatus === 'DEBE')
-      .length;
+  navigateToNewRegistration() {
+    this.router.navigate(['/dashboard/event-registration']);
   }
 }

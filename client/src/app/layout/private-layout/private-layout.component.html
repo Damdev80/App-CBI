@@ -67,13 +67,39 @@
             Dashboard
           </a>
         </li>
+        
+        <!-- Dropdown de Eventos en el Sidebar -->
         <li>
-          <a (click)="navegateTo('/events')" class="flex items-center gap-3">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-            Eventos
-          </a>
+          <details>
+            <summary class="flex items-center gap-3">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              Registros de Eventos
+            </summary>
+            <ul class="max-h-60 overflow-y-auto">
+              @if (loadingEvents()) {
+                <li class="p-2 text-center">
+                  <span class="loading loading-spinner loading-xs"></span>
+                </li>
+              }
+              @if (!loadingEvents() && events().length === 0) {
+                <li>
+                  <a class="text-xs text-base-content/60">No hay eventos</a>
+                </li>
+              }
+              @for (event of events(); track event.id) {
+                <li>
+                  <a (click)="navigateToEventDetails(event.id)" class="text-sm">
+                    <div class="flex flex-col">
+                      <span class="font-medium">{{ event.title }}</span>
+                      <span class="text-xs opacity-60">{{ event.eventDate | date:'dd/MM/yyyy' }}</span>
+                    </div>
+                  </a>
+                </li>
+              }
+            </ul>
+          </details>
         </li>
         <li>
           <a class="flex items-center gap-3">

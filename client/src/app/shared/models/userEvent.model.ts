@@ -31,9 +31,7 @@ export interface UsersEvent {
 }
 
 export interface PaymentInfo extends UsersEvent {
-  totalPrice: number;
   amountPaid: number;
-  amountRemaining: number;
   isPaid: boolean;
 }
 
@@ -41,7 +39,6 @@ export interface Event {
   id: string;
   title: string;
   description?: string;
-  price: number;
   eventDate: string;
   createdAt?: string;
   updatedAt?: string;

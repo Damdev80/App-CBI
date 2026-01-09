@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { UsersEventService, CreateUsersEventDto, UpdateUsersEventDto, AddPaymentDto } from './users-event.service';
+import { UsersEventService, CreateUsersEventDto, UpdateUsersEventDto, AddPaymentDto, UpdatePayStatusDto } from './users-event.service';
 
 @Controller('users-event')
 export class UsersEventController {
@@ -46,6 +46,11 @@ export class UsersEventController {
   @Patch(':id/add-payment')
   addPayment(@Param('id') id: string, @Body() paymentDto: AddPaymentDto) {
     return this.usersEventService.addPayment(id, paymentDto);
+  }
+
+  @Patch(':id/pay-status')
+  updatePayStatus(@Param('id') id: string, @Body() updateDto: UpdatePayStatusDto) {
+    return this.usersEventService.updatePayStatus(id, updateDto);
   }
 
   @Delete(':id')

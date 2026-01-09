@@ -40,6 +40,10 @@ export class UsersEventService {
     return this.http.patch<UsersEvent>(`${this.apiUrl}/${id}/add-payment`, payment);
   }
 
+  updatePayStatus(id: string, payStatus: 'PAGO' | 'DEBE'): Observable<UsersEvent> {
+    return this.http.patch<UsersEvent>(`${this.apiUrl}/${id}/pay-status`, { payStatus });
+  }
+
   deleteRegistration(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
