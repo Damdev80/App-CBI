@@ -13,6 +13,7 @@ export class PrismaService
           url: process.env.DATABASE_URL,
         },
       },
+      log: ['error', 'warn'],
     });
   }
 
@@ -28,5 +29,11 @@ export class PrismaService
     process.on('beforeExit', async () => {
       await app.close();
     });
+  }
+
+  async cleanUp() {
+    if (process.env.NODE_ENV === 'production') {
+      await this.$disconnect();
+    }
   }
 }
