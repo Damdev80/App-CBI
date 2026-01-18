@@ -52,6 +52,11 @@ export const routes: Routes = [
                 path: 'event-registrations-list',
                 loadComponent: () => import('./features/event-table-users/event-table-users')
                   .then(m => m.EventRegistrationListComponent)
+            },
+            {
+                path: 'profile',
+                loadComponent: () => import('./pages/profile/profile.component')
+                  .then(m => m.Profile)
             }
         ]
     },
