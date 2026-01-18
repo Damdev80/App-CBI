@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
 @Inject({
     providedIn: "root",
 })
-
+// Service to interact with the Biblia API
 export class ApiBibliaService {
     private http = inject(HttpClient);
     private apiUrl = "https://bible-api.deno.dev/api"
