@@ -4,6 +4,7 @@ import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthService } from './auth.service';
+import {JwtStrategy} from "./jwt.strategy";
 
 @Module({
   imports: [
@@ -11,10 +12,19 @@ import { AuthService } from './auth.service';
     JwtModule.register({
       global: true,
       secret: process.env.TOKEN_SECRET,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '1d' },
     }),
   ],
   controllers: [AuthController],
-  providers: [PrismaService, AuthService],
+  providers: [PrismaService, AuthService, JwtStrategy],
 })
-export class AuthModule {}
+export class AuthModule {
+  constructor() {
+    process.on('unhandledRejection', (reason, promise) => {
+      console.error('UNHANDLED REJECTION:', reason);
+    });
+    process.on('uncaughtException', (err) => {
+      console.error('UNCAUGHT EXCEPTION:', err);
+    });
+  }
+}
