@@ -14,9 +14,10 @@ import { UsersEventModule } from './users-event/users-event.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { PreRegisterModule } from './pre-register/pre-register.module';
 import { ProfileModule } from './profile/profile.module';
+import { SessionsModule } from './sessions/sessions.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, UsersModule, MembersModule, GroupsModule, EventModule, UsersEventModule, DashboardModule, PreRegisterModule, ProfileModule],
+  imports: [AuthModule, PrismaModule, UsersModule, MembersModule, GroupsModule, EventModule, UsersEventModule, DashboardModule, PreRegisterModule, ProfileModule, SessionsModule],
   controllers: [AppController, MembersController],
   providers: [AppService, AuthService, MembersService],
 })
