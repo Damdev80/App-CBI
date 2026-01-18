@@ -1,13 +1,15 @@
+
 generator client {
   provider = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
+
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
+
 
 
 // Enums
@@ -39,6 +41,12 @@ enum Pay {
   DEBE
 }
 
+enum Role {
+  USER
+  LIDER
+  ADMIN
+} 
+
 
 // tablas 
 
@@ -50,10 +58,10 @@ model User {
   password        String?
   happybirth      DateTime?
   gender          Gender?
-  baptized        Boolean   @default(false)
   isActive        Boolean   @default(true)
-  dicipules       Dicipules @default(NO)
-  role            String    @default("user")
+  baptized        Boolean   @default(false)
+  dicipules       Dicipules @default(SI)
+  role            Role      @default(USER) // valores posibles: user, lider, admin
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   address         String?
@@ -73,6 +81,7 @@ model Groups {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   members     Members[] // un Group puede tener muchos Members
+  sessions    Session[]
 }
 
 model Members {
@@ -117,7 +126,16 @@ model Event {
   usersEvent  UsersEvent[]
 }
 
-
+model Session {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  date        DateTime @default(now())
+  groupId     String
+  group       Groups   @relation(fields: [groupId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
 
 
 

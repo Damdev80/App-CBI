@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Patch, UsePipes } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import { createMemberSchema } from 'src/schemas/create-members.schema';
@@ -7,6 +7,11 @@ import { Members, Prisma } from '@prisma/client';
 @Controller('member')
 export class MembersController {
     constructor(private readonly membersService: MembersService) {}
+
+    @Patch('/members/level')
+    async updateLevelDicipules(@Body() body: { userId: string; groupId: string; levelDicipules: string }) {
+        return this.membersService.updateLevelDicipules(body.userId, body.groupId, body.levelDicipules);
+    }
 
     @Get('/members')
     async getAllMembers(): Promise<Members[]> {

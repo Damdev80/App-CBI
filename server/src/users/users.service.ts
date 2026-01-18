@@ -108,6 +108,11 @@ export class UsersService {
   async update(id: string, data: UpdateUserDto): Promise<User> {
     const updateData = { ...data };
 
+    // Eliminar levelDicipules si viene en el body (no es campo de User)
+    if ('levelDicipules' in updateData) {
+      delete updateData.levelDicipules;
+    }
+
     if (data.password && typeof data.password === 'string') {
       updateData.password = await encryp(data.password);
     }
@@ -123,6 +128,7 @@ export class UsersService {
       data: { isActive: false },
     });
   }
+
 
   
 }

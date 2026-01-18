@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Members, Prisma } from '@prisma/client';
+import { Members, Prisma, LevelDicipules } from '@prisma/client';
 
 export type CreateMemberDto = Prisma.MembersCreateInput;
 export type UpdateMemberDto = Prisma.MembersUpdateInput;
@@ -49,5 +49,20 @@ export class MembersService {
         }
     }
 
-    async 
+    async updateLevelDicipules(userId: string, groupId: string, levelDicipules: string): Promise<Members> {
+        try {
+            // Validar que el valor sea uno de los del enum
+            if (!Object.values(LevelDicipules).includes(levelDicipules as LevelDicipules)) {
+                throw new BadRequestException('Nivel de discipulado inválido');
+            }
+            return await this.prisma.members.update({
+                where: {
+                    userId_groupId: { userId, groupId }
+                },
+                data: { levelDicipules: levelDicipules as LevelDicipules },
+            });
+        } catch (error) {
+            throw new InternalServerErrorException('Error al actualizar el nivel de discipulado');
+        }
+    }
 }
