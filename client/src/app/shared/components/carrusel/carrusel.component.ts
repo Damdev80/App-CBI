@@ -20,13 +20,16 @@ import { CarouselItem  } from "./carrusel.interface";
           
           @for (item of items(); track item.id; let i = $index) {
             <div class="carousel-item w-full h-full shrink-0 relative">
-              <!-- Image -->
-              <img 
-                [src]="item.image" 
-                [alt]="item.title || 'Carousel item ' + (i + 1)"
-                class="w-full h-full object-cover">
+              <!-- Responsive Image -->
+              <picture>
+                <source *ngIf="item.imageMobile" [srcset]="item.imageMobile" media="(max-width: 768px)">
+                <img 
+                  [src]="item.image" 
+                  [alt]="item.title || 'Carousel item ' + (i + 1)"
+                  class="w-full h-auto sm:h-full object-contain sm:object-cover min-h-[60vh] sm:min-h-0 bg-base-200">
+              </picture>
               
-              <!-- Overlay with content (if title or description exists) -->
+              <!-- Overlay with content (en todos los slides) -->
               @if (item.title || item.description) {
                 <div class="absolute inset-0 bg-gradient-to-t from-base-300/80 via-transparent to-transparent 
                            flex items-end p-6">

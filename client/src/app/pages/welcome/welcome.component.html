@@ -1,16 +1,32 @@
-<!-- Hero Carousel -->
-<section class="w-full overflow-hidden">
-  <app-carrusel
-    [carouselItems]="photos"
-    [autoPlay]="false"
-    [autoPlayInterval]="10000"
-    [showArrows]="true"
-    [showDots]="false"
-    [showCounter]="false"
-    [carouselHeight]="'100vh'"
-    [loading]="false"
-  >
-  </app-carrusel>
+
+<app-lema-cbi-fullwidth />
+
+
+<!-- Pastores Section -->
+<section class="w-full bg-base-100 py-24 px-4 border-b-2 border-primary/30 relative overflow-hidden min-h-[100vh]">
+  <div class="absolute -top-20 -left-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl z-0"></div>
+  <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-secondary/10 rounded-full blur-3xl z-0"></div>
+  <div class="container mx-auto max-w-6xl flex flex-col md:flex-row items-center gap-16 md:gap-24 relative z-10">
+    <div class="flex-1 min-w-[320px]">
+      <h2 class="text-5xl md:text-6xl font-extrabold mb-8 drop-shadow-lg tracking-tight text-neutral-800 dark:text-neutral-100">Pastores de la casa</h2>
+      <p class="text-2xl mb-4 text-base-content font-medium">Conoce a los pastores de la casa, quienes lideran con amor y dedicación.</p>
+      <p class="text-lg text-base-content/70 mb-8">Pastores Samuel Mejía y Marjorie Mejía han guiado nuestra comunidad con fe y compromiso, inspirando a todos a crecer espiritualmente.</p>
+      <div class="mt-8 flex gap-4">
+        <span class="inline-block px-6 py-2 rounded-full bg-primary text-white text-base font-semibold shadow">#Liderazgo</span>
+        <span class="inline-block px-6 py-2 rounded-full bg-secondary text-white text-base font-semibold shadow">#Inspiración</span>
+      </div>
+    </div>
+    <div class="flex-1 flex justify-center">
+      <div class="relative group">
+        <img
+          src="new-imgs/Foto Sam & Maryo casa.png"
+          alt="Pastores principales"
+          class="rounded-3xl shadow-2xl w-[28rem] h-[28rem] object-cover border-8 border-primary/20 group-hover:scale-105 transition-transform duration-300"
+        />
+        <div class="absolute bottom-4 right-4 bg-primary text-white text-lg px-6 py-2 rounded-full shadow-lg opacity-95 font-bold">Samuel & Marjorie Mejía</div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- Cards Section -->
@@ -18,7 +34,7 @@
   <div class="container mx-auto max-w-7xl">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <app-card
-        title="Bienvenido a la Iglesia"
+        title="Bienvenido a la "
         description="Ministerio Juvenil"
         imageUrl="https://source.unsplash.com/random/400x200?church"
       >
