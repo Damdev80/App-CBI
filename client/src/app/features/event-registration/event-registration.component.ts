@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,10 +12,10 @@ import { Event } from '../../shared/models/userEvent.model';
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './event-registration.component.html',
 })
-export class EventRegistrationComponent implements OnInit {
   private fb = inject(FormBuilder);
   private usersEventService = inject(UsersEventService);
   private router = inject(Router);
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   registrationForm!: FormGroup;
   events: Event[] = [];
@@ -24,7 +25,9 @@ export class EventRegistrationComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.loadEvents();
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadEvents();
+    }
   }
 
   initForm() {
