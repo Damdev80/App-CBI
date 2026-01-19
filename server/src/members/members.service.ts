@@ -65,4 +65,31 @@ export class MembersService {
             throw new InternalServerErrorException('Error al actualizar el nivel de discipulado');
         }
     }
+
+
+    async findGroupsByUserId(userId: string): Promise<any[]> {
+        try {
+            return await this.prisma.members.findMany({
+                where: { userId },
+                include: {
+                    group: {
+                        select: { name: true }
+                    }
+                }
+            });
+        } catch (error) {
+            throw new InternalServerErrorException('Error al obtener los grupos del usuario');
+        }
+    }
+
+    async leaveGroup(userId: string, groupId: string): Promise<{ success: boolean }> {
+            try {
+                await this.prisma.members.delete({
+                    where: { userId_groupId: { userId, groupId } },
+                });
+                return { success: true };
+            } catch (error) {
+                throw new InternalServerErrorException('Error al salir del grupo');
+            }
+        }
 }

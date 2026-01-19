@@ -19,8 +19,8 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    // Payload mínimo → seguridad
-    const payload = { sub: user.id, username: user.name };
+    // Incluir el rol en el payload del JWT
+    const payload = { sub: user.id, username: user.name, role: user.role };
 
     return {
       access_token: await this.jwtService.signAsync(payload),

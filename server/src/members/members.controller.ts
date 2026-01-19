@@ -1,3 +1,4 @@
+import { Delete, Query } from '@nestjs/common';       
 import { Body, Controller, Get, Param, Post, Patch, UsePipes } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
@@ -34,5 +35,15 @@ export class MembersController {
         return await this.membersService.createMember(body);
     }
 
+    @Get('/members/user/:userId/groups')
+    async getGroupsByUserId(@Param('userId') userId: string): Promise<any[]> {
+        // Devuelve [{ groupId, group: { name }, levelDicipules }]
+        return await this.membersService.findGroupsByUserId(userId);
+    }
 
+    @Delete('/members/user-group')
+        async leaveGroup(@Query('userId') userId: string, @Query('groupId') groupId: string) {
+            // Elimina el registro Members para ese userId y groupId
+            return this.membersService.leaveGroup(userId, groupId);
+        }
 }
