@@ -1,5 +1,8 @@
 <div class="min-h-screen w-full flex flex-col justify-center items-center bg-base-200">
-  <div class="w-full flex flex-col md:flex-row items-start gap-10 bg-white dark:bg-base-200 rounded-2xl shadow-lg border border-base-300 p-8 md:p-16 mt-0 md:mt-16 transition-all duration-200">
+  <div class="w-full flex justify-end items-center px-4 pt-6">
+    <button class="btn btn-primary btn-outline" (click)="showGroupsModal = true">Ver mis grupos y unirme</button>
+  </div>
+  <div class="w-full flex flex-col md:flex-row items-start gap-10 bg-linear-to-br from-primary/10 to-base-100/80 rounded-2xl shadow-lg border border-base-300 p-8 md:p-16 mt-0 md:mt-16 transition-all duration-200">
     <!-- Foto y formulario en fila en desktop, columna en móvil -->
     <div class="w-full flex flex-col md:flex-row md:items-start md:gap-10">
       <!-- Lado izquierdo: foto, logo, frase -->
@@ -93,5 +96,65 @@
       </form>
       
     </div>
+  </div>
+
+  <!-- Modal de grupos y gestión -->
+  <div *ngIf="showGroupsModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div class="bg-white dark:bg-base-200 rounded-2xl shadow-2xl border border-primary/30 p-8 w-full max-w-2xl relative animate-fade-in">
+      <button class="absolute top-2 right-2 btn btn-xs btn-circle btn-ghost" (click)="showGroupsModal = false">✕</button>
+      <h2 class="text-xl font-bold text-primary mb-4 flex items-center gap-2">
+        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-5.13a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        Mis Grupos
+      </h2>
+      <div *ngIf="groupLoading() && groupList().length === 0" class="flex items-center gap-2 text-primary/70 mb-4">
+        <span class="loading loading-spinner loading-md"></span> Cargando grupos...
+      </div>
+      <div *ngIf="!groupLoading() && groupList().length === 0" class="text-base-content/60 italic mb-4">No perteneces a ningún grupo actualmente.</div>
+      <div *ngIf="!groupLoading() && groupList().length > 0" class="flex flex-col gap-4 mb-8">
+        <div *ngFor="let group of groupList()" class="flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-xl border border-base-300 bg-base-100/80 shadow-sm transition-all duration-200 hover:shadow-md">
+          <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 flex-1">
+            <span class="font-semibold text-base-content text-lg">{{ group.groupName }}</span>
+            <span class="text-xs text-base-content/60">Nivel de Discipulado: <b>{{ profileForm.get('levelDicipules')?.value }}</b></span>
+          </div>
+          <button class="btn btn-error btn-sm rounded-md px-4 shadow hover:scale-105 transition-transform duration-150" (click)="leaveGroup(profileForm.get('id')?.value, group.groupId)">
+            Salir del grupo
+          </button>
+        </div>
+      </div>
+      <div class="divider my-8">Unirse a un grupo</div>
+      <div *ngIf="allGroupsLoading()" class="flex items-center gap-2 text-primary/70 mb-4">
+        <span class="loading loading-spinner loading-md"></span> Cargando todos los grupos...
+      </div>
+      <div *ngIf="!allGroupsLoading() && allGroups().length > 0" class="flex flex-col gap-3 max-h-96 overflow-y-auto">
+        <div *ngFor="let group of allGroups()" class="flex items-center justify-between gap-4 p-3 rounded-lg border border-base-300 bg-base-100/80 shadow-sm">
+          <span class="font-medium text-base-content flex items-center gap-2">
+            <ng-container *ngIf="isMemberOfGroup(group.id); else notMember">
+              <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
+              {{ group.name }}
+              <span class="ml-2 text-xs text-primary font-semibold">(Miembro)
+                <ng-container *ngIf="getGroupLevel(group.id)">
+                  - Nivel de Discipulado {{ getGroupLevel(group.id) }}
+                </ng-container>
+              </span>
+            </ng-container>
+            <ng-template #notMember>{{ group.name }}</ng-template>
+          </span>
+          <ng-container *ngIf="isMemberOfGroup(group.id); else joinBtn">
+            <button class="btn btn-error btn-xs rounded-md px-4 shadow hover:scale-105 transition-transform duration-150"
+              (click)="leaveGroup(profileForm.get('id')?.value, group.id)">
+              Salir
+            </button>
+          </ng-container>
+          <ng-template #joinBtn>
+            <button class="btn btn-primary btn-xs rounded-md px-4 shadow hover:scale-105 transition-transform duration-150"
+              (click)="joinGroup(group.id)">
+              Unirse
+            </button>
+          </ng-template>
+        </div>
+      </div>
+      <div *ngIf="!allGroupsLoading() && allGroups().length === 0" class="text-base-content/60 italic mb-4">No hay grupos disponibles.</div>
+    </div>
+  </div>
   </div>
 </div>

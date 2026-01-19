@@ -36,7 +36,7 @@
             <li><a (click)="navegateTo('/dashboard/profile')">Perfil</a></li>
             <li><a>Configuración</a></li>
             <div class="divider my-0"></div>
-            <li><a class="text-error">Cerrar Sesión</a></li>
+            <li><a class="text-error" (click)="logout()">Cerrar Sesión</a></li>
           </ul>
         </div>
       </div>
@@ -64,14 +64,11 @@
       
       <!-- Menú del sidebar -->
       <ul class="menu p-4 gap-2 w-full">
-        <li class="w-full">
-          <a (click)="navegateTo('/dashboard')" class="flex items-center gap-3">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-            </svg>
-            Dashboard
-          </a>
-        </li>
+        <app-sidebar-item [label]="'Dashboard'" [itemClass]="'flex items-center gap-3'">
+          <svg icon class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" (click)="navegateTo('/dashboard')">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+        </app-sidebar-item>
         
         <!-- Dropdown de Eventos en el Sidebar -->
         <li class="w-full">
@@ -94,45 +91,39 @@
                 </li>
               }
               @for (event of events(); track event.id) {
-                <li>
-                  <a (click)="navigateToEventDetails(event.id)" class="text-sm">
-                    <div class="flex flex-col">
-                      <span class="font-medium">{{ event.title }}</span>
-                      <span class="text-xs opacity-60">{{ event.eventDate | date:'dd/MM/yyyy' }}</span>
-                    </div>
-                  </a>
-                </li>
+                <!-- Solo mostrar el evento 'Congreso Juvenil' si el usuario es juvenil, los demás eventos siempre -->
+                <ng-container *ngIf="event.title !== 'Congreso Juvenil' || userRole === 'juvenil'">
+                  <li>
+                    <a (click)="navigateToEventDetails(event.id)" class="text-sm">
+                      <div class="flex flex-col">
+                        <span class="font-medium">{{ event.title }}</span>
+                        <span class="text-xs opacity-60">{{ event.eventDate | date:'dd/MM/yyyy' }}</span>
+                      </div>
+                    </a>
+                  </li>
+                </ng-container>
               }
             </ul>
           </details>
         </li>
-        <li class="w-full">
-          <a class="flex items-center gap-3 w-full">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-            </svg>
-            Usuarios
-          </a>
-        </li>
-        <li class="w-full">
-          <a class="flex items-center gap-3 w-full">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-            Grupos
-          </a>
-        </li>
+        <app-sidebar-item [label]="'Usuarios'" [itemClass]="'flex items-center gap-3'">
+          <svg icon class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" (click)="navegateTo('/dashboard/users')">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+        </app-sidebar-item>
+        <app-sidebar-item [label]="'Grupos'" [itemClass]="'flex items-center gap-3'">
+          <svg icon class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" (click)="navegateTo('/dashboard/groups')">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </app-sidebar-item>
         
         <div class="divider"></div>
         
-        <li class="w-full">
-          <a class="flex items-center gap-3 text-error w-full">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-            </svg>
-            Cerrar Sesión
-          </a>
-        </li>
+        <app-sidebar-item [label]="'Cerrar Sesión'" [itemClass]="'flex items-center gap-3 text-error'">
+          <svg icon class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" (click)="logout()">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+        </app-sidebar-item>
       </ul>
     </aside>
   </div>

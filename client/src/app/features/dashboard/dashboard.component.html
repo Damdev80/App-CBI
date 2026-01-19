@@ -8,6 +8,7 @@
   <!-- Contenido del dashboard -->
   <!-- <app-dashboard-user-info /> -->
 
+
     <!-- Card -->
 
     @if (error()) {
@@ -51,6 +52,7 @@
       />
 
       <app-stat-card
+        *ngIf="role() === 'ADMIN' || (role() === 'LIDER' && groupIds().includes('1a6def74-d335-4c66-892d-ee02cd5cb96c'))"
         [title]="'Congreso Juvenil'"
         [value]="totalcountUnpaid()"
         [description]="'Usuarios sin pagar'"
