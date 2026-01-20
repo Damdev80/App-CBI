@@ -1,6 +1,5 @@
 
-import { inject, Inject, PLATFORM_ID } from "@angular/core";
-import { isPlatformBrowser } from "@angular/common";
+import { inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
@@ -23,25 +22,7 @@ export interface GroupInfo {
     imports: [CommonModule, ReactiveFormsModule, FormsModule, HttpClientModule],
     templateUrl: './profile.component.html',
 })
-    constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-        this.profileForm = this.fb.group({
-            name: ['', [Validators.required]],
-            email: ['', [Validators.required, Validators.email]],
-            number: [''],
-            address: [''],
-            happybirth: [''],
-            gender: [''],
-            baptized: [false],
-            isActive: [true],
-            role: [''],
-            age: [null],
-            hobbies: [''],
-            dreams: [''],
-            job: [''],
-            vulnerable_area: [''],
-            levelDicipules: [''],
-        });
-    }
+export class Profile implements OnInit {
     getGroupLevel(groupId: string): string | null {
         const group = this.groupList().find((g: GroupInfo) => g.groupId === groupId);
         return group ? group.levelDicipules : null;
@@ -85,28 +66,26 @@ export interface GroupInfo {
     }
 
     ngOnInit() {
-        if (isPlatformBrowser(this.platformId)) {
-            this.isLoading.set(true);
-            this.profileService.getProfile().subscribe({
-                next: (profile) => {
-                    if (profile.happybirth) {
-                        profile.happybirth = profile.happybirth.split('T')[0];
-                    }
-                    this.profileForm.patchValue(profile);
-                    this.isLoading.set(false);
-                    // Asegurarse de que el id esté en el form
-                    if (profile.id) {
-                        this.profileForm.addControl('id', this.fb.control(profile.id));
-                    }
-                    this.loadGroups();
-                    this.loadAllGroups();
-                },
-                error: (err) => {
-                    this.errorMessage.set('Error al cargar el perfil');
-                    this.isLoading.set(false);
+        this.isLoading.set(true);
+        this.profileService.getProfile().subscribe({
+            next: (profile) => {
+                if (profile.happybirth) {
+                    profile.happybirth = profile.happybirth.split('T')[0];
                 }
-            });
-        }
+                this.profileForm.patchValue(profile);
+                this.isLoading.set(false);
+                // Asegurarse de que el id esté en el form
+                if (profile.id) {
+                    this.profileForm.addControl('id', this.fb.control(profile.id));
+                }
+                this.loadGroups();
+                this.loadAllGroups();
+            },
+            error: (err) => {
+                this.errorMessage.set('Error al cargar el perfil');
+                this.isLoading.set(false);
+            }
+        });
     }
 
     loadAllGroups() {
@@ -126,7 +105,7 @@ export interface GroupInfo {
     joinGroup(groupId: string) {
         const userId = this.profileForm.get('id')?.value;
         if (!userId) return;
-        this.membersService.createMember({ userId, groupId, levelDicipules: 'III' }).subscribe({
+        this.membersService.createMember({ userId, groupId, levelDicipules: '3' }).subscribe({
             next: () => {
                 this.successMessage.set('Te uniste al grupo');
                 this.loadGroups();
