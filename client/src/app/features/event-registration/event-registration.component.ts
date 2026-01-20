@@ -12,16 +12,18 @@ import { Event } from '../../shared/models/userEvent.model';
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './event-registration.component.html',
 })
+export class EventRegistrationComponent implements OnInit {
   private fb = inject(FormBuilder);
   private usersEventService = inject(UsersEventService);
   private router = inject(Router);
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
-
+  
   registrationForm!: FormGroup;
   events: Event[] = [];
   loading = false;
   successMessage = '';
   errorMessage = '';
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit() {
     this.initForm();
