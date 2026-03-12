@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserServiceService } from '@app/core/services/user-service.service';
 import { TeacherServiceService } from '@app/core/services/teacher-service.service';
 import { UserServiceSocial, Teacher } from '@app/shared/models/service-social.model';
+<<<<<<< HEAD
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
@@ -13,15 +14,21 @@ import { TagModule } from 'primeng/tag';
 import { TableModule } from 'primeng/table';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+=======
+>>>>>>> 269214b (feat: add teachers and user service management)
 
 @Component({
   selector: 'app-user-service',
   standalone: true,
+<<<<<<< HEAD
   imports: [
     CommonModule, FormsModule,
     CardModule, InputTextModule, ButtonModule, SelectModule,
     TagModule, TableModule, CheckboxModule, ProgressSpinnerModule
   ],
+=======
+  imports: [CommonModule, FormsModule],
+>>>>>>> 269214b (feat: add teachers and user service management)
   templateUrl: './user-service.html',
 })
 export class UserService {
@@ -43,6 +50,7 @@ export class UserService {
   newDocuments = '';
   selectedTeacherId = '';
 
+<<<<<<< HEAD
   // PrimeNG select options
   genderSelectOptions = [
     { label: 'Masculino', value: 'MASCULINO' },
@@ -50,6 +58,8 @@ export class UserService {
   ];
   teacherSelectOptions: { label: string; value: string }[] = [];
 
+=======
+>>>>>>> 269214b (feat: add teachers and user service management)
   // Computed statistics
   totalUsers = computed(() => this.users().length);
   presentToday = computed(() => this.users().filter(u => u.attendance).length);
@@ -67,10 +77,14 @@ export class UserService {
 
   loadTeachers() {
     this.teacherService.getAll().subscribe({
+<<<<<<< HEAD
       next: (data) => {
         this.teachers.set(data);
         this.teacherSelectOptions = data.map(t => ({ label: t.name, value: t.id }));
       },
+=======
+      next: (data) => this.teachers.set(data),
+>>>>>>> 269214b (feat: add teachers and user service management)
     });
   }
 
