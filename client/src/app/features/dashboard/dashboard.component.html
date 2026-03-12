@@ -1,8 +1,11 @@
 <div class="max-w-7xl mx-auto">
   <!-- Título -->
   <div class="mb-8">
-    <h1 class="text-3xl font-bold">Dashboard</h1>
-    <p class="text-base-content/60 mt-2">Bienvenido al panel de administración</p>
+    <h1 class="text-4xl font-extrabold text-primary">Panel de Control</h1>
+    <p class="text-base-content/70 mt-2 text-lg">¡Bienvenido! Administra y consulta la información clave de tu comunidad desde aquí.</p>
+    <div class="mt-4 flex gap-4">
+      <span class="badge badge-primary">Administrador</span>
+    </div>
   </div>
 
   <!-- Contenido del dashboard -->
@@ -44,6 +47,7 @@
       />
 
       <app-stat-card
+        *ngIf="role() === 'ADMIN' || (role() === 'LIDER')"  
         [title]="'Total Mujeres'"
         [value]="totalWomenRegistered()"
         [description]="'Hermanas registradas'"

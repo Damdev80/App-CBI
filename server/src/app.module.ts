@@ -15,9 +15,11 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { PreRegisterModule } from './pre-register/pre-register.module';
 import { ProfileModule } from './profile/profile.module';
 import { SessionsModule } from './sessions/sessions.module';
+import { UsersServiceModule } from './users-service/users-service.module';
+import { TeachersServiceModule } from './teachers-service/teachers-service.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, UsersModule, MembersModule, GroupsModule, EventModule, UsersEventModule, DashboardModule, PreRegisterModule, ProfileModule, SessionsModule],
+  imports: [AuthModule, PrismaModule, UsersModule, MembersModule, GroupsModule, EventModule, UsersEventModule, DashboardModule, PreRegisterModule, ProfileModule, SessionsModule, UsersServiceModule, TeachersServiceModule],
   controllers: [AppController, MembersController],
   providers: [AppService, AuthService, MembersService],
 })

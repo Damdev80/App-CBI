@@ -57,6 +57,16 @@ export const routes: Routes = [
                 path: 'profile',
                 loadComponent: () => import('./pages/profile/profile.component')
                   .then(m => m.Profile)
+            },
+            {
+                path: 'profesores',
+                loadComponent: () => import('./features/teachers/teachers')
+                  .then(m => m.TeachersComponent)
+            },
+            {
+                path: 'servicio-social',
+                loadComponent: () => import('./features/user-service/user-service')
+                  .then(m => m.UserService)
             }
         ]
     },

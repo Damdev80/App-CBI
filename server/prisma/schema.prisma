@@ -45,7 +45,8 @@ enum Role {
   USER
   LIDER
   ADMIN
-} 
+}
+
 
 
 // tablas 
@@ -135,6 +136,32 @@ model Session {
   group       Groups   @relation(fields: [groupId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model TeachersService {
+  id             String               @id @default(uuid())
+  name           String
+  number         String?              @unique
+  GoToCampement  Boolean              @default(false)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  teacherId      String
+  students       UserServiceSocial[]
+}
+
+model UserServiceSocial {
+  id               String          @id @default(uuid())
+  name             String
+  number           String?         @unique
+  GoToCampement    Boolean         @default(false)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  attendance       Boolean         @default(false)
+  Gender           Gender
+  Documents         String?
+  payGotoCampement Pay             @default(DEBE)
+  teacherId        String
+  School           TeachersService @relation(fields: [teacherId], references: [id])
 }
 
 
