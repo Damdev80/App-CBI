@@ -2,15 +2,25 @@ import { CommonModule, } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { Signal, signal } from "@angular/core";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 import { PreRegisterService } from "@app/core/services/pre-register.service";
 import { RegisterEventService } from "@app/core/services/register-event.service";
 import { inject } from "@angular/core";
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { SelectModule } from 'primeng/select';
+import { MessageModule } from 'primeng/message';
 
 @Component({
     selector: 'app-pre-register',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [
+        CommonModule, ReactiveFormsModule, RouterModule,
+        CardModule, InputTextModule, ButtonModule, CheckboxModule,
+        SelectModule, MessageModule
+    ],
     templateUrl: './preRegister.component.html',
 })
 

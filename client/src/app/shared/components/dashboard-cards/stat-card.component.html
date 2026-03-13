@@ -1,42 +1,21 @@
-<div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
-  <div class="card-body">
-    <div class="flex items-center justify-between">
-      <div class="flex-1">
-        <h2 class="card-title text-base-content/70 text-sm font-medium mb-2">
-          {{ title() }}
-        </h2>
-        <p class="text-4xl font-bold" 
-           [ngClass]="{
-             'text-primary': color() === 'primary',
-             'text-secondary': color() === 'secondary',
-             'text-accent': color() === 'accent',
-             'text-success': color() === 'success',
-             'text-warning': color() === 'warning',
-             'text-info': color() === 'info',
-             'text-error': color() === 'error'
-           }">
-          {{ value() }}
-        </p>
-        <p class="text-sm text-base-content/60 mt-2" *ngIf="description()">
-          {{ description() }}
-        </p>
-      </div>
-      
-      <div *ngIf="icon()" 
-           class="avatar placeholder">
-        <div class="w-16 h-16 rounded-full"
-             [ngClass]="{
-               'bg-primary/10 text-primary': color() === 'primary',
-               'bg-secondary/10 text-secondary': color() === 'secondary',
-               'bg-accent/10 text-accent': color() === 'accent',
-               'bg-success/10 text-success': color() === 'success',
-               'bg-warning/10 text-warning': color() === 'warning',
-               'bg-info/10 text-info': color() === 'info',
-               'bg-error/10 text-error': color() === 'error'
-             }">
-          <span [innerHTML]="icon()"></span>
-        </div>
+<p-card styleClass="shadow-xl hover:shadow-2xl transition-shadow duration-300">
+  <div class="flex items-center justify-between">
+    <div class="flex-1">
+      <h2 class="text-secondary-text text-sm font-medium mb-2">
+        {{ title() }}
+      </h2>
+      <p class="text-4xl font-bold text-main" [class]="'text-4xl font-bold text-main ' + valueColorClass()">
+        {{ value() }}
+      </p>
+      <p class="text-sm text-muted mt-2" *ngIf="description()">
+        {{ description() }}
+      </p>
+    </div>
+    
+    <div *ngIf="icon()" class="flex items-center justify-center">
+      <div class="w-16 h-16 rounded-full flex items-center justify-center" [class]="'w-16 h-16 rounded-full flex items-center justify-center ' + iconColorClass()">
+        <span [innerHTML]="icon()"></span>
       </div>
     </div>
   </div>
-</div>
+</p-card>

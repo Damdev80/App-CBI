@@ -5,11 +5,22 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { UsersEventService } from '../../core/services/users-event.services';
 import { Event } from '../../shared/models/userEvent.model';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DividerModule } from 'primeng/divider';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-event-registration',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule, ReactiveFormsModule,
+    CardModule, InputTextModule, ButtonModule, SelectModule,
+    CheckboxModule, DividerModule, MessageModule
+  ],
   templateUrl: './event-registration.component.html',
 })
 export class EventRegistrationComponent implements OnInit {
@@ -19,6 +30,7 @@ export class EventRegistrationComponent implements OnInit {
   
   registrationForm!: FormGroup;
   events: Event[] = [];
+  eventOptions: { label: string; value: string }[] = [];
   loading = false;
   successMessage = '';
   errorMessage = '';
@@ -47,6 +59,10 @@ export class EventRegistrationComponent implements OnInit {
     this.usersEventService.getAllEvents().subscribe({
       next: (events: Event[]) => {
         this.events = events;
+        this.eventOptions = events.map(e => ({
+          label: `${e.title} - ${new Date(e.eventDate).toLocaleDateString('es-CO')}`,
+          value: e.id
+        }));
       },
       error: (error: any) => {
         console.error('Error loading events:', error);

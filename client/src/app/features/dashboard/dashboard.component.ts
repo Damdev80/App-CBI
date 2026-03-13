@@ -5,11 +5,14 @@ import { StatCardComponent } from '@app/shared/components/dashboard-cards/stat-c
 import { DashboardEventService } from '@app/core/services/dashboard-event.service';
 import { AuthService } from '@app/core/services/auth.service';
 import { MembersService } from '@app/core/services/members.service';
+import { TagModule } from 'primeng/tag';
+import { MessageModule } from 'primeng/message';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, StatCardComponent],
+  imports: [CommonModule, StatCardComponent, TagModule, MessageModule, ProgressSpinnerModule],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {

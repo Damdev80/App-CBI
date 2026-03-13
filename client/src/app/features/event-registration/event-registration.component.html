@@ -1,154 +1,116 @@
-<div class="min-h-screen bg-base-200 py-8 px-4">
+<div class="min-h-screen bg-surface-50 py-8 px-4">
   <div class="max-w-lg mx-auto">
     
     <!-- Botón de Regreso -->
     <div class="mb-4">
-      <button class="btn btn-ghost btn-sm gap-2" (click)="goBack()">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-        </svg>
-        Volver
-      </button>
+      <p-button [text]="true" size="small" (click)="goBack()" icon="pi pi-arrow-left" label="Volver" />
     </div>
 
     <div class="text-center mb-6">
-      <h1 class="text-3xl font-bold text-base-content mb-2">Inscripción a Evento</h1>
-      <p class="text-base-content/60">Completa tus datos para registrarte</p>
+      <h1 class="text-3xl font-bold text-surface-700 mb-2">Inscripción a Evento</h1>
+      <p class="text-surface-400">Completa tus datos para registrarte</p>
     </div>
 
-    <div class="card bg-base-100 shadow-xl">
-      <div class="card-body">
-        
+    <p-card>
         <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
           
-          <div class="form-control mb-4">
-            <label class="label">
-              <span class="label-text font-medium">Evento <span class="text-error">*</span></span>
-            </label>
-            <select 
+          <div class="flex flex-col gap-2 mb-4">
+            <label class="font-medium">Evento <span class="text-red-500">*</span></label>
+            <p-select 
               formControlName="eventId" 
-              class="select select-bordered w-full"
-              [class.select-error]="f['eventId'].touched && f['eventId'].invalid"
-            >
-              <option value="" disabled>Selecciona un evento</option>
-              <option *ngFor="let event of events" [value]="event.id">
-                {{ event.title }} - {{ event.eventDate | date:'dd/MM/yyyy' }}
-              </option>
-            </select>
-            <label class="label" *ngIf="f['eventId'].touched && f['eventId'].invalid">
-              <span class="label-text-alt text-error">Debes seleccionar un evento</span>
-            </label>
+              [options]="eventOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Selecciona un evento"
+              styleClass="w-full"
+              [invalid]="f['eventId'].touched && f['eventId'].invalid"
+            />
+            <small class="text-red-500" *ngIf="f['eventId'].touched && f['eventId'].invalid">Debes seleccionar un evento</small>
           </div>
 
-          <div class="form-control mb-4">
-            <label class="label">
-              <span class="label-text font-medium">Nombre Completo <span class="text-error">*</span></span>
-            </label>
+          <div class="flex flex-col gap-2 mb-4">
+            <label class="font-medium">Nombre Completo <span class="text-red-500">*</span></label>
             <input 
               type="text" 
               placeholder="Ingresa tu nombre completo"
               formControlName="name" 
-              class="input input-bordered w-full"
-              [class.input-error]="f['name'].touched && f['name'].invalid"
-            >
-            <label class="label" *ngIf="f['name'].touched && f['name'].invalid">
-              <span class="label-text-alt text-error">El nombre es requerido (mínimo 3 caracteres)</span>
-            </label>
+              pInputText
+              class="w-full"
+              [class.ng-invalid]="f['name'].touched && f['name'].invalid"
+            />
+            <small class="text-red-500" *ngIf="f['name'].touched && f['name'].invalid">El nombre es requerido (mínimo 3 caracteres)</small>
           </div>
 
-          <div class="form-control mb-4">
-            <label class="label">
-              <span class="label-text font-medium">Correo Electrónico <span class="text-error">*</span></span>
-            </label>
+          <div class="flex flex-col gap-2 mb-4">
+            <label class="font-medium">Correo Electrónico <span class="text-red-500">*</span></label>
             <input 
               type="email" 
               placeholder="ejemplo@correo.com"
               formControlName="email" 
-              class="input input-bordered w-full"
-              [class.input-error]="f['email'].touched && f['email'].invalid"
-            >
-            <label class="label" *ngIf="f['email'].touched && f['email'].invalid">
-              <span class="label-text-alt text-error">Ingresa un correo válido</span>
-            </label>
+              pInputText
+              class="w-full"
+            />
+            <small class="text-red-500" *ngIf="f['email'].touched && f['email'].invalid">Ingresa un correo válido</small>
           </div>
 
-          <div class="form-control mb-4">
-            <label class="label">
-              <span class="label-text font-medium">Teléfono</span>
-            </label>
+          <div class="flex flex-col gap-2 mb-4">
+            <label class="font-medium">Teléfono</label>
             <input 
               type="tel" 
               placeholder="Ej: 3001234567"
               formControlName="phone" 
-              class="input input-bordered w-full"
-            >
+              pInputText
+              class="w-full"
+            />
           </div>
 
-          <div class="form-control mb-4">
-            <label class="label">
-              <span class="label-text font-medium">Fecha de Nacimiento <span class="text-error">*</span></span>
-            </label>
+          <div class="flex flex-col gap-2 mb-4">
+            <label class="font-medium">Fecha de Nacimiento <span class="text-red-500">*</span></label>
             <input 
               type="date" 
               formControlName="dateBorn" 
-              class="input input-bordered w-full"
-              [class.input-error]="f['dateBorn'].touched && f['dateBorn'].invalid"
-            >
-            <label class="label" *ngIf="f['dateBorn'].touched && f['dateBorn'].invalid">
-              <span class="label-text-alt text-error">La fecha de nacimiento es requerida</span>
-            </label>
+              pInputText
+              class="w-full"
+            />
+            <small class="text-red-500" *ngIf="f['dateBorn'].touched && f['dateBorn'].invalid">La fecha de nacimiento es requerida</small>
           </div>
 
-          <div class="form-control mb-4">
-            <label class="label cursor-pointer justify-start gap-3">
-              <input 
-                type="checkbox" 
-                formControlName="hasSiblings" 
-                class="checkbox checkbox-primary"
-              >
-              <span class="label-text">¿Va a inscribir a su hermano/a también?</span>
-            </label>
+          <div class="flex items-center gap-3 mb-4">
+            <p-checkbox 
+              formControlName="hasSiblings" 
+              [binary]="true"
+              inputId="hasSiblings"
+            />
+            <label for="hasSiblings">¿Va a inscribir a su hermano/a también?</label>
           </div>
 
-          <div class="divider"></div>
+          <p-divider />
 
-          <div class="alert alert-success mb-4" *ngIf="successMessage">
-            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>{{ successMessage }}</span>
-          </div>
+          <p-message *ngIf="successMessage" severity="success" styleClass="mb-4 w-full">
+            {{ successMessage }}
+          </p-message>
 
-          <div class="alert alert-error mb-4" *ngIf="errorMessage">
-            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>{{ errorMessage }}</span>
-          </div>
+          <p-message *ngIf="errorMessage" severity="error" styleClass="mb-4 w-full">
+            {{ errorMessage }}
+          </p-message>
 
-          <div class="card-actions justify-end gap-2 mt-6">
-            <button 
-              type="button" 
-              class="btn btn-ghost"
+          <div class="flex justify-end gap-2 mt-6">
+            <p-button 
+              label="Limpiar" 
+              [text]="true" 
               (click)="resetForm()"
               [disabled]="loading"
-            >
-              Limpiar
-            </button>
-            <button 
+            />
+            <p-button 
               type="submit" 
-              class="btn btn-primary"
+              label="Registrarse"
               [disabled]="loading"
-            >
-              <span *ngIf="loading" class="loading loading-spinner loading-sm"></span>
-              <span *ngIf="!loading">Registrarse</span>
-            </button>
+              [loading]="loading"
+            />
           </div>
 
         </form>
-
-      </div>
-    </div>
+    </p-card>
 
   </div>
 </div>

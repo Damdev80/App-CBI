@@ -3,11 +3,15 @@ import { Component, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ApiBibliaService } from "src/app/core/services/api-biblia.service";
 import { Router } from "@angular/router";
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'module-biblia',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, InputTextModule, ButtonModule, SelectModule, MessageModule],
   templateUrl: './module-biblia.component.html'
 })
 export class ModuleBibliaComponent {
@@ -15,8 +19,10 @@ export class ModuleBibliaComponent {
   private router = inject(Router);
 
   books = ['salmos','proverbios','mateo','marcos','lucas','juan','genesis','exodo','levitico','numeros','deuteronomio'];
+  bookOptions = this.books.map(b => ({ label: b, value: b }));
   selectedBook = 'salmos';
   chapters: number[] = [];
+  chapterOptions: { label: string; value: number }[] = [];
   selectedChapter?: number;
   version?: string;
   result: any = null;
@@ -30,6 +36,7 @@ export class ModuleBibliaComponent {
     this.error = undefined;
     this.selectedChapter = undefined;
     this.chapters = [];
+    this.chapterOptions = [];
     this.api.getBookInfo(this.selectedBook).subscribe({
       next: info => {
         if (typeof info.chapters === 'number') {
@@ -40,13 +47,14 @@ export class ModuleBibliaComponent {
         } else if (info.chapterCount) {
           this.chapters = Array.from({ length: info.chapterCount }, (_, i) => i + 1);
         } else {
-          // fallback razonable
           this.chapters = Array.from({ length: 50 }, (_, i) => i + 1);
         }
+        this.chapterOptions = this.chapters.map(c => ({ label: String(c), value: c }));
       },
       error: err => {
         this.error = 'No se pudo obtener info del libro: ' + (err?.message || err);
         this.chapters = Array.from({ length: 50 }, (_, i) => i + 1);
+        this.chapterOptions = this.chapters.map(c => ({ label: String(c), value: c }));
       }
     });
   }

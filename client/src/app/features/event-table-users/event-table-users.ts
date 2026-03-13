@@ -4,11 +4,26 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UsersEventService } from '../../core/services/users-event.services';
 import { UsersEvent, PaymentInfo, AddPaymentDto } from '../../shared/models/userEvent.model';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { TagModule } from 'primeng/tag';
+import { TableModule } from 'primeng/table';
+import { PaginatorModule } from 'primeng/paginator';
+import { DialogModule } from 'primeng/dialog';
+import { MessageModule } from 'primeng/message';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-event-registration-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule, FormsModule,
+    CardModule, InputTextModule, ButtonModule, SelectModule,
+    TagModule, TableModule, PaginatorModule, DialogModule,
+    MessageModule, ProgressSpinnerModule
+  ],
   templateUrl: './event-registration-list.component.html',
 })
 export class EventRegistrationListComponent implements OnInit {
@@ -38,6 +53,23 @@ export class EventRegistrationListComponent implements OnInit {
   // Filtros con signals
   searchTerm = signal<string>('');
   filterPayStatus = signal<'ALL' | 'PAGO' | 'DEBE'>('ALL');
+
+  // PrimeNG select options
+  payStatusOptions = [
+    { label: 'Todos', value: 'ALL' },
+    { label: 'Pagado', value: 'PAGO' },
+    { label: 'Pendiente', value: 'DEBE' }
+  ];
+  pageSizeSelectOptions = this.pageSizeOptions.map(s => ({ label: `${s} por página`, value: s }));
+  payStatusChangeOptions = [
+    { label: 'Debe', value: 'DEBE' },
+    { label: 'Pagado', value: 'PAGO' }
+  ];
+  wayPayOptions = [
+    { label: 'Efectivo', value: 'EFECTIVO' },
+    { label: 'Transferencia', value: 'TRANSFERENCIA' }
+  ];
+  showPaymentModalVisible = false;
 
   // Computed signals para filtrado y paginación
   filteredRegistrations = computed(() => {
@@ -156,6 +188,7 @@ export class EventRegistrationListComponent implements OnInit {
     this.paymentAmount.set(0);
     this.wayPay.set('EFECTIVO');
     this.showPaymentModal.set(true);
+    this.showPaymentModalVisible = true;
     
     // Cargar información detallada del pago
     this.usersEventService.getPaymentInfo(registration.id).subscribe({
@@ -170,6 +203,7 @@ export class EventRegistrationListComponent implements OnInit {
 
   closePaymentModal() {
     this.showPaymentModal.set(false);
+    this.showPaymentModalVisible = false;
     this.selectedRegistration.set(null);
     this.selectedPaymentInfo.set(null);
     this.paymentAmount.set(0);

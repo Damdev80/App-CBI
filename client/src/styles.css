@@ -1,11 +1,378 @@
-/* You can add global styles to this file, and also import other style files */
+/* PrimeNG Global Styles */
 @import "tailwindcss";
-@plugin "daisyui"; /* Import DaisyUI plugin */
 
-@theme{
-    --color-primary: #FFFFFF; /* Example primary color */
-    --color-secondary: #000000; /* Example secondary color */
-    --font-family-base: 'Inter', sans-serif; /* Example font family */
+/* ========== COLOR SYSTEM ========== */
+/* Church-themed color palette for light and dark modes */
+
+:root {
+  --font-family: 'Inter', sans-serif;
+  
+  /* === LIGHT MODE COLORS === */
+  /* Primary colors - Church blue/royal */
+  --color-primary: #1e40af; /* Blue 700 */
+  --color-primary-hover: #1d4ed8; /* Blue 600 */
+  --color-primary-light: #dbeafe; /* Blue 100 */
+  
+  /* Secondary colors - Warm gold/amber */
+  --color-secondary: #d97706; /* Amber 600 */
+  --color-secondary-hover: #f59e0b; /* Amber 500 */
+  --color-secondary-light: #fef3c7; /* Amber 50 */
+  
+  /* Neutral backgrounds */
+  --color-background: #ffffff;
+  --color-background-secondary: #f8fafc; /* Slate 50 */
+  --color-background-tertiary: #f1f5f9; /* Slate 100 */
+  
+  /* Text colors */
+  --color-text-primary: #0f172a; /* Slate 900 */
+  --color-text-secondary: #475569; /* Slate 600 */
+  --color-text-tertiary: #64748b; /* Slate 500 */
+  --color-text-muted: #94a3b8; /* Slate 400 */
+  
+  /* Border colors */
+  --color-border: #e2e8f0; /* Slate 200 */
+  --color-border-light: #f1f5f9; /* Slate 100 */
+  
+  /* Status colors */
+  --color-success: #059669; /* Emerald 600 */
+  --color-warning: #d97706; /* Amber 600 */
+  --color-error: #dc2626; /* Red 600 */
+  --color-info: #2563eb; /* Blue 600 */
+
+  /* PrimeNG token bridge (light mode) */
+  --p-surface-0: var(--color-background);
+  --p-surface-50: var(--color-background-secondary);
+  --p-surface-100: var(--color-background-tertiary);
+  --p-content-background: var(--color-background);
+  --p-content-color: var(--color-text-primary);
+  --p-text-color: var(--color-text-primary);
+  --p-text-muted-color: var(--color-text-muted);
+  --p-border-color: var(--color-border);
+  --p-primary-color: var(--color-primary);
+  --p-primary-hover-color: var(--color-primary-hover);
+}
+
+.dark-mode {
+  /* === DARK MODE COLORS === */
+  /* Primary colors - Brighter blue for dark mode */
+  --color-primary: #3b82f6; /* Blue 500 */
+  --color-primary-hover: #2563eb; /* Blue 600 */
+  --color-primary-light: #1e3a8a; /* Blue 800 */
+  
+  /* Secondary colors - Warmer amber for dark */
+  --color-secondary: #f59e0b; /* Amber 500 */
+  --color-secondary-hover: #d97706; /* Amber 600 */
+  --color-secondary-light: #451a03; /* Amber 950 */
+  
+  /* Neutral backgrounds */
+  --color-background: #0f172a; /* Slate 900 */
+  --color-background-secondary: #1e293b; /* Slate 800 */
+  --color-background-tertiary: #334155; /* Slate 700 */
+  
+  /* Text colors */
+  --color-text-primary: #f8fafc; /* Slate 50 */
+  --color-text-secondary: #cbd5e1; /* Slate 300 */
+  --color-text-tertiary: #94a3b8; /* Slate 400 */
+  --color-text-muted: #64748b; /* Slate 500 */
+  
+  /* Border colors */
+  --color-border: #475569; /* Slate 600 */
+  --color-border-light: #334155; /* Slate 700 */
+  
+  /* Status colors - Adjusted for dark mode */
+  --color-success: #10b981; /* Emerald 500 */
+  --color-warning: #f59e0b; /* Amber 500 */
+  --color-error: #ef4444; /* Red 500 */
+  --color-info: #3b82f6; /* Blue 500 */
+
+  /* PrimeNG token bridge (dark mode) */
+  --p-surface-0: var(--color-background);
+  --p-surface-50: var(--color-background-secondary);
+  --p-surface-100: var(--color-background-tertiary);
+  --p-content-background: var(--color-background);
+  --p-content-color: var(--color-text-primary);
+  --p-text-color: var(--color-text-primary);
+  --p-text-muted-color: var(--color-text-muted);
+  --p-border-color: var(--color-border);
+  --p-primary-color: var(--color-primary);
+  --p-primary-hover-color: var(--color-primary-hover);
+}
+
+/* ========== UTILITY CLASSES ========== */
+/* Custom utility classes using Tailwind v4 @utility directive */
+
+@utility bg-main {
+  background-color: var(--color-background);
+}
+@utility bg-secondary-bg {
+  background-color: var(--color-background-secondary);
+}
+@utility bg-tertiary {
+  background-color: var(--color-background-tertiary);
+}
+@utility bg-primary-light {
+  background-color: var(--color-primary-light);
+}
+@utility bg-secondary-light {
+  background-color: var(--color-secondary-light);
+}
+
+@utility text-main {
+  color: var(--color-text-primary);
+}
+@utility text-secondary-text {
+  color: var(--color-text-secondary);
+}
+@utility text-tertiary {
+  color: var(--color-text-tertiary);
+}
+@utility text-muted {
+  color: var(--color-text-muted);
+}
+@utility text-primary-color {
+  color: var(--color-primary);
+}
+@utility text-secondary-color {
+  color: var(--color-secondary);
+}
+
+@utility border-main {
+  border-color: var(--color-border);
+}
+@utility border-light {
+  border-color: var(--color-border-light);
+}
+@utility border-primary-border {
+  border-color: var(--color-primary);
+}
+
+/* Compatibility layer for existing surface-* classes used across templates */
+.bg-surface-0 { background-color: var(--color-background) !important; }
+.bg-surface-50 { background-color: var(--color-background-secondary) !important; }
+.bg-surface-100 { background-color: var(--color-background-tertiary) !important; }
+.text-surface-400 { color: var(--color-text-muted) !important; }
+.text-surface-500 { color: var(--color-text-tertiary) !important; }
+.text-surface-700 { color: var(--color-text-secondary) !important; }
+.text-surface-800 { color: var(--color-text-primary) !important; }
+.border-surface-200 { border-color: var(--color-border) !important; }
+
+/* ========== GLOBAL STYLES ========== */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ========== PRIMENG OVERRIDES ========== */
+/* PrimeNG toast z-index fix */
+.p-toast {
+  z-index: 9999 !important;
+}
+
+/* Override PrimeNG component colors to use our CSS variables */
+.p-component {
+  color: var(--color-text-primary);
+}
+
+.p-card {
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.p-card .p-card-header {
+  background-color: var(--color-background-secondary);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.p-card .p-card-content {
+  color: var(--color-text-primary);
+}
+
+.p-button.p-button-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.p-button.p-button-primary:hover {
+  background-color: var(--color-primary-hover) !important;
+  border-color: var(--color-primary-hover) !important;
+}
+
+/* Force semantic variants into a minimal palette */
+.p-button.p-button-success,
+.p-button.p-button-info {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: #fff !important;
+}
+
+.p-button.p-button-success:hover,
+.p-button.p-button-info:hover {
+  background-color: var(--color-primary-hover) !important;
+  border-color: var(--color-primary-hover) !important;
+}
+
+.p-button.p-button-warning {
+  background-color: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+  color: #fff !important;
+}
+
+.p-button.p-button-warning:hover {
+  background-color: var(--color-secondary-hover) !important;
+  border-color: var(--color-secondary-hover) !important;
+}
+
+.p-button.p-button-success.p-button-outlined,
+.p-button.p-button-info.p-button-outlined {
+  color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  background: transparent !important;
+}
+
+.p-button.p-button-warning.p-button-outlined {
+  color: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+  background: transparent !important;
+}
+
+.p-tag.p-tag-success,
+.p-tag.p-tag-info,
+.p-tag.p-tag-secondary {
+  background-color: var(--color-primary-light) !important;
+  color: var(--color-primary) !important;
+}
+
+.p-message.p-message-success,
+.p-message.p-message-info {
+  background-color: var(--color-primary-light) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.p-toolbar {
+  background-color: var(--color-background);
+  border-color: var(--color-border);
+}
+
+.p-table .p-datatable-thead > tr > th {
+  background-color: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+.p-table .p-datatable-tbody > tr > td {
+  color: var(--color-text-primary);
+  border-color: var(--color-border-light);
+}
+
+.p-table .p-datatable-tbody > tr:nth-child(even) {
+  background-color: var(--color-background-secondary);
+}
+
+/* Input field overrides */
+.p-inputtext, .p-dropdown, .p-multiselect {
+  background-color: var(--color-background);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.p-inputtext:focus, .p-dropdown:focus, .p-multiselect:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+/* Strong dark-mode overrides to prevent white surfaces */
+.dark-mode .p-card,
+.dark-mode .p-drawer,
+.dark-mode .p-menu,
+.dark-mode .p-toolbar,
+.dark-mode .p-dialog,
+.dark-mode .p-paginator,
+.dark-mode .p-select,
+.dark-mode .p-select-overlay,
+.dark-mode .p-dropdown,
+.dark-mode .p-multiselect,
+.dark-mode .p-message,
+.dark-mode .p-tag {
+  background-color: var(--color-background-secondary) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border) !important;
+}
+
+.dark-mode .p-card .p-card-body,
+.dark-mode .p-card .p-card-content,
+.dark-mode .p-dialog .p-dialog-content,
+.dark-mode .p-menu .p-menu-list,
+.dark-mode .p-datatable-table-container {
+  background-color: var(--color-background) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.dark-mode .p-inputtext,
+.dark-mode .p-password input,
+.dark-mode .p-select-label,
+.dark-mode .p-dropdown-label,
+.dark-mode .p-multiselect-label,
+.dark-mode input,
+.dark-mode textarea {
+  background-color: var(--color-background) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border) !important;
+}
+
+.dark-mode .p-inputtext::placeholder,
+.dark-mode .p-password input::placeholder,
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+  color: var(--color-text-muted) !important;
+}
+
+.dark-mode .p-inputicon,
+.dark-mode .p-password-toggle-mask-icon,
+.dark-mode .pi {
+  color: var(--color-text-muted) !important;
+}
+
+.dark-mode .p-divider .p-divider-content {
+  background-color: var(--color-background) !important;
+  color: var(--color-text-muted) !important;
+}
+
+.dark-mode .p-checkbox .p-checkbox-box {
+  background-color: var(--color-background) !important;
+  border-color: var(--color-border) !important;
+}
+
+/* ========== DARK MODE TOGGLE ========== */
+.theme-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 999;
+  background-color: var(--color-background-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background-color: var(--color-background-tertiary);
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+  .theme-toggle {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
 }
 
 
