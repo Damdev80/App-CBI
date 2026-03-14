@@ -2,7 +2,7 @@
   <div class="w-full flex justify-end items-center px-4 pt-6">
     <p-button label="Ver mis grupos y unirme" [outlined]="true" (click)="showGroupsModal = true" />
   </div>
-  <div class="w-full flex flex-col md:flex-row items-start gap-10 bg-gradient-to-br from-primary/10 to-surface-0/80 rounded-2xl shadow-lg border border-surface-200 p-8 md:p-16 mt-0 md:mt-16 transition-all duration-200">
+  <div class="w-full flex flex-col md:flex-row items-start gap-10 bg-surface-0 rounded-2xl shadow-lg border border-surface-200 p-8 md:p-16 mt-0 md:mt-16 transition-all duration-200">
     <div class="w-full flex flex-col md:flex-row md:items-start md:gap-10">
       <!-- Lado izquierdo: foto, logo, frase -->
       <div class="flex flex-col items-center md:items-start md:mr-10 mb-6 md:mb-0 w-full max-w-xs mx-auto gap-4">
@@ -13,7 +13,7 @@
         </div>
         <p-button label="Cambiar foto" size="small" [rounded]="true" styleClass="mx-auto mt-1 mb-2" />
         <div class="flex-1"></div>
-        <div class="flex flex-col items-center w-full gap-2 mt-20 mb-2 p-4 rounded-xl bg-surface-0/80 shadow-sm">
+        <div class="flex flex-col items-center w-full gap-2 mt-20 mb-2 p-4 rounded-xl bg-surface-0 shadow-sm">
           <img src="/img/cbiLogo.svg" alt="Logo" class="w-16 h-16 mb-4" />
           <span class="text-xs text-surface-400 text-center leading-relaxed block px-2 mt-4">"Pues Dios amó tanto al mundo que dio a su único Hijo, para que todo el que crea en él no se pierda, sino que tenga vida eterna. Dios no envió a su Hijo al mundo para condenar al mundo, sino para salvarlo por medio de él."<br><b>Juan 3:16-17 (NTV)</b></span>
         </div>
@@ -80,12 +80,12 @@
 
   <!-- Modal de grupos y gestión -->
   <p-dialog header="Mis Grupos" [(visible)]="showGroupsModal" [modal]="true" [style]="{ width: '42rem' }" [closable]="true">
-    <div *ngIf="groupLoading() && groupList().length === 0" class="flex items-center gap-2 text-primary/70 mb-4">
+    <div *ngIf="groupLoading() && groupList().length === 0" class="flex items-center gap-2 text-primary mb-4">
       <p-progressSpinner [style]="{ width: '24px', height: '24px' }" strokeWidth="4" /> Cargando grupos...
     </div>
     <div *ngIf="!groupLoading() && groupList().length === 0" class="text-surface-400 italic mb-4">No perteneces a ningún grupo actualmente.</div>
     <div *ngIf="!groupLoading() && groupList().length > 0" class="flex flex-col gap-4 mb-8">
-      <div *ngFor="let group of groupList()" class="flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-xl border border-surface-200 bg-surface-0/80 shadow-sm transition-all duration-200 hover:shadow-md">
+      <div *ngFor="let group of groupList()" class="flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-xl border border-surface-200 bg-surface-0 shadow-sm transition-all duration-200 hover:shadow-md">
         <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-6 flex-1">
           <span class="font-semibold text-surface-700 text-lg">{{ group.groupName }}</span>
           <span class="text-xs text-surface-400">Nivel de Discipulado: <b>{{ profileForm.get('levelDicipules')?.value }}</b></span>
@@ -94,11 +94,11 @@
       </div>
     </div>
     <p-divider align="center">Unirse a un grupo</p-divider>
-    <div *ngIf="allGroupsLoading()" class="flex items-center gap-2 text-primary/70 mb-4">
+    <div *ngIf="allGroupsLoading()" class="flex items-center gap-2 text-primary mb-4">
       <p-progressSpinner [style]="{ width: '24px', height: '24px' }" strokeWidth="4" /> Cargando todos los grupos...
     </div>
     <div *ngIf="!allGroupsLoading() && allGroups().length > 0" class="flex flex-col gap-3 max-h-96 overflow-y-auto">
-      <div *ngFor="let group of allGroups()" class="flex items-center justify-between gap-4 p-3 rounded-lg border border-surface-200 bg-surface-0/80 shadow-sm">
+      <div *ngFor="let group of allGroups()" class="flex items-center justify-between gap-4 p-3 rounded-lg border border-surface-200 bg-surface-0 shadow-sm">
         <span class="font-medium text-surface-700 flex items-center gap-2">
           <ng-container *ngIf="isMemberOfGroup(group.id); else notMember">
             <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary"></span>
