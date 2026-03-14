@@ -3097,12 +3097,9 @@ packages:
   custom-event@1.0.1:
     resolution: {integrity: sha512-GAj5FOq0Hd+RsCGVJxZuKaIDXDf3h6GQoNEjFgbLLI/trgtavwUbSnZ5pVfg27DVCaWjIohryS0JFwIJyT2cMg==}
 
-<<<<<<< HEAD
   daisyui@5.5.19:
     resolution: {integrity: sha512-pbFAkl1VCEh/MPCeclKL61I/MqRIFFhNU7yiXoDDRapXN4/qNCoMxeCCswyxEEhqL5eiTTfwHvucFtOE71C9sA==}
 
-=======
->>>>>>> e7b186f2f6660a9bd0517ebef5bd8a25db14dd11
   date-format@4.0.14:
     resolution: {integrity: sha512-39BOQLs9ZjKh0/patS9nrT8wc3ioX3/eA/zgbKNopnF2wCqJEoxywwwElATYvRsXdnOxA/OQeQoFZ3rFjVajhg==}
     engines: {node: '>=4.0'}
@@ -9235,11 +9232,8 @@ snapshots:
 
   custom-event@1.0.1: {}
 
-<<<<<<< HEAD
   daisyui@5.5.19: {}
 
-=======
->>>>>>> e7b186f2f6660a9bd0517ebef5bd8a25db14dd11
   date-format@4.0.14: {}
 
   debug@2.6.9:
