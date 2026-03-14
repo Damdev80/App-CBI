@@ -5,11 +5,26 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { LoginEventService } from "@app/core/services/login-event.service";
 import { LoginResponse, HttpErrorResponse } from "@app/shared/models/login.model";
 import { NotificationService } from "@app/core/services/notification.service";
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DividerModule } from 'primeng/divider';
+import { MessageModule } from 'primeng/message';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+
 @Component({
     selector: 'app-login',
     standalone: true,
     templateUrl: './login.component.html',
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [
+        CommonModule, ReactiveFormsModule,
+        CardModule, InputTextModule, PasswordModule, ButtonModule,
+        CheckboxModule, DividerModule, MessageModule,
+        IconFieldModule, InputIconModule
+    ],
 })
 export class LoginComponent {
 

@@ -1,11 +1,12 @@
 import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Router } from "@angular/router";
+import { ButtonModule } from 'primeng/button';
 
 @Component({
     selector: 'app-404',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, ButtonModule],
     templateUrl: './404.component.html',
 })
 

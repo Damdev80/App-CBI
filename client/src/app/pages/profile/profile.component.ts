@@ -6,9 +6,16 @@ import { Router } from "@angular/router";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from "@angular/forms";
 import { Signal, signal } from "@angular/core";
 import { profileService, UserProfile, Gender, Dicipules } from "../../core/services/profile.service";
-import { HttpClientModule } from "@angular/common/http";
 import { MembersService } from '../../core/services/members.service';
 import { GroupsService } from '../../core/services/groups.service';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { MessageModule } from 'primeng/message';
+import { DialogModule } from 'primeng/dialog';
+import { DividerModule } from 'primeng/divider';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 export interface GroupInfo {
   groupId: string;
@@ -19,7 +26,11 @@ export interface GroupInfo {
 @Component({
     selector: 'app-profile',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, HttpClientModule],
+    imports: [
+        CommonModule, ReactiveFormsModule, FormsModule,
+        CardModule, InputTextModule, ButtonModule, SelectModule,
+        MessageModule, DialogModule, DividerModule, ProgressSpinnerModule
+    ],
     templateUrl: './profile.component.html',
 })
 export class Profile implements OnInit {
@@ -40,6 +51,12 @@ export class Profile implements OnInit {
     successMessage = signal('');
     genderOptions = Object.values(Gender);
     dicipulesOptions = Object.values(Dicipules);
+    dicipulesSelectOptions = [
+        { label: 'I', value: 'I' },
+        { label: 'II', value: 'II' },
+        { label: 'III', value: 'III' },
+        { label: 'IV', value: 'IV' }
+    ];
     groupList = signal<GroupInfo[]>([]);
     groupLoading = signal(false);
     allGroups = signal<any[]>([]);

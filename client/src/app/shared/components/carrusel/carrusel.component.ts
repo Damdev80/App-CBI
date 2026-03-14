@@ -1,14 +1,16 @@
 import { Component, Input, OnInit, OnDestroy, signal, computed, effect } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { ProgressSpinnerModule } from "primeng/progressspinner";
+import { TagModule } from "primeng/tag";
 import { CarouselItem  } from "./carrusel.interface";
 
 
 @Component({
     selector: 'app-carrusel',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, ProgressSpinnerModule, TagModule],
     template: `
-    <div class="carousel carousel-center w-full overflow-hidden" 
+    <div class="w-full overflow-hidden" 
          [style.height]="height()">
       
       <!-- Carousel Container -->
@@ -19,21 +21,21 @@ import { CarouselItem  } from "./carrusel.interface";
              [style.transform]="'translateX(-' + (currentIndex() * 100) + '%)'">
           
           @for (item of items(); track item.id; let i = $index) {
-            <div class="carousel-item w-full h-full shrink-0 relative">
+            <div class="w-full h-full shrink-0 relative">
               <!-- Responsive Image -->
               <picture>
                 <source *ngIf="item.imageMobile" [srcset]="item.imageMobile" media="(max-width: 768px)">
                 <img 
                   [src]="item.image" 
                   [alt]="item.title || 'Carousel item ' + (i + 1)"
-                  class="w-full h-auto sm:h-full object-contain sm:object-cover min-h-[60vh] sm:min-h-0 bg-base-200">
+                  class="w-full h-auto sm:h-full object-contain sm:object-cover min-h-[60vh] sm:min-h-0 bg-surface-50">
               </picture>
               
               <!-- Overlay with content (en todos los slides) -->
               @if (item.title || item.description) {
-                <div class="absolute inset-0 bg-gradient-to-t from-base-300/80 via-transparent to-transparent 
+                <div class="absolute inset-0 bg-gradient-to-t from-surface-200/80 via-transparent to-transparent 
                            flex items-end p-6">
-                  <div class="text-base-content">
+                  <div class="text-surface-700">
                     @if (item.title) {
                       <h3 class="text-2xl font-bold mb-2">{{ item.title }}</h3>
                     }
@@ -42,7 +44,7 @@ import { CarouselItem  } from "./carrusel.interface";
                     }
                     @if (item.link) {
                       <a [href]="item.link" 
-                         class="btn btn-primary btn-sm">
+                         class="inline-flex items-center px-3 py-1.5 text-sm bg-primary text-white rounded hover:bg-primary/90 transition-colors">
                         Ver más
                       </a>
                     }
@@ -58,8 +60,7 @@ import { CarouselItem  } from "./carrusel.interface";
           <!-- Previous Button -->
           <button 
             (click)="goToPrevious()"
-            class="btn btn-circle btn-ghost absolute left-4 top-1/2 -translate-y-1/2 
-                   bg-base-100/30 hover:bg-base-100/50 backdrop-blur-sm z-10">
+            class="w-10 h-10 rounded-full flex items-center justify-center absolute left-4 top-1/2 -translate-y-1/2 bg-surface-0/30 hover:bg-surface-0/50 backdrop-blur-sm z-10 border-none cursor-pointer transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -68,8 +69,7 @@ import { CarouselItem  } from "./carrusel.interface";
           <!-- Next Button -->
           <button 
             (click)="goToNext()"
-            class="btn btn-circle btn-ghost absolute right-4 top-1/2 -translate-y-1/2 
-                   bg-base-100/30 hover:bg-base-100/50 backdrop-blur-sm z-10">
+            class="w-10 h-10 rounded-full flex items-center justify-center absolute right-4 top-1/2 -translate-y-1/2 bg-surface-0/30 hover:bg-surface-0/50 backdrop-blur-sm z-10 border-none cursor-pointer transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
             </svg>
@@ -78,8 +78,8 @@ import { CarouselItem  } from "./carrusel.interface";
 
         <!-- Loading indicator -->
         @if (isLoadingSignal()) {
-          <div class="absolute inset-0 flex items-center justify-center bg-base-200">
-            <span class="loading loading-spinner loading-lg text-primary"></span>
+          <div class="absolute inset-0 flex items-center justify-center bg-surface-50">
+            <p-progressSpinner [style]="{'width': '2.5rem', 'height': '2.5rem'}" />
           </div>
         }
       </div>
@@ -93,7 +93,7 @@ import { CarouselItem  } from "./carrusel.interface";
               class="w-3 h-3 rounded-full transition-all duration-200"
               [class]="i === currentIndex() 
                       ? 'bg-primary scale-110' 
-                      : 'bg-base-content/50 hover:bg-base-content/80'">
+                      : 'bg-surface-700/50 hover:bg-surface-700/80'">
             </button>
           }
         </div>
@@ -101,9 +101,7 @@ import { CarouselItem  } from "./carrusel.interface";
 
       <!-- Slide Counter -->
       @if (showCounterSignal() && items().length > 1) {
-        <div class="badge badge-neutral absolute top-4 right-4 backdrop-blur-sm">
-          {{ currentIndex() + 1 }} / {{ items().length }}
-        </div>
+        <p-tag class="absolute top-4 right-4 backdrop-blur-sm" [value]="(currentIndex() + 1) + ' / ' + items().length" />
       }
     </div>
     `,

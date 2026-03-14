@@ -1,98 +1,61 @@
-<!-- client/src/app/pages/login/login.component.html -->
-<div class="min-h-screen flex items-center justify-center bg-base-200">
-  <div class="card w-full max-w-md bg-base-100 shadow-xl">
-    <div class="card-body">
+<div class="min-h-screen flex items-center justify-center bg-secondary-bg">
+  <p-card styleClass="w-full max-w-md shadow-xl">
+    <!-- Header -->
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-bold text-main">Bienvenido</h1>
+      <p class="text-muted mt-2">Inicia sesión en tu cuenta</p>
+    </div>
 
-      <!-- Header -->
-      <div class="text-center mb-6">
-        <h1 class="text-3xl font-bold">Bienvenido</h1>
-        <p class="text-base-content/60 mt-2">Inicia sesión en tu cuenta</p>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+      <!-- Error Message -->
+      @if (errorMessage()) {
+        <p-message severity="error" styleClass="w-full mb-4">
+          {{ errorMessage() }}
+        </p-message>
+      }
+
+      <!-- Email -->
+      <div class="flex flex-col gap-2 mb-4">
+        <label for="email" class="font-medium text-main text-sm">Correo Electrónico</label>
+        <p-iconField class="w-full">
+          <p-inputIcon styleClass="pi pi-envelope" />
+          <input pInputText id="email" type="email" placeholder="ejemplo@correo.com" formControlName="email" class="w-full"
+            [ngClass]="{'ng-invalid ng-dirty': loginForm.get('email')?.invalid && loginForm.get('email')?.touched}" />
+        </p-iconField>
+        @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+          <small class="text-red-500">Ingresa un correo válido</small>
+        }
       </div>
 
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        
-        <!-- Error Message -->
-        @if (errorMessage()) {
-          <div class="alert alert-error mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>{{ errorMessage() }}</span>
-          </div>
+      <!-- Password -->
+      <div class="flex flex-col gap-2 mb-4">
+        <label for="password" class="font-medium text-main text-sm">Contraseña</label>
+        <p-password id="password" formControlName="password" placeholder="••••••••" [toggleMask]="true" [feedback]="false" styleClass="w-full" inputStyleClass="w-full"
+          [ngClass]="{'ng-invalid ng-dirty': loginForm.get('password')?.invalid && loginForm.get('password')?.touched}" />
+        @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+          <small class="text-red-500">La contraseña debe tener al menos 6 caracteres</small>
         }
+      </div>
 
-        <!-- Email -->
-        <div class="form-control w-full mb-4">
-          <label class="label">
-            <span class="label-text font-medium">Correo Electrónico</span>
-          </label>
-          <label class="input input-bordered w-full flex items-center gap-2" 
-                 [class.input-error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
-              class="w-4 h-4 opacity-70">
-              <path
-                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-              <path
-                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-            </svg>
-            <input type="email" class="grow" placeholder="ejemplo@correo.com" formControlName="email" />
-          </label>
-          @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
-            <label class="label">
-              <span class="label-text-alt text-error">Ingresa un correo válido</span>
-            </label>
-          }
-        </div>
+      <!-- Remember me -->
+      <div class="flex items-center gap-3 mb-6">
+        <p-checkbox formControlName="rememberMe" [binary]="true" inputId="rememberMe" />
+        <label for="rememberMe" class="text-main text-sm cursor-pointer">Recordarme</label>
+      </div>
 
-        <!-- Password -->
-        <div class="form-control w-full mb-4">
-          <label class="label">
-            <span class="label-text font-medium">Contraseña</span>
-          </label>
-          <label class="input input-bordered w-full flex items-center gap-2"
-                 [class.input-error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
-              class="w-4 h-4 opacity-70">
-              <path fill-rule="evenodd"
-                d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-                clip-rule="evenodd" />
-            </svg>
-            <input type="password" class="grow" placeholder="••••••••" formControlName="password" />
-          </label>
-          @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
-            <label class="label">
-              <span class="label-text-alt text-error">La contraseña debe tener al menos 6 caracteres</span>
-            </label>
-          }
-        </div>
+      <!-- Submit Button -->
+      <p-button type="submit" label="Iniciar Sesión" styleClass="w-full" [loading]="isLoading()" [disabled]="isLoading()" />
 
-        <!-- Remember me -->
-        <div class="form-control w-full mb-6">
-          <label class="label cursor-pointer justify-start gap-3">
-            <input type="checkbox" class="checkbox checkbox-primary checkbox-sm" formControlName="rememberMe" />
-            <span class="label-text">Recordarme</span>
-          </label>
-        </div>
+      <p-divider align="center">
+        <span class="text-muted text-sm">O</span>
+      </p-divider>
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary w-full" [disabled]="isLoading()">
-          @if (isLoading()) {
-            <span class="loading loading-spinner"></span>
-            Iniciando sesión...
-          } @else {
-            Iniciar Sesión
-          }
-        </button>
-
-        <div class="divider">O</div>
-
-        <!-- Register Link -->
-        <p class="text-center text-base-content/60">
-          ¿No tienes cuenta?
-          <a (click)="navegateTo('/register')" class="link link-primary font-medium cursor-pointer">Regístrate</a>
-        </p>
-      </form>
-
-    </div>
-  </div>
+      <!-- Register Link -->
+      <p class="text-center text-muted text-sm">
+        ¿No tienes cuenta?
+        <a (click)="navegateTo('/register')" class="text-primary-color font-medium cursor-pointer hover:underline">Regístrate</a>
+      </p>
+    </form>
+  </p-card>
 </div>

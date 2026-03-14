@@ -1,180 +1,95 @@
-<div class="drawer">
-  <input id="my-drawer" type="checkbox" class="drawer-toggle" />
-  
-  <div class="drawer-content flex flex-col">
-    <!-- Header -->
-    <header class="navbar bg-base-100 border-b border-base-300">
-      <div class="navbar-start">
-        <label for="my-drawer" class="btn btn-ghost btn-circle">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
-        </label>
-      </div>
-      
-      <div class="navbar-center">
-        <div class="flex items-center gap-2">
-          <img src="/img/cbiLogo.svg" alt="CBI" class="w-10 h-10"/>
-        </div>
-      </div>
-      
-      <div class="navbar-end gap-2">
-        <button class="btn btn-ghost btn-circle">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-          </svg>
-        </button>
-        <div class="dropdown dropdown-end">
-          <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-            <div class="w-10 rounded-full bg-base-300 flex items-center justify-center">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-              </svg>
-            </div>
-          </label>
-          <ul tabindex="0" class="menu dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow-lg border border-base-300">
-            <li><a (click)="navegateTo('/dashboard/profile')">Perfil</a></li>
-            <li><a>Configuración</a></li>
-            <div class="divider my-0"></div>
-            <li><a class="text-error" (click)="logout()">Cerrar Sesión</a></li>
-          </ul>
-        </div>
-      </div>
-    </header>
-    
-    <!-- Contenido principal -->
-    <main class="flex-1 p-6 bg-base-200">
-      <router-outlet></router-outlet>
-    </main>
-  </div>
-  
-  <!-- Sidebar -->
-  <div class="drawer-side z-50">
-    <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-    <aside class="bg-base-100 min-h-full w-80 border-r border-base-300">
-      <!-- Logo/Header del sidebar -->
-      <div class="flex items-center justify-between gap-2 p-4 border-b border-base-300">
-        <img src="img/cbiLogo.svg" alt="CBI" class="w-20 h-20"/>
-        <label for="my-drawer" class="btn btn-ghost btn-sm btn-circle">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </label>
-      </div>
-      
-      <!-- Menú del sidebar -->
-      <ul class="menu p-4 gap-2 w-full">
-        <app-sidebar-item [label]="'Dashboard'" [itemClass]="'flex items-center gap-3'">
-          <svg icon class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" (click)="navegateTo('/dashboard')">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-          </svg>
-        </app-sidebar-item>
-        
-        <!-- Dropdown de Eventos en el Sidebar -->
-        <li class="w-full">
-          <details>
-            <summary class="flex items-center gap-3 w-full">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-              </svg>
-              Registros de Eventos
-            </summary>
-            <ul class="max-h-60 overflow-y-auto">
-              @if (loadingEvents()) {
-                <li class="p-2 text-center">
-                  <span class="loading loading-spinner loading-xs"></span>
-                </li>
-              }
-              @if (!loadingEvents() && events().length === 0) {
-                <li>
-                  <a class="text-xs text-base-content/60">No hay eventos</a>
-                </li>
-              }
-              @for (event of events(); track event.id) {
-                <!-- Solo mostrar el evento 'Congreso Juvenil' si el usuario es juvenil, los demás eventos siempre -->
-                <ng-container *ngIf="event.title !== 'Congreso Juvenil' || userRole === 'juvenil'">
-                  <li>
-                    <a (click)="navigateToEventDetails(event.id)" class="text-sm">
-                      <div class="flex flex-col">
-                        <span class="font-medium">{{ event.title }}</span>
-                        <span class="text-xs opacity-60">{{ event.eventDate | date:'dd/MM/yyyy' }}</span>
-                      </div>
-                    </a>
-                  </li>
-                </ng-container>
-              }
-            </ul>
-          </details>
-        </li>
-        <app-sidebar-item [label]="'Usuarios'" [itemClass]="'flex items-center gap-3'">
-          <svg icon class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" (click)="navegateTo('/dashboard/users')">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-          </svg>
-        </app-sidebar-item>
-        <app-sidebar-item [label]="'Grupos'" [itemClass]="'flex items-center gap-3'">
-          <svg icon class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" (click)="navegateTo('/dashboard/groups')">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-          </svg>
-        </app-sidebar-item>
+<!-- Toast para notificaciones -->
+<p-toast />
 
-        <!-- Servicio Social de Niños -->
-        <li class="w-full">
-          <details>
-            <summary class="flex items-center gap-3 w-full">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-              </svg>
-              Servicio Social
-            </summary>
-            <ul>
-              <li>
-                <a (click)="navegateTo('/dashboard/profesores')" class="text-sm">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                  </svg>
-                  Profesores
-                </a>
-              </li>
-              <li>
-                <a (click)="navegateTo('/dashboard/servicio-social')" class="text-sm">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-                  </svg>
-                  Alumnos
-                </a>
-              </li>
-            </ul>
-          </details>
-        </li>
-        
-        <div class="divider"></div>
-        
-        <app-sidebar-item [label]="'Cerrar Sesión'" [itemClass]="'flex items-center gap-3 text-error'">
-          <svg icon class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" (click)="logout()">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-          </svg>
-        </app-sidebar-item>
-      </ul>
-    </aside>
-  </div>
+<div class="flex flex-col min-h-screen">
+  <!-- Header / Toolbar -->
+  <p-toolbar styleClass="border-b border-main shadow-sm bg-main text-main">
+    <ng-template #start>
+      <p-button icon="pi pi-bars" [rounded]="true" [text]="true" (click)="sidebarVisible.set(true)" />
+    </ng-template>
+    <ng-template #center>
+      <div class="flex items-center gap-2">
+        <img src="/img/cbiLogo.svg" alt="CBI" class="w-10 h-10"/>
+      </div>
+    </ng-template>
+    <ng-template #end>
+      <div class="flex items-center gap-2">
+        <p-button icon="pi pi-bell" [rounded]="true" [text]="true" />
+        <p-avatar icon="pi pi-user" shape="circle" (click)="userMenu.toggle($event)" styleClass="cursor-pointer" />
+        <p-menu #userMenu [model]="userMenuItems" [popup]="true" />
+      </div>
+    </ng-template>
+  </p-toolbar>
+
+  <!-- Contenido principal -->
+  <main class="flex-1 p-6 bg-secondary-bg text-main">
+    <router-outlet></router-outlet>
+  </main>
 </div>
 
-<!-- Notificaciones Toast -->
-@if (notification$ | async; as notification) {
-  <div class="toast toast-top toast-end z-50">
-    <div class="alert" [ngClass]="{
-      'alert-success': notification.type === 'success',
-      'alert-error': notification.type === 'error',
-      'alert-info': notification.type === 'info',
-      'alert-warning': notification.type === 'warning'
-    }">
-      <svg *ngIf="notification.type === 'success'" xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      <svg *ngIf="notification.type === 'error'" xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      <span>{{ notification.message }}</span>
+<!-- Sidebar / Drawer -->
+<p-drawer [(visible)]="sidebarVisible" [header]="''" styleClass="w-80">
+  <ng-template #header>
+    <div class="flex items-center justify-between w-full">
+      <img src="img/cbiLogo.svg" alt="CBI" class="w-20 h-20"/>
     </div>
+  </ng-template>
+
+  <div class="flex flex-col gap-1">
+    <!-- Dashboard -->
+    <p-button label="Dashboard" icon="pi pi-home" [text]="true" styleClass="w-full justify-start" (click)="navegateTo('/dashboard')" />
+
+    <!-- Registros de Eventos (expandible) -->
+    <div>
+      <p-button label="Registros de Eventos" icon="pi pi-calendar" [text]="true" styleClass="w-full justify-start"
+        [icon]="eventsExpanded() ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" iconPos="right"
+        (click)="eventsExpanded.set(!eventsExpanded())" />
+      @if (eventsExpanded()) {
+        <div class="ml-6 flex flex-col gap-1 max-h-60 overflow-y-auto">
+          @if (loadingEvents()) {
+            <div class="flex justify-center p-2">
+              <p-progressSpinner [style]="{width: '24px', height: '24px'}" strokeWidth="4" />
+            </div>
+          }
+          @if (!loadingEvents() && events().length === 0) {
+            <span class="text-xs text-muted p-2">No hay eventos</span>
+          }
+          @for (event of events(); track event.id) {
+            <ng-container *ngIf="event.title !== 'Congreso Juvenil' || userRole === 'juvenil'">
+              <p-button [text]="true" styleClass="w-full justify-start text-sm" (click)="navigateToEventDetails(event.id)">
+                <div class="flex flex-col items-start">
+                  <span class="font-medium">{{ event.title }}</span>
+                  <span class="text-xs opacity-60">{{ event.eventDate | date:'dd/MM/yyyy' }}</span>
+                </div>
+              </p-button>
+            </ng-container>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Usuarios -->
+    <p-button label="Usuarios" icon="pi pi-users" [text]="true" styleClass="w-full justify-start" (click)="navegateTo('/dashboard/users')" />
+
+    <!-- Grupos -->
+    <p-button label="Grupos" icon="pi pi-sitemap" [text]="true" styleClass="w-full justify-start" (click)="navegateTo('/dashboard/groups')" />
+
+    <!-- Servicio Social -->
+    <div>
+      <p-button label="Servicio Social" icon="pi pi-book" [text]="true" styleClass="w-full justify-start"
+        [icon]="socialExpanded() ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" iconPos="right"
+        (click)="socialExpanded.set(!socialExpanded())" />
+      @if (socialExpanded()) {
+        <div class="ml-6 flex flex-col gap-1">
+          <p-button label="Profesores" icon="pi pi-user" [text]="true" styleClass="w-full justify-start text-sm" (click)="navegateTo('/dashboard/profesores')" />
+          <p-button label="Alumnos" icon="pi pi-users" [text]="true" styleClass="w-full justify-start text-sm" (click)="navegateTo('/dashboard/servicio-social')" />
+        </div>
+      }
+    </div>
+
+    <p-divider />
+
+    <!-- Cerrar Sesión -->
+    <p-button label="Cerrar Sesión" icon="pi pi-sign-out" [text]="true" severity="danger" styleClass="w-full justify-start" (click)="logout()" />
   </div>
-}
+</p-drawer>

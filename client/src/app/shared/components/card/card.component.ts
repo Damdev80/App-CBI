@@ -1,5 +1,7 @@
 import { Component, Input } from "@angular/core"
 import { CommonModule } from "@angular/common";
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
 interface formCard {
     title: string,
     imageUrl: string | null,
@@ -10,7 +12,7 @@ interface formCard {
 @Component({
     selector: 'app-card',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, CardModule, ButtonModule],
     templateUrl: './card.component.html',
 })
 

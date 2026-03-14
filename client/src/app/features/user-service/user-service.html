@@ -3,187 +3,164 @@
   <div class="flex items-center justify-between flex-wrap gap-2">
     <div class="flex items-center gap-3">
       @if (teacherId()) {
-        <button class="btn btn-ghost btn-sm btn-circle" (click)="goBack()">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
+        <p-button icon="pi pi-arrow-left" [rounded]="true" [text]="true" size="small" (click)="goBack()" />
       }
       <div>
-        <h1 class="text-2xl font-bold">Servicio Social - Niños</h1>
+        <h1 class="text-2xl font-bold text-main">Servicio Social - Niños</h1>
         @if (teacher()) {
-          <p class="text-sm opacity-70">Profesor: {{ teacher()!.name }}</p>
+          <p class="text-sm text-muted">Profesor: {{ teacher()!.name }}</p>
         }
       </div>
     </div>
-    <button class="btn btn-primary btn-sm" (click)="showForm.set(!showForm())">
-      @if (showForm()) { Cancelar } @else { + Nuevo Alumno }
-    </button>
+    <p-button [label]="showForm() ? 'Cancelar' : '+ Nuevo Alumno'" 
+              [severity]="showForm() ? 'secondary' : 'primary'" 
+              size="small" 
+              (click)="showForm.set(!showForm())" />
   </div>
 
   <!-- Formulario nuevo alumno -->
   @if (showForm()) {
-    <div class="card bg-base-100 shadow-md">
-      <div class="card-body">
-        <h2 class="card-title text-lg">Agregar Alumno</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          @if (!teacherId()) {
-            <div class="form-control">
-              <label class="label"><span class="label-text">Profesor *</span></label>
-              <select class="select select-bordered" [(ngModel)]="selectedTeacherId">
-                <option value="" disabled>Selecciona un profesor</option>
-                @for (t of teachers(); track t.id) {
-                  <option [value]="t.id">{{ t.name }}</option>
-                }
-              </select>
-            </div>
-          }
-          <div class="form-control">
-            <label class="label"><span class="label-text">Nombre *</span></label>
-            <input
-              type="text"
-              class="input input-bordered"
-              [(ngModel)]="newName"
-              placeholder="Nombre del alumno"
-            />
+    <p-card>
+      <h2 class="text-lg font-semibold mb-4 text-main">Agregar Alumno</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        @if (!teacherId()) {
+          <div class="flex flex-col gap-2">
+            <label class="font-medium text-sm text-main">Profesor *</label>
+            <p-select [(ngModel)]="selectedTeacherId" 
+                      [options]="teacherSelectOptions" 
+                      optionLabel="label" 
+                      optionValue="value" 
+                      placeholder="Selecciona un profesor"
+                      styleClass="w-full" />
           </div>
-          <div class="form-control">
-            <label class="label"><span class="label-text">Género *</span></label>
-            <select class="select select-bordered" [(ngModel)]="newGender">
-              <option value="MASCULINO">Masculino</option>
-              <option value="FEMENINO">Femenino</option>
-            </select>
-          </div>
-          <div class="form-control">
-            <label class="label"><span class="label-text">Teléfono</span></label>
-            <input
-              type="text"
-              class="input input-bordered"
-              [(ngModel)]="newNumber"
-              placeholder="Teléfono (opcional)"
-            />
-          </div>
-          <div class="form-control">
-            <label class="label"><span class="label-text">Documentos</span></label>
-            <input
-              type="text"
-              class="input input-bordered"
-              [(ngModel)]="newDocuments"
-              placeholder="CI, Pasaporte, etc."
-            />
-          </div>
+        }
+        <div class="flex flex-col gap-2">
+          <label class="font-medium text-sm text-main">Nombre *</label>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="newName"
+            placeholder="Nombre del alumno"
+            class="w-full"
+          />
         </div>
-        <div class="card-actions justify-end mt-4">
-          <button class="btn btn-ghost btn-sm" (click)="resetForm()">Cancelar</button>
-          <button
-            class="btn btn-primary btn-sm"
-            [disabled]="!newName.trim() || (!teacherId() && !selectedTeacherId)"
-            (click)="addUser()"
-          >
-            Guardar
-          </button>
+        <div class="flex flex-col gap-2">
+          <label class="font-medium text-sm text-main">Género *</label>
+          <p-select [(ngModel)]="newGender" 
+                    [options]="genderSelectOptions" 
+                    optionLabel="label" 
+                    optionValue="value" 
+                    styleClass="w-full" />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="font-medium text-sm text-main">Teléfono</label>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="newNumber"
+            placeholder="Teléfono (opcional)"
+            class="w-full"
+          />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="font-medium text-sm text-main">Documentos</label>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="newDocuments"
+            placeholder="CI, Pasaporte, etc."
+            class="w-full"
+          />
         </div>
       </div>
-    </div>
+      <div class="flex justify-end mt-4 gap-2">
+        <p-button label="Cancelar" [text]="true" size="small" (click)="resetForm()" />
+        <p-button
+          label="Guardar"
+          size="small"
+          [disabled]="!newName.trim() || (!teacherId() && !selectedTeacherId)"
+          (click)="addUser()"
+        />
+      </div>
+    </p-card>
   }
 
   <!-- Loading -->
   @if (loading()) {
     <div class="flex justify-center py-10">
-      <span class="loading loading-spinner loading-lg"></span>
+      <p-progressSpinner />
     </div>
   }
 
   <!-- Sin resultados -->
   @if (!loading() && users().length === 0) {
-    <div class="text-center py-10 opacity-60">
+    <div class="text-center py-10 text-muted">
       <p>No hay alumnos registrados.</p>
     </div>
   }
 
   <!-- Tabla de alumnos -->
   @if (!loading() && users().length > 0) {
-    <div class="overflow-x-auto">
-      <table class="table table-zebra w-full">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Género</th>
-            <th>Teléfono</th>
-            <th>Documentos</th>
-            <th class="text-center">Asistencia</th>
-            <th class="text-center">Campamento</th>
-            <th class="text-center">Pago Camp.</th>
-            <th class="text-center">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (user of users(); track user.id) {
-            <tr>
-              <td class="font-medium">{{ user.name }}</td>
-              <td>
-                <span class="badge badge-sm" [class.badge-info]="user.Gender === 'MASCULINO'" [class.badge-secondary]="user.Gender === 'FEMENINO'">
-                  {{ user.Gender === 'MASCULINO' ? 'M' : 'F' }}
-                </span>
-              </td>
-              <td class="text-sm opacity-70">{{ user.number || '—' }}</td>
-              <td class="text-sm opacity-70">{{ user.Documents || '—' }}</td>
-              <td class="text-center">
-                <input
-                  type="checkbox"
-                  class="checkbox checkbox-success checkbox-sm"
-                  [checked]="user.attendance"
-                  (change)="toggleAttendance(user.id)"
-                />
-              </td>
-              <td class="text-center">
-                <span
-                  class="badge badge-sm"
-                  [class.badge-success]="user.GoToCampement"
-                  [class.badge-ghost]="!user.GoToCampement"
-                >
-                  {{ user.GoToCampement ? 'Sí' : 'No' }}
-                </span>
-              </td>
-              <td class="text-center">
-                <button
-                  class="badge badge-sm cursor-pointer"
-                  [class.badge-success]="user.payGotoCampement === 'PAGO'"
-                  [class.badge-warning]="user.payGotoCampement === 'DEBE'"
-                  (click)="togglePayment(user)"
-                >
-                  {{ user.payGotoCampement }}
-                </button>
-              </td>
-              <td class="text-center">
-                <button class="btn btn-error btn-outline btn-xs" (click)="deleteUser(user.id)">
-                  Eliminar
-                </button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+    <p-table [value]="users()" [tableStyle]="{ 'min-width': '60rem' }" styleClass="p-datatable-striped p-datatable-sm">
+      <ng-template #header>
+        <tr>
+          <th>Nombre</th>
+          <th>Género</th>
+          <th>Teléfono</th>
+          <th>Documentos</th>
+          <th class="text-center text-main">Asistencia</th>
+          <th class="text-center text-main">Campamento</th>
+          <th class="text-center text-main">Pago Camp.</th>
+          <th class="text-center text-main">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-user>
+        <tr>
+          <td class="font-medium">{{ user.name }}</td>
+          <td>
+            <p-tag [value]="user.Gender === 'MASCULINO' ? 'M' : 'F'" 
+                   [severity]="user.Gender === 'MASCULINO' ? 'info' : 'secondary'" />
+          </td>
+          <td class="text-sm text-muted">{{ user.number || '—' }}</td>
+          <td class="text-sm text-muted">{{ user.Documents || '—' }}</td>
+          <td class="text-center text-main">
+            <p-checkbox 
+              [binary]="true"
+              [ngModel]="user.attendance"
+              (ngModelChange)="toggleAttendance(user.id)"
+            />
+          </td>
+          <td class="text-center">
+            <p-tag [value]="user.GoToCampement ? 'Sí' : 'No'" 
+                   [severity]="user.GoToCampement ? 'success' : 'secondary'" />
+          </td>
+          <td class="text-center">
+            <p-tag [value]="user.payGotoCampement" 
+                   [severity]="user.payGotoCampement === 'PAGO' ? 'success' : 'warn'"
+                   styleClass="cursor-pointer"
+                   (click)="togglePayment(user)" />
+          </td>
+          <td class="text-center">
+            <p-button label="Eliminar" severity="danger" [outlined]="true" size="small" (click)="deleteUser(user.id)" />
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
 
     <!-- Resumen -->
-    <div class="stats shadow w-full">
-      <div class="stat">
-        <div class="stat-title">Total Alumnos</div>
-        <div class="stat-value text-lg">{{ totalUsers() }}</div>
-      </div>
-      <div class="stat">
-        <div class="stat-title">Presentes Hoy</div>
-        <div class="stat-value text-lg text-success">
-          {{ presentToday() }}
-        </div>
-      </div>
-      <div class="stat">
-        <div class="stat-title">Van al Campamento</div>
-        <div class="stat-value text-lg text-info">
-          {{ goingToCamp() }}
-        </div>
-      </div>
+    <div class="grid grid-cols-3 gap-4">
+      <p-card>
+        <div class="text-sm text-muted">Total Alumnos</div>
+        <div class="text-lg font-bold text-main">{{ totalUsers() }}</div>
+      </p-card>
+      <p-card>
+        <div class="text-sm text-muted">Presentes Hoy</div>
+        <div class="text-lg font-bold text-primary-color">{{ presentToday() }}</div>
+      </p-card>
+      <p-card>
+        <div class="text-sm text-muted">Van al Campamento</div>
+        <div class="text-lg font-bold text-secondary-color">{{ goingToCamp() }}</div>
+      </p-card>
     </div>
   }
 </div>

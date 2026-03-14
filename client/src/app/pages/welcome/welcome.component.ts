@@ -1,12 +1,12 @@
 import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Router } from "@angular/router";
-import { CardComponent } from "@app/shared/components/card/card.component";
 import { LemaCbiFullwidthComponent } from "../../shared/components/lema-cbi/lema-cbi-fullwidth.component";
+import { TagModule } from 'primeng/tag';
 @Component({
     selector: 'app-welcome',
     standalone: true,
-    imports: [CommonModule, CardComponent, LemaCbiFullwidthComponent],
+    imports: [CommonModule, LemaCbiFullwidthComponent, TagModule],
     templateUrl: './welcome.component.html',
 })
 

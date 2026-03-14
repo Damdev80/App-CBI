@@ -5,11 +5,23 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserServiceService } from '@app/core/services/user-service.service';
 import { TeacherServiceService } from '@app/core/services/teacher-service.service';
 import { UserServiceSocial, Teacher } from '@app/shared/models/service-social.model';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { TagModule } from 'primeng/tag';
+import { TableModule } from 'primeng/table';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-user-service',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule, FormsModule,
+    CardModule, InputTextModule, ButtonModule, SelectModule,
+    TagModule, TableModule, CheckboxModule, ProgressSpinnerModule
+  ],
   templateUrl: './user-service.html',
 })
 export class UserService {
@@ -31,6 +43,13 @@ export class UserService {
   newDocuments = '';
   selectedTeacherId = '';
 
+  // PrimeNG select options
+  genderSelectOptions = [
+    { label: 'Masculino', value: 'MASCULINO' },
+    { label: 'Femenino', value: 'FEMENINO' }
+  ];
+  teacherSelectOptions: { label: string; value: string }[] = [];
+
   // Computed statistics
   totalUsers = computed(() => this.users().length);
   presentToday = computed(() => this.users().filter(u => u.attendance).length);
@@ -48,7 +67,10 @@ export class UserService {
 
   loadTeachers() {
     this.teacherService.getAll().subscribe({
-      next: (data) => this.teachers.set(data),
+      next: (data) => {
+        this.teachers.set(data);
+        this.teacherSelectOptions = data.map(t => ({ label: t.name, value: t.id }));
+      },
     });
   }
 

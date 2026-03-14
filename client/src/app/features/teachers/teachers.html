@@ -1,61 +1,61 @@
 <div class="space-y-6">
   <!-- Header -->
   <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold">Profesores - Servicio Social</h1>
-    <button class="btn btn-primary btn-sm" (click)="showForm.set(!showForm())">
-      @if (showForm()) { Cancelar } @else { + Nuevo Profesor }
-    </button>
+    <h1 class="text-2xl font-bold text-main">Profesores - Servicio Social</h1>
+    <p-button [label]="showForm() ? 'Cancelar' : '+ Nuevo Profesor'" 
+              [severity]="showForm() ? 'secondary' : 'primary'" 
+              size="small" 
+              (click)="showForm.set(!showForm())" />
   </div>
 
   <!-- Formulario nuevo profesor -->
   @if (showForm()) {
-    <div class="card bg-base-100 shadow-md">
-      <div class="card-body">
-        <h2 class="card-title text-lg">Agregar Profesor</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="form-control">
-            <label class="label"><span class="label-text">Nombre *</span></label>
-            <input
-              type="text"
-              class="input input-bordered"
-              [(ngModel)]="newName"
-              placeholder="Nombre del profesor"
-            />
-          </div>
-          <div class="form-control">
-            <label class="label"><span class="label-text">Teléfono</span></label>
-            <input
-              type="text"
-              class="input input-bordered"
-              [(ngModel)]="newNumber"
-              placeholder="Teléfono"
-            />
-          </div>
+    <p-card>
+      <h2 class="text-lg font-semibold mb-4 text-main">Agregar Profesor</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex flex-col gap-2">
+          <label class="font-medium text-sm text-main">Nombre *</label>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="newName"
+            placeholder="Nombre del profesor"
+            class="w-full"
+          />
         </div>
-        <div class="card-actions justify-end mt-4">
-          <button class="btn btn-ghost btn-sm" (click)="resetForm()">Cancelar</button>
-          <button
-            class="btn btn-primary btn-sm"
-            [disabled]="!newName.trim()"
-            (click)="addTeacher()"
-          >
-            Guardar
-          </button>
+        <div class="flex flex-col gap-2">
+          <label class="font-medium text-sm text-main">Teléfono</label>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="newNumber"
+            placeholder="Teléfono"
+            class="w-full"
+          />
         </div>
       </div>
-    </div>
+      <div class="flex justify-end mt-4 gap-2">
+        <p-button label="Cancelar" [text]="true" size="small" (click)="resetForm()" />
+        <p-button
+          label="Guardar"
+          size="small"
+          [disabled]="!newName.trim()"
+          (click)="addTeacher()"
+        />
+      </div>
+    </p-card>
   }
 
   <!-- Loading -->
   @if (loading()) {
     <div class="flex justify-center py-10">
-      <span class="loading loading-spinner loading-lg"></span>
+      <p-progressSpinner />
     </div>
   }
 
   <!-- Lista de profesores -->
   @if (!loading() && teachers().length === 0) {
-    <div class="text-center py-10 opacity-60">
+    <div class="text-center py-10 text-muted">
       <p>No hay profesores registrados.</p>
     </div>
   }
@@ -63,30 +63,23 @@
   @if (!loading() && teachers().length > 0) {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       @for (teacher of teachers(); track teacher.id) {
-        <div class="card bg-base-100 shadow-md">
-          <div class="card-body">
-            <h2 class="card-title text-base">{{ teacher.name }}</h2>
-            @if (teacher.number) {
-              <p class="text-sm opacity-70">Tel: {{ teacher.number }}</p>
-            }
-            <p class="text-sm">
-              <span class="badge badge-sm" [class.badge-success]="teacher.GoToCampement" [class.badge-ghost]="!teacher.GoToCampement">
-                {{ teacher.GoToCampement ? 'Va al campamento' : 'No va al campamento' }}
-              </span>
-            </p>
-            <p class="text-xs opacity-50">
-              Alumnos: {{ teacher.students?.length || 0 }}
-            </p>
-            <div class="card-actions justify-end mt-2">
-              <button class="btn btn-outline btn-sm" (click)="viewStudents(teacher.id)">
-                Ver Alumnos
-              </button>
-              <button class="btn btn-error btn-outline btn-sm" (click)="deleteTeacher(teacher.id)">
-                Eliminar
-              </button>
-            </div>
+        <p-card>
+          <h2 class="text-base font-semibold text-main">{{ teacher.name }}</h2>
+          @if (teacher.number) {
+            <p class="text-sm text-muted">Tel: {{ teacher.number }}</p>
+          }
+          <p class="text-sm mt-1 text-main">
+            <p-tag [value]="teacher.GoToCampement ? 'Va al campamento' : 'No va al campamento'" 
+                   [severity]="teacher.GoToCampement ? 'success' : 'secondary'" />
+          </p>
+          <p class="text-xs text-muted mt-1">
+            Alumnos: {{ teacher.students?.length || 0 }}
+          </p>
+          <div class="flex justify-end mt-3 gap-2">
+            <p-button label="Ver Alumnos" [outlined]="true" size="small" (click)="viewStudents(teacher.id)" />
+            <p-button label="Eliminar" severity="danger" [outlined]="true" size="small" (click)="deleteTeacher(teacher.id)" />
           </div>
-        </div>
+        </p-card>
       }
     </div>
   }

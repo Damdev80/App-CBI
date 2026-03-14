@@ -1,29 +1,22 @@
 <div class="max-w-7xl mx-auto">
   <!-- Título -->
   <div class="mb-8">
-    <h1 class="text-4xl font-extrabold text-primary">Panel de Control</h1>
-    <p class="text-base-content/70 mt-2 text-lg">¡Bienvenido! Administra y consulta la información clave de tu comunidad desde aquí.</p>
+    <h1 class="text-4xl font-extrabold text-primary-color">Panel de Control</h1>
+    <p class="text-tertiary mt-2 text-lg">¡Bienvenido! Administra y consulta la información clave de tu comunidad desde aquí.</p>
     <div class="mt-4 flex gap-4">
-      <span class="badge badge-primary">Administrador</span>
+      <p-tag value="Administrador" severity="info" />
     </div>
   </div>
 
-  <!-- Contenido del dashboard -->
-  <!-- <app-dashboard-user-info /> -->
-
-
-    <!-- Card -->
-
-    @if (error()) {
-    <div class="alert alert-error mb-6">
+  @if (error()) {
+    <p-message severity="error" styleClass="mb-6 w-full">
       <span>{{ error() }}</span>
-    </div>
+    </p-message>
   }
 
-  <!-- Loading state -->
   @if (isLoading()) {
     <div class="flex justify-center items-center py-12">
-      <span class="loading loading-spinner loading-lg"></span>
+      <p-progressSpinner />
     </div>
   }
 
@@ -66,9 +59,4 @@
       
     </div>
   }
-
-
-
-  
-    
 </div>

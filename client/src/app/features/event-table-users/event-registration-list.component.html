@@ -1,220 +1,184 @@
-<div class="min-h-screen bg-base-200 p-4">
+<div class="min-h-screen bg-surface-50 p-4">
   <div class="max-w-7xl mx-auto">
 
     <div class="mb-4 flex items-start justify-between">
       <div class="flex-1">
         <h1 class="text-2xl font-bold mb-1">Registros de Eventos</h1>
-        <p class="text-sm text-base-content/70">Administra inscripciones y pagos</p>
+        <p class="text-sm text-surface-400">Administra inscripciones y pagos</p>
         
-        <!-- Indicador de filtro por evento -->
         @if (selectedEventId()) {
-          <div class="alert alert-info mt-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <span>Mostrando registros de un evento específico</span>
-            <button class="btn btn-sm btn-ghost" (click)="selectedEventId.set(null)">
-              Ver todos
-            </button>
-          </div>
+          <p-message severity="info" styleClass="mt-2">
+            <span class="flex items-center gap-2">
+              Mostrando registros de un evento específico
+              <p-button label="Ver todos" [text]="true" size="small" (click)="selectedEventId.set(null)" />
+            </span>
+          </p-message>
         }
       </div>
       
-      <!-- Botón Nuevo Registro -->
-      <button class="btn btn-primary gap-2" (click)="navigateToNewRegistration()">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        Nuevo Registro
-      </button>
+      <p-button label="Nuevo Registro" icon="pi pi-plus" (click)="navigateToNewRegistration()" />
     </div>
 
     <div class="grid grid-cols-3 gap-3 mb-4">
-      <div class="card bg-base-100 shadow-sm p-3">
-        <div class="text-xs text-base-content/60">Total Inscritos</div>
+      <p-card styleClass="shadow-sm">
+        <div class="text-xs text-surface-400">Total Inscritos</div>
         <div class="text-xl font-bold text-primary">{{ filteredRegistrations().length }}</div>
-      </div>
+      </p-card>
 
-      <div class="card bg-base-100 shadow-sm p-3">
-        <div class="text-xs text-base-content/60">Pagos Completos</div>
-        <div class="text-xl font-bold text-success">{{ getTotalPaid() }}</div>
-      </div>
+      <p-card styleClass="shadow-sm">
+        <div class="text-xs text-surface-400">Pagos Completos</div>
+        <div class="text-xl font-bold text-green-500">{{ getTotalPaid() }}</div>
+      </p-card>
 
-      <div class="card bg-base-100 shadow-sm p-3">
-        <div class="text-xs text-base-content/60">Total Recaudado</div>
-        <div class="text-xl font-bold text-info">{{ getTotalCollected() | currency:'COP':'symbol':'1.0-0' }}</div>
-      </div>
+      <p-card styleClass="shadow-sm">
+        <div class="text-xs text-surface-400">Total Recaudado</div>
+        <div class="text-xl font-bold text-blue-500">{{ getTotalCollected() | currency:'COP':'symbol':'1.0-0' }}</div>
+      </p-card>
     </div>
 
-    <div class="card bg-base-100 shadow-sm mb-4 p-4">
+    <p-card styleClass="shadow-sm mb-4">
       <div class="grid grid-cols-3 gap-3">
-        <input type="text" placeholder="Buscar..." class="input input-bordered input-sm" 
+        <input type="text" placeholder="Buscar..." pInputText
           [ngModel]="searchTerm()"
           (ngModelChange)="onSearchChange($event)">
-        <select class="select select-bordered select-sm" 
+        <p-select 
           [ngModel]="filterPayStatus()" 
-          (ngModelChange)="onFilterChange($event)">
-          <option value="ALL">Todos</option>
-          <option value="PAGO">Pagado</option>
-          <option value="DEBE">Pendiente</option>
-        </select>
-        <select class="select select-bordered select-sm" 
+          (ngModelChange)="onFilterChange($event)"
+          [options]="payStatusOptions"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full" />
+        <p-select 
           [ngModel]="pageSize()" 
-          (ngModelChange)="onPageSizeChange($event)">
-          <option *ngFor="let size of pageSizeOptions" [ngValue]="size">{{ size }} por página</option>
-        </select>
+          (ngModelChange)="onPageSizeChange($event)"
+          [options]="pageSizeSelectOptions"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full" />
       </div>
-    </div>
+    </p-card>
 
-    <div class="alert alert-success mb-3" *ngIf="successMessage()">
-      <span>{{ successMessage() }}</span>
-    </div>
+    <p-message *ngIf="successMessage()" severity="success" styleClass="mb-3 w-full">
+      {{ successMessage() }}
+    </p-message>
 
-    <div class="alert alert-error mb-3" *ngIf="errorMessage()">
-      <span>{{ errorMessage() }}</span>
-    </div>
+    <p-message *ngIf="errorMessage()" severity="error" styleClass="mb-3 w-full">
+      {{ errorMessage() }}
+    </p-message>
 
-    <div class="card bg-base-100 shadow-sm">
-      <div class="overflow-x-auto">
-        <div *ngIf="loading()" class="flex justify-center py-8">
-          <span class="loading loading-spinner loading-lg"></span>
-        </div>
-
-        <div *ngIf="!loading() && filteredRegistrations().length === 0" class="text-center py-8">
-          <p class="text-base-content/60">No hay registros</p>
-        </div>
-
-        <table class="table table-sm" *ngIf="!loading() && filteredRegistrations().length > 0">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Email</th>
-              <th>Teléfono</th>
-              <th>Evento</th>
-              <th>Hermanos</th>
-              <th>Abonado</th>
-              <th>Estado de Pago</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let registration of paginatedRegistrations()">
-              <td>{{ registration.name }}</td>
-              <td>{{ registration.email }}</td>
-              <td>{{ registration.phone || 'N/A' }}</td>
-              <td>{{ registration.event?.title || 'N/A' }}</td>
-              <td>
-                <span class="badge badge-sm" [class.badge-info]="registration.hasSiblings"
-                  [class.badge-ghost]="!registration.hasSiblings">
-                  {{ registration.hasSiblings ? 'Sí' : 'No' }}
-                </span>
-              </td>
-              <td class="font-bold text-success">{{ registration.paymentAmount | currency:'COP':'symbol':'1.0-0' }}</td>
-              <td>
-                <select class="select select-bordered select-xs" 
-                  [ngModel]="registration.payStatus"
-                  (ngModelChange)="updatePayStatus(registration, $event)">
-                  <option value="DEBE">Debe</option>
-                  <option value="PAGO">Pagado</option>
-                </select>
-              </td>
-              <td>
-                <div class="flex gap-1">
-                  <button class="btn btn-xs btn-primary"
-                    (click)="openPaymentModal(registration)">
-                    Abonar
-                  </button>
-                  <button class="btn btn-xs btn-error" (click)="deleteRegistration(registration.id, registration.name)">
-                    Eliminar
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <p-card styleClass="shadow-sm">
+      <div *ngIf="loading()" class="flex justify-center py-8">
+        <p-progressSpinner />
       </div>
-      <div class="flex items-center justify-between p-4 border-t" *ngIf="filteredRegistrations().length > 0">
-        <div class="text-sm text-base-content/60">
+
+      <div *ngIf="!loading() && filteredRegistrations().length === 0" class="text-center py-8">
+        <p class="text-surface-400">No hay registros</p>
+      </div>
+
+      <p-table 
+        *ngIf="!loading() && filteredRegistrations().length > 0"
+        [value]="paginatedRegistrations()" 
+        [tableStyle]="{ 'min-width': '60rem' }"
+        styleClass="p-datatable-sm">
+        <ng-template #header>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Evento</th>
+            <th>Hermanos</th>
+            <th>Abonado</th>
+            <th>Estado de Pago</th>
+            <th>Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-registration>
+          <tr>
+            <td>{{ registration.name }}</td>
+            <td>{{ registration.email }}</td>
+            <td>{{ registration.phone || 'N/A' }}</td>
+            <td>{{ registration.event?.title || 'N/A' }}</td>
+            <td>
+              <p-tag [value]="registration.hasSiblings ? 'Sí' : 'No'" 
+                     [severity]="registration.hasSiblings ? 'info' : 'secondary'" />
+            </td>
+            <td class="font-bold text-green-500">{{ registration.paymentAmount | currency:'COP':'symbol':'1.0-0' }}</td>
+            <td>
+              <p-select 
+                [ngModel]="registration.payStatus"
+                (ngModelChange)="updatePayStatus(registration, $event)"
+                [options]="payStatusChangeOptions"
+                optionLabel="label"
+                optionValue="value"
+                size="small"
+                styleClass="w-28" />
+            </td>
+            <td>
+              <div class="flex gap-1">
+                <p-button label="Abonar" size="small" (click)="openPaymentModal(registration)" />
+                <p-button label="Eliminar" severity="danger" size="small" (click)="deleteRegistration(registration.id, registration.name)" />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <div class="flex items-center justify-between p-4 border-t border-surface-200" *ngIf="filteredRegistrations().length > 0">
+        <div class="text-sm text-surface-400">
           Mostrando {{ (currentPage() - 1) * pageSize() + 1 }} - {{ currentPage() * pageSize() > filteredRegistrations().length ?
           filteredRegistrations().length : currentPage() * pageSize() }} de {{ filteredRegistrations().length }}
         </div>
 
-        <div class="join">
-          <button class="join-item btn btn-sm" [disabled]="currentPage() === 1" (click)="goToPage(1)">
-            «
-          </button>
-          <button class="join-item btn btn-sm" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">
-            ‹
-          </button>
-
-          <button *ngFor="let page of getPageNumbers()" class="join-item btn btn-sm"
-            [class.btn-active]="page === currentPage()" (click)="goToPage(page)">
-            {{ page }}
-          </button>
-
-          <button class="join-item btn btn-sm" [disabled]="currentPage() === totalPages()"
-            (click)="goToPage(currentPage() + 1)">
-            ›
-          </button>
-          <button class="join-item btn btn-sm" [disabled]="currentPage() === totalPages()" (click)="goToPage(totalPages())">
-            »
-          </button>
-        </div>
+        <p-paginator 
+          [rows]="pageSize()" 
+          [totalRecords]="filteredRegistrations().length" 
+          [first]="(currentPage() - 1) * pageSize()"
+          (onPageChange)="goToPage(($event.page ?? 0) + 1)"
+          [showFirstLastIcon]="true" />
       </div>
-    </div>
+    </p-card>
 
   </div>
 </div>
 
-<div *ngIf="showPaymentModal()" class="modal modal-open">
-  <div class="modal-box">
-    <h3 class="font-bold text-lg mb-3">Registrar Abono</h3>
-
-    <div *ngIf="selectedRegistration()" class="space-y-3">
-      <div>
-        <p class="text-sm text-base-content/60">Nombre</p>
-        <p class="font-bold">{{ selectedRegistration()!.name }}</p>
-      </div>
-
-      <div>
-        <p class="text-sm text-base-content/60">Ya Abonado</p>
-        <p class="text-lg font-bold text-success">{{ selectedRegistration()!.paymentAmount | currency:'COP':'symbol':'1.0-0' }}</p>
-      </div>
-
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Forma de Pago</span>
-        </label>
-        <select class="select select-bordered" 
-          [ngModel]="wayPay()"
-          (ngModelChange)="wayPay.set($event)">
-          <option value="EFECTIVO">Efectivo</option>
-          <option value="TRANSFERENCIA">Transferencia</option>
-        </select>
-      </div>
-
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Monto a Abonar</span>
-        </label>
-        <input type="number" placeholder="0" class="input input-bordered" 
-          [ngModel]="paymentAmount()"
-          (ngModelChange)="paymentAmount.set($event)"
-          step="1000" min="0">
-      </div>
-
-      <div *ngIf="paymentAmount() > 0" class="alert alert-info">
-        <span>
-          Nuevo total abonado: {{ (selectedRegistration()!.paymentAmount + paymentAmount()) | currency:'COP':'symbol':'1.0-0' }}
-        </span>
-      </div>
+<p-dialog header="Registrar Abono" [(visible)]="showPaymentModalVisible" [modal]="true" [style]="{ width: '28rem' }">
+  <div *ngIf="selectedRegistration()" class="space-y-3">
+    <div>
+      <p class="text-sm text-surface-400">Nombre</p>
+      <p class="font-bold">{{ selectedRegistration()!.name }}</p>
     </div>
 
-    <div class="modal-action">
-      <button class="btn btn-sm" (click)="closePaymentModal()">Cancelar</button>
-      <button class="btn btn-sm btn-primary" (click)="processPayment()" [disabled]="paymentAmount() <= 0">
-        Confirmar Abono
-      </button>
+    <div>
+      <p class="text-sm text-surface-400">Ya Abonado</p>
+      <p class="text-lg font-bold text-green-500">{{ selectedRegistration()!.paymentAmount | currency:'COP':'symbol':'1.0-0' }}</p>
     </div>
+
+    <div class="flex flex-col gap-2">
+      <label class="font-medium">Forma de Pago</label>
+      <p-select 
+        [ngModel]="wayPay()"
+        (ngModelChange)="wayPay.set($event)"
+        [options]="wayPayOptions"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full" />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label class="font-medium">Monto a Abonar</label>
+      <input type="number" placeholder="0" pInputText class="w-full"
+        [ngModel]="paymentAmount()"
+        (ngModelChange)="paymentAmount.set($event)"
+        step="1000" min="0">
+    </div>
+
+    <p-message *ngIf="paymentAmount() > 0" severity="info" styleClass="w-full">
+      Nuevo total abonado: {{ (selectedRegistration()!.paymentAmount + paymentAmount()) | currency:'COP':'symbol':'1.0-0' }}
+    </p-message>
   </div>
-</div>
+
+  <ng-template #footer>
+    <p-button label="Cancelar" [text]="true" (click)="closePaymentModal()" />
+    <p-button label="Confirmar Abono" (click)="processPayment()" [disabled]="paymentAmount() <= 0" />
+  </ng-template>
+</p-dialog>
