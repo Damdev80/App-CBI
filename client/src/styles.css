@@ -149,12 +149,22 @@
 /* Compatibility layer for existing surface-* classes used across templates */
 .bg-surface-0 { background-color: var(--color-background) !important; }
 .bg-surface-50 { background-color: var(--color-background-secondary) !important; }
+/* bg-surface-100 and bg-surface-200 both map to the tertiary background since
+   this theme has only three background levels (primary, secondary, tertiary). */
 .bg-surface-100 { background-color: var(--color-background-tertiary) !important; }
+.bg-surface-200 { background-color: var(--color-background-tertiary) !important; }
+/* text-surface-300 and text-surface-400 both map to muted text; the theme has
+   three text levels (primary/secondary/tertiary/muted) without a distinct 300 shade. */
+.text-surface-300 { color: var(--color-text-muted) !important; }
 .text-surface-400 { color: var(--color-text-muted) !important; }
 .text-surface-500 { color: var(--color-text-tertiary) !important; }
 .text-surface-700 { color: var(--color-text-secondary) !important; }
 .text-surface-800 { color: var(--color-text-primary) !important; }
+.border-surface-100 { border-color: var(--color-border-light) !important; }
 .border-surface-200 { border-color: var(--color-border) !important; }
+/* Shorthand primary color utilities */
+.text-primary { color: var(--color-primary) !important; }
+.bg-primary { background-color: var(--color-primary) !important; }
 
 /* ========== GLOBAL STYLES ========== */
 html, body {
