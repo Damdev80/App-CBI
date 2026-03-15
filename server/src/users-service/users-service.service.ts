@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -12,16 +12,24 @@ export class UsersServiceService {
     Gender: 'MASCULINO' | 'FEMENINO';
     Documents?: string;
   }) {
-    return this.prisma.userServiceSocial.create({
-      data: {
-        name: data.name,
-        number: data.number,
-        teacherId: data.teacherId,
-        Gender: data.Gender,
-        Documents: data.Documents,
-      },
-      include: { School: true },
-    });
+    try {
+      return await this.prisma.userServiceSocial.create({
+        data: {
+          name: data.name,
+          number: data.number,
+          teacherId: data.teacherId,
+          Gender: data.Gender,
+          Documents: data.Documents,
+        },
+        include: { School: true },
+      });
+    } catch (error) {
+      if (error?.code === 'P2002') {
+        const field = error?.meta?.target?.[0] ?? 'campo';
+        throw new ConflictException(`El ${field} ya está en uso`);
+      }
+      throw error;
+    }
   }
 
   async findAll() {
@@ -63,11 +71,19 @@ export class UsersServiceService {
     },
   ) {
     await this.findOne(id);
-    return this.prisma.userServiceSocial.update({
-      where: { id },
-      data,
-      include: { School: true },
-    });
+    try {
+      return await this.prisma.userServiceSocial.update({
+        where: { id },
+        data,
+        include: { School: true },
+      });
+    } catch (error) {
+      if (error?.code === 'P2002') {
+        const field = error?.meta?.target?.[0] ?? 'campo';
+        throw new ConflictException(`El ${field} ya está en uso`);
+      }
+      throw error;
+    }
   }
 
   async toggleAttendance(id: string) {
