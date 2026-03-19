@@ -387,3 +387,80 @@ aside.fixed.sidebar-visible {
 .fade-up-2 { animation-delay: 0.10s; }
 .fade-up-3 { animation-delay: 0.15s; }
 .fade-up-4 { animation-delay: 0.20s; }
+
+/* ─── Calendar day cell ─── */
+.cal-day {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: default;
+  background: transparent;
+  transition: background 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow  0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform   0.15s ease;
+}
+/* Plain day hover — soft highlight */
+.cal-day:not(.cal-today):not(.cal-has-event):hover {
+  background: var(--surface-2);
+}
+/* Event day — darker tint on hover, not clearing the color */
+.cal-day.cal-has-event {
+  background: var(--accent-tint);
+}
+.cal-day.cal-has-event:hover {
+  background: color-mix(in srgb, var(--accent) 18%, white);
+  box-shadow: 0 2px 8px rgba(27, 52, 84, 0.14);
+  transform: translateY(-1px);
+}
+/* Today */
+.cal-day.cal-today {
+  background: var(--accent);
+  box-shadow: 0 2px 10px rgba(27, 52, 84, 0.35);
+}
+.cal-day.cal-today:hover {
+  background: var(--accent-h);
+  transform: translateY(-1px);
+}
+.cal-day-num {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ink-2);
+}
+.cal-day.cal-today .cal-day-num     { color: white; }
+.cal-day.cal-has-event .cal-day-num { color: var(--accent); font-weight: 600; }
+
+/* ─── Upcoming events row ─── */
+.event-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  transition: border-color 0.15s, background 0.15s;
+}
+.event-row:hover {
+  border-color: var(--accent);
+  background: var(--accent-tint);
+}
+
+/* ─── Department card ─── */
+.dep-card {
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.dep-card:hover {
+  box-shadow: 0 8px 32px rgba(27, 52, 84, 0.1);
+  border-color: var(--line-2);
+}

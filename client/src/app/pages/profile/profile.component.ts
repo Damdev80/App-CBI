@@ -36,6 +36,7 @@ export class Profile implements OnInit {
 
     profileForm: FormGroup;
     showGroupsModal = false;
+    currentUserId   = '';        // populated on profile load
     isLoading = signal(false);
     errorMessage = signal('');
     successMessage = signal('');
@@ -80,11 +81,8 @@ export class Profile implements OnInit {
                     profile.happybirth = profile.happybirth.split('T')[0];
                 }
                 this.profileForm.patchValue(profile);
+                this.currentUserId = profile.id ?? '';
                 this.isLoading.set(false);
-                // Asegurarse de que el id esté en el form
-                if (profile.id) {
-                    this.profileForm.addControl('id', this.fb.control(profile.id));
-                }
                 this.loadGroups();
                 this.loadAllGroups();
             },
@@ -110,22 +108,31 @@ export class Profile implements OnInit {
     }
 
     joinGroup(groupId: string) {
-        const userId = this.profileForm.get('id')?.value;
-        if (!userId) return;
-        this.membersService.createMember({ userId, groupId, levelDicipules: '3' }).subscribe({
+        const userId = this.currentUserId;
+        if (!userId || !groupId) {
+            this.errorMessage.set('No se pudo identificar el usuario o el grupo.');
+            return;
+        }
+        this.errorMessage.set('');
+        this.successMessage.set('');
+        this.membersService.createMember({ userId, groupId, levelDicipules: 'I' }).subscribe({
             next: () => {
-                this.successMessage.set('Te uniste al grupo');
+                this.successMessage.set('¡Te uniste al grupo correctamente!');
                 this.loadGroups();
             },
-            error: () => {
-                this.errorMessage.set('Error al unirse al grupo');
+            error: (err) => {
+                const detail = err?.error?.message
+                    ?? (err?.error?.errors ? JSON.stringify(err.error.errors) : null)
+                    ?? err?.message
+                    ?? 'Error desconocido';
+                this.errorMessage.set(`No se pudo unir al grupo: ${detail}`);
             }
         });
     }
 
     loadGroups() {
         this.groupLoading.set(true);
-        const userId = this.profileForm.get('id')?.value;
+        const userId = this.currentUserId;
         if (!userId) {
             this.groupList.set([]);
             this.groupLoading.set(false);

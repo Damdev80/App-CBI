@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -17,10 +17,26 @@ export class TeachersComponent {
 
   teachers = signal<Teacher[]>([]);
   loading = signal(true);
+  saving = signal(false);
+  error = signal('');
+  success = signal('');
+
+  query = '';
   showForm = signal(false);
 
   newName = '';
   newNumber = '';
+
+  filteredTeachers = computed(() => {
+    const q = this.query.trim().toLowerCase();
+    const list = this.teachers();
+    if (!q) return list;
+    return list.filter((t) => {
+      const name = (t.name ?? '').toLowerCase();
+      const num = (t.number ?? '').toLowerCase();
+      return name.includes(q) || num.includes(q);
+    });
+  });
 
   ngOnInit() {
     this.loadTeachers();
@@ -28,17 +44,28 @@ export class TeachersComponent {
 
   loadTeachers() {
     this.loading.set(true);
+    this.error.set('');
     this.teacherService.getAll().subscribe({
       next: (data) => {
         this.teachers.set(data);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.loading.set(false);
+        this.error.set('No se pudieron cargar los profesores.');
+      },
     });
   }
 
   addTeacher() {
-    if (!this.newName.trim()) return;
+    if (!this.newName.trim()) {
+      this.error.set('El nombre es obligatorio.');
+      return;
+    }
+
+    this.saving.set(true);
+    this.error.set('');
+    this.success.set('');
 
     this.teacherService
       .create({
@@ -47,15 +74,27 @@ export class TeachersComponent {
       })
       .subscribe({
         next: () => {
+          this.success.set('Profesor agregado correctamente.');
           this.resetForm();
           this.loadTeachers();
+          this.saving.set(false);
+        },
+        error: () => {
+          this.saving.set(false);
+          this.error.set('No se pudo agregar el profesor.');
         },
       });
   }
 
   deleteTeacher(id: string) {
+    this.error.set('');
+    this.success.set('');
     this.teacherService.delete(id).subscribe({
-      next: () => this.loadTeachers(),
+      next: () => {
+        this.success.set('Profesor eliminado.');
+        this.loadTeachers();
+      },
+      error: () => this.error.set('No se pudo eliminar el profesor.'),
     });
   }
 

@@ -24,6 +24,9 @@ export class UserServiceComponent {
   users = signal<UserServiceSocial[]>([]);
   loading = signal(true);
   showForm = signal(false);
+  saving = signal(false);
+  error = signal('');
+  success = signal('');
   teacherId = signal<string | null>(null);
 
   newName = '';
@@ -31,11 +34,25 @@ export class UserServiceComponent {
   newGender: 'MASCULINO' | 'FEMENINO' = 'MASCULINO';
   newDocuments = '';
   selectedTeacherId = '';
+  query = '';
 
   // Computed statistics
   totalUsers = computed(() => this.users().length);
   presentToday = computed(() => this.users().filter((u) => u.attendance).length);
   goingToCamp = computed(() => this.users().filter((u) => u.GoToCampement).length);
+  unpaidCount = computed(() => this.users().filter((u) => u.payGotoCampement === 'DEBE').length);
+
+  filteredUsers = computed(() => {
+    const q = this.query.trim().toLowerCase();
+    const list = this.users();
+    if (!q) return list;
+    return list.filter((u) => {
+      const name = (u.name ?? '').toLowerCase();
+      const num = (u.number ?? '').toLowerCase();
+      const docs = (u.Documents ?? '').toLowerCase();
+      return name.includes(q) || num.includes(q) || docs.includes(q);
+    });
+  });
 
   ngOnInit() {
     this.loadTeachers();
@@ -55,6 +72,7 @@ export class UserServiceComponent {
 
   loadData() {
     this.loading.set(true);
+    this.error.set('');
     const tid = this.teacherId();
 
     if (tid) {
@@ -66,7 +84,10 @@ export class UserServiceComponent {
           this.users.set(data);
           this.loading.set(false);
         },
-        error: () => this.loading.set(false),
+        error: () => {
+          this.loading.set(false);
+          this.error.set('No se pudieron cargar los alumnos.');
+        },
       });
       return;
     }
@@ -77,13 +98,27 @@ export class UserServiceComponent {
         this.users.set(data);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.loading.set(false);
+        this.error.set('No se pudieron cargar los alumnos.');
+      },
     });
   }
 
   addUser() {
     const tid = this.selectedTeacherId || this.teacherId();
-    if (!this.newName.trim() || !tid) return;
+    if (!tid) {
+      this.error.set('Selecciona un profesor.');
+      return;
+    }
+    if (!this.newName.trim()) {
+      this.error.set('El nombre del alumno es obligatorio.');
+      return;
+    }
+
+    this.saving.set(true);
+    this.error.set('');
+    this.success.set('');
 
     this.userService
       .create({
@@ -95,8 +130,14 @@ export class UserServiceComponent {
       })
       .subscribe({
         next: () => {
+          this.success.set('Alumno agregado correctamente.');
           this.resetForm();
           this.loadData();
+          this.saving.set(false);
+        },
+        error: () => {
+          this.saving.set(false);
+          this.error.set('No se pudo agregar el alumno.');
         },
       });
   }
@@ -108,6 +149,7 @@ export class UserServiceComponent {
           list.map((u) => (u.id === updated.id ? updated : u)),
         );
       },
+      error: () => this.error.set('No se pudo actualizar la asistencia.'),
     });
   }
 
@@ -119,12 +161,17 @@ export class UserServiceComponent {
           list.map((u) => (u.id === updated.id ? updated : u)),
         );
       },
+      error: () => this.error.set('No se pudo actualizar el pago.'),
     });
   }
 
   deleteUser(id: string) {
     this.userService.delete(id).subscribe({
-      next: () => this.loadData(),
+      next: () => {
+        this.success.set('Alumno eliminado.');
+        this.loadData();
+      },
+      error: () => this.error.set('No se pudo eliminar el alumno.'),
     });
   }
 

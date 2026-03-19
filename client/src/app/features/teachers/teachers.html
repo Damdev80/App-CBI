@@ -1,87 +1,85 @@
-<div class="space-y-6">
+<div style="max-width:1100px; margin:0 auto;" class="fade-up">
+
   <!-- Header -->
-  <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold">Profesores - Servicio Social</h1>
-    <button class="btn btn-primary btn-sm" (click)="showForm.set(!showForm())">
-      @if (showForm()) { Cancelar } @else { + Nuevo Profesor }
-    </button>
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1.25rem;">
+    <div>
+      <p style="font-size:0.6875rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); font-weight:600; margin:0 0 0.5rem;">
+        Servicio Social
+      </p>
+      <h1 style="font-family:var(--serif); font-size:2.25rem; font-weight:600; color:var(--ink); letter-spacing:-0.02em; margin:0;">
+        Profesores
+      </h1>
+      <p style="font-size:0.875rem; color:var(--ink-2); margin:0.5rem 0 0;">
+        Administra profesores y entra a sus alumnos.
+      </p>
+    </div>
+
+    <div style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
+      <input class="field" type="text" [(ngModel)]="query" placeholder="Buscar por nombre o teléfono…"
+             style="min-width:260px;" />
+      <button class="btn-solid" (click)="showForm.set(true)">
+        + Nuevo profesor
+      </button>
+    </div>
   </div>
 
-  <!-- Formulario nuevo profesor -->
-  @if (showForm()) {
-    <div class="card bg-base-100 shadow-md">
-      <div class="card-body">
-        <h2 class="card-title text-lg">Agregar Profesor</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="form-control">
-            <label class="label"><span class="label-text">Nombre *</span></label>
-            <input
-              type="text"
-              class="input input-bordered"
-              [(ngModel)]="newName"
-              placeholder="Nombre del profesor"
-            />
-          </div>
-          <div class="form-control">
-            <label class="label"><span class="label-text">Teléfono</span></label>
-            <input
-              type="text"
-              class="input input-bordered"
-              [(ngModel)]="newNumber"
-              placeholder="Teléfono"
-            />
-          </div>
-        </div>
-        <div class="card-actions justify-end mt-4">
-          <button class="btn btn-ghost btn-sm" (click)="resetForm()">Cancelar</button>
-          <button
-            class="btn btn-primary btn-sm"
-            [disabled]="!newName.trim()"
-            (click)="addTeacher()"
-          >
-            Guardar
-          </button>
-        </div>
-      </div>
-    </div>
+  @if (error()) {
+    <div class="alert alert-err" style="margin-bottom:1rem;">{{ error() }}</div>
+  }
+  @if (success()) {
+    <div class="alert alert-ok" style="margin-bottom:1rem;">{{ success() }}</div>
   }
 
   <!-- Loading -->
   @if (loading()) {
-    <div class="flex justify-center py-10">
-      <span class="loading loading-spinner loading-lg"></span>
+    <div style="display:flex; justify-content:center; padding:3rem 0;">
+      <span class="spinner spinner-lg" style="color:var(--accent);"></span>
     </div>
   }
 
-  <!-- Lista de profesores -->
-  @if (!loading() && teachers().length === 0) {
-    <div class="text-center py-10 opacity-60">
-      <p>No hay profesores registrados.</p>
+  <!-- Empty -->
+  @if (!loading() && filteredTeachers().length === 0) {
+    <div class="card" style="padding:2rem; text-align:center; color:var(--ink-3);">
+      <p style="font-family:var(--serif); font-size:1.375rem; color:var(--ink-2); margin:0 0 0.375rem;">Sin profesores</p>
+      <p style="font-size:0.875rem; margin:0;">Crea el primer profesor para empezar a registrar alumnos.</p>
     </div>
   }
 
-  @if (!loading() && teachers().length > 0) {
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      @for (teacher of teachers(); track teacher.id) {
-        <div class="card bg-base-100 shadow-md">
-          <div class="card-body">
-            <h2 class="card-title text-base">{{ teacher.name }}</h2>
-            @if (teacher.number) {
-              <p class="text-sm opacity-70">Tel: {{ teacher.number }}</p>
-            }
-            <p class="text-sm">
-              <span class="badge badge-sm" [class.badge-success]="teacher.GoToCampement" [class.badge-ghost]="!teacher.GoToCampement">
-                {{ teacher.GoToCampement ? 'Va al campamento' : 'No va al campamento' }}
-              </span>
+  <!-- Grid -->
+  @if (!loading() && filteredTeachers().length > 0) {
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem;">
+      @for (teacher of filteredTeachers(); track teacher.id) {
+        <div class="card" style="padding:1.25rem; display:flex; flex-direction:column; gap:0.75rem;">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:0.75rem;">
+            <div style="min-width:0;">
+              <p style="font-size:0.75rem; color:var(--ink-3); letter-spacing:0.06em; text-transform:uppercase; margin:0 0 0.25rem;">
+                Profesor
+              </p>
+              <h2 style="font-family:var(--serif); font-size:1.25rem; font-weight:600; color:var(--ink); margin:0; line-height:1.2;">
+                {{ teacher.name }}
+              </h2>
+              <p style="font-size:0.875rem; color:var(--ink-2); margin:0.375rem 0 0;">
+                {{ teacher.number ? ('Tel. ' + teacher.number) : 'Sin teléfono' }}
+              </p>
+            </div>
+            <span class="badge"
+                  [style.background]="teacher.GoToCampement ? 'var(--ok-tint)' : 'var(--surface-2)'"
+                  [style.color]="teacher.GoToCampement ? 'var(--ok)' : 'var(--ink-2)'">
+              {{ teacher.GoToCampement ? 'Va al campamento' : 'No va al campamento' }}
+            </span>
+          </div>
+
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <p style="font-size:0.8125rem; color:var(--ink-3); margin:0;">
+              Alumnos: <strong style="color:var(--ink); font-weight:600;">{{ teacher.students?.length || 0 }}</strong>
             </p>
-            <p class="text-xs opacity-50">
-              Alumnos: {{ teacher.students?.length || 0 }}
-            </p>
-            <div class="card-actions justify-end mt-2">
-              <button class="btn btn-outline btn-sm" (click)="viewStudents(teacher.id)">
-                Ver Alumnos
+            <div style="display:flex; gap:0.5rem;">
+              <button class="btn-outline" style="padding:0.375rem 0.75rem; font-size:0.8125rem;"
+                      (click)="viewStudents(teacher.id)">
+                Ver alumnos
               </button>
-              <button class="btn btn-error btn-outline btn-sm" (click)="deleteTeacher(teacher.id)">
+              <button class="btn-outline" style="padding:0.375rem 0.75rem; font-size:0.8125rem; border-color:var(--err); color:var(--err);"
+                      (click)="deleteTeacher(teacher.id)">
                 Eliminar
               </button>
             </div>
@@ -90,4 +88,50 @@
       }
     </div>
   }
+
+  <!-- Modal: nuevo profesor -->
+  @if (showForm()) {
+    <div style="position:fixed; inset:0; z-index:60; background:rgba(0,0,0,0.45); display:flex; align-items:center; justify-content:center; padding:1rem;"
+         (click)="showForm.set(false)">
+      <div class="card" style="width:100%; max-width:520px; padding:1.25rem 1.25rem 1.5rem;"
+           (click)="$event.stopPropagation()">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:1rem;">
+          <div>
+            <h2 style="font-family:var(--serif); font-size:1.5rem; font-weight:600; color:var(--ink); margin:0 0 0.25rem;">
+              Nuevo profesor
+            </h2>
+            <p style="font-size:0.875rem; color:var(--ink-2); margin:0;">
+              Registra el profesor para asignarle alumnos.
+            </p>
+          </div>
+          <button class="btn-ghost" style="padding:0.375rem;" (click)="showForm.set(false)" aria-label="Cerrar">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+          <div style="grid-column:1 / -1;">
+            <label class="form-label">Nombre *</label>
+            <input class="field" type="text" [(ngModel)]="newName" placeholder="Nombre del profesor" />
+          </div>
+          <div style="grid-column:1 / -1;">
+            <label class="form-label">Teléfono (opcional)</label>
+            <input class="field" type="text" [(ngModel)]="newNumber" placeholder="Ej: 3000000000" />
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.25rem;">
+          <button class="btn-outline" (click)="resetForm()" [disabled]="saving()">Cancelar</button>
+          <button class="btn-solid" (click)="addTeacher()" [disabled]="saving() || !newName.trim()"
+                  style="display:flex; align-items:center; gap:0.5rem;">
+            @if (saving()) { <span class="spinner" style="width:16px; height:16px; border-width:2px;"></span> }
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
 </div>

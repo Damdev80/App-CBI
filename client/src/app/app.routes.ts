@@ -74,9 +74,14 @@ export const routes: Routes = [
                   .then(m => m.ModuleBibliaComponent)
             },
             {
+                path: 'eventos',
+                loadComponent: () => import('./features/events/events.component')
+                  .then(m => m.EventsComponent)
+            },
+            {
                 path: 'crear-evento',
-                loadComponent: () => import('./features/create-event/create-event.component')
-                  .then(m => m.CreateEventComponent)
+                loadComponent: () => import('./features/events/events.component')
+                  .then(m => m.EventsComponent)
             }
         ]
     },

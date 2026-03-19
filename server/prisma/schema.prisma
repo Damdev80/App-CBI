@@ -138,6 +138,18 @@ model Session {
   updatedAt   DateTime @updatedAt
 }
 
+model GroupJoinRequest {
+  id        String   @id @default(uuid())
+  groupName String
+  name      String
+  phone     String
+  message   String?
+  status    String   @default("PENDIENTE")
+  createdAt DateTime @default(now())
+
+  @@map("group_join_requests")
+}
+
 model TeachersService {
   id             String               @id @default(uuid())
   name           String

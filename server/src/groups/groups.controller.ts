@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Post, UsePipes, Body } from '@nestjs/common';
-import { GroupsService, CreateGroupDto } from './groups.service';
+import { GroupsService, CreateGroupDto, CreateJoinRequestDto } from './groups.service';
 import { Groups } from '@prisma/client';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import { createGroupSchema } from 'src/schemas/create-group.schema';
@@ -27,5 +27,15 @@ export class GroupsController {
     @Get('/groups/names')
     async getAllGroupNames(): Promise<{ name: string }[]> {
         return await this.groupsService.findAllGroupNames();
+    }
+
+    @Post('/join-request')
+    async createJoinRequest(@Body() body: CreateJoinRequestDto) {
+        return await this.groupsService.createJoinRequest(body);
+    }
+
+    @Get('/join-requests')
+    async getJoinRequests() {
+        return await this.groupsService.findAllJoinRequests();
     }
 }

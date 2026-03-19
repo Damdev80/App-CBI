@@ -67,7 +67,7 @@
                 <p style="font-size:0.75rem; color:var(--ink-3); margin:0;">Nivel {{ g.levelDicipules }}</p>
               </div>
               <button class="btn-ghost" style="padding:0.25rem; color:var(--err);"
-                      (click)="leaveGroup(profileForm.get('id')?.value, g.groupId)"
+                      (click)="leaveGroup(currentUserId, g.groupId)"
                       title="Salir del grupo">
                 <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -240,7 +240,7 @@
                 <p style="font-size:0.75rem; color:var(--ink-3); margin:0;">Nivel {{ g.levelDicipules }}</p>
               </div>
               <button class="btn-outline" style="font-size:0.8125rem; color:var(--err); border-color:var(--err);"
-                      (click)="leaveGroup(profileForm.get('id')?.value, g.groupId)">
+                      (click)="leaveGroup(currentUserId, g.groupId)">
                 Salir
               </button>
             </div>
@@ -275,7 +275,7 @@
               </div>
               @if (isMemberOfGroup(g.id)) {
                 <button class="btn-outline" style="font-size:0.8125rem; color:var(--err); border-color:var(--err);"
-                        (click)="leaveGroup(profileForm.get('id')?.value, g.id)">
+                        (click)="leaveGroup(currentUserId, g.id)">
                   Salir
                 </button>
               } @else {

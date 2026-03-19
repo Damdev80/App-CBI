@@ -1,36 +1,188 @@
-<div class="space-y-6">
+<div style="max-width:1100px; margin:0 auto;" class="fade-up">
+
   <!-- Header -->
-  <div class="flex items-center justify-between flex-wrap gap-2">
-    <div class="flex items-center gap-3">
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1.25rem;">
+    <div style="display:flex; align-items:flex-end; gap:0.75rem;">
       @if (teacherId()) {
-        <button class="btn btn-ghost btn-sm btn-circle" (click)="goBack()">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button class="btn-ghost" style="padding:0.375rem;" (click)="goBack()" aria-label="Volver">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
       }
       <div>
-        <h1 class="text-2xl font-bold">Servicio Social - Niños</h1>
+        <p style="font-size:0.6875rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); font-weight:600; margin:0 0 0.5rem;">
+          Servicio Social
+        </p>
+        <h1 style="font-family:var(--serif); font-size:2.25rem; font-weight:600; color:var(--ink); letter-spacing:-0.02em; margin:0;">
+          Alumnos
+        </h1>
         @if (teacher()) {
-          <p class="text-sm opacity-70">Profesor: {{ teacher()!.name }}</p>
+          <p style="font-size:0.875rem; color:var(--ink-2); margin:0.5rem 0 0;">
+            Profesor: <strong style="color:var(--ink); font-weight:600;">{{ teacher()!.name }}</strong>
+          </p>
+        } @else {
+          <p style="font-size:0.875rem; color:var(--ink-2); margin:0.5rem 0 0;">
+            Vista general de alumnos.
+          </p>
         }
       </div>
     </div>
-    <button class="btn btn-primary btn-sm" (click)="showForm.set(!showForm())">
-      @if (showForm()) { Cancelar } @else { + Nuevo Alumno }
-    </button>
+
+    <div style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
+      <input class="field" type="text" [(ngModel)]="query" placeholder="Buscar por nombre, teléfono o documento…"
+             style="min-width:280px;" />
+      <button class="btn-solid" (click)="showForm.set(true)">+ Nuevo alumno</button>
+    </div>
   </div>
 
-  <!-- Formulario nuevo alumno -->
+  <!-- Resumen -->
+  <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:0.75rem; margin-bottom:1rem;">
+    <div class="card" style="padding:1rem;">
+      <p style="font-size:0.6875rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.25rem;">Total</p>
+      <p style="font-family:var(--serif); font-size:1.75rem; font-weight:600; color:var(--ink); margin:0;">{{ totalUsers() }}</p>
+    </div>
+    <div class="card" style="padding:1rem;">
+      <p style="font-size:0.6875rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.25rem;">Presentes</p>
+      <p style="font-family:var(--serif); font-size:1.75rem; font-weight:600; color:var(--ok); margin:0;">{{ presentToday() }}</p>
+    </div>
+    <div class="card" style="padding:1rem;">
+      <p style="font-size:0.6875rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.25rem;">Campamento</p>
+      <p style="font-family:var(--serif); font-size:1.75rem; font-weight:600; color:var(--accent); margin:0;">{{ goingToCamp() }}</p>
+    </div>
+    <div class="card" style="padding:1rem;">
+      <p style="font-size:0.6875rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.25rem;">Pendientes</p>
+      <p style="font-family:var(--serif); font-size:1.75rem; font-weight:600; color:var(--warn); margin:0;">{{ unpaidCount() }}</p>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert-err" style="margin-bottom:1rem;">{{ error() }}</div>
+  }
+  @if (success()) {
+    <div class="alert alert-ok" style="margin-bottom:1rem;">{{ success() }}</div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div style="display:flex; justify-content:center; padding:3rem 0;">
+      <span class="spinner spinner-lg" style="color:var(--accent);"></span>
+    </div>
+  }
+
+  <!-- Empty -->
+  @if (!loading() && filteredUsers().length === 0) {
+    <div class="card" style="padding:2rem; text-align:center; color:var(--ink-3);">
+      <p style="font-family:var(--serif); font-size:1.375rem; color:var(--ink-2); margin:0 0 0.375rem;">Sin alumnos</p>
+      <p style="font-size:0.875rem; margin:0;">Agrega el primer alumno para comenzar el control.</p>
+    </div>
+  }
+
+  <!-- Tabla -->
+  @if (!loading() && filteredUsers().length > 0) {
+    <div class="card" style="padding:0; overflow:hidden;">
+      <div style="padding:1rem 1.25rem; border-bottom:1px solid var(--line); background:var(--surface-2); display:flex; align-items:center; justify-content:space-between; gap:1rem;">
+        <p style="font-size:0.8125rem; color:var(--ink-3); margin:0;">
+          Mostrando <strong style="color:var(--ink); font-weight:600;">{{ filteredUsers().length }}</strong> alumnos
+        </p>
+        <button class="btn-ghost" style="font-size:0.8125rem; color:var(--accent);" (click)="loadData()">Actualizar</button>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table class="cbi-table">
+          <thead>
+            <tr>
+              <th>Alumno</th>
+              <th>Género</th>
+              <th>Teléfono</th>
+              <th>Documentos</th>
+              <th class="text-center">Asistencia</th>
+              <th class="text-center">Campamento</th>
+              <th class="text-center">Pago</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of filteredUsers(); track user.id) {
+              <tr>
+                <td style="font-weight:600; color:var(--ink);">{{ user.name }}</td>
+                <td>
+                  <span class="badge"
+                        [style.background]="user.Gender === 'MASCULINO' ? 'var(--accent-tint)' : 'var(--surface-2)'"
+                        [style.color]="user.Gender === 'MASCULINO' ? 'var(--accent)' : 'var(--ink-2)'">
+                    {{ user.Gender === 'MASCULINO' ? 'M' : 'F' }}
+                  </span>
+                </td>
+                <td style="color:var(--ink-2);">{{ user.number || '—' }}</td>
+                <td style="color:var(--ink-2);">{{ user.Documents || '—' }}</td>
+                <td class="text-center">
+                  <button class="btn-ghost" style="padding:0.25rem 0.5rem; font-size:0.8125rem;"
+                          (click)="toggleAttendance(user.id)">
+                    <span class="badge"
+                          [style.background]="user.attendance ? 'var(--ok-tint)' : 'var(--surface-2)'"
+                          [style.color]="user.attendance ? 'var(--ok)' : 'var(--ink-2)'">
+                      {{ user.attendance ? 'Presente' : 'Ausente' }}
+                    </span>
+                  </button>
+                </td>
+                <td class="text-center">
+                  <span class="badge"
+                        [style.background]="user.GoToCampement ? 'var(--ok-tint)' : 'var(--surface-2)'"
+                        [style.color]="user.GoToCampement ? 'var(--ok)' : 'var(--ink-2)'">
+                    {{ user.GoToCampement ? 'Sí' : 'No' }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <button class="btn-ghost" style="padding:0.25rem 0.5rem;" (click)="togglePayment(user)">
+                    <span class="badge"
+                          [style.background]="user.payGotoCampement === 'PAGO' ? 'var(--ok-tint)' : 'var(--warn-tint)'"
+                          [style.color]="user.payGotoCampement === 'PAGO' ? 'var(--ok)' : 'var(--warn)'">
+                      {{ user.payGotoCampement }}
+                    </span>
+                  </button>
+                </td>
+                <td class="text-center">
+                  <button class="btn-outline"
+                          style="padding:0.3125rem 0.75rem; font-size:0.8125rem; border-color:var(--err); color:var(--err);"
+                          (click)="deleteUser(user.id)">
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <!-- Modal: nuevo alumno -->
   @if (showForm()) {
-    <div class="card bg-base-100 shadow-md">
-      <div class="card-body">
-        <h2 class="card-title text-lg">Agregar Alumno</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div style="position:fixed; inset:0; z-index:60; background:rgba(0,0,0,0.45); display:flex; align-items:center; justify-content:center; padding:1rem;"
+         (click)="showForm.set(false)">
+      <div class="card" style="width:100%; max-width:720px; padding:1.25rem 1.25rem 1.5rem;"
+           (click)="$event.stopPropagation()">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:1rem;">
+          <div>
+            <h2 style="font-family:var(--serif); font-size:1.5rem; font-weight:600; color:var(--ink); margin:0 0 0.25rem;">
+              Nuevo alumno
+            </h2>
+            <p style="font-size:0.875rem; color:var(--ink-2); margin:0;">
+              Completa los datos para registrar el alumno.
+            </p>
+          </div>
+          <button class="btn-ghost" style="padding:0.375rem;" (click)="showForm.set(false)" aria-label="Cerrar">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem;">
           @if (!teacherId()) {
-            <div class="form-control">
-              <label class="label"><span class="label-text">Profesor *</span></label>
-              <select class="select select-bordered" [(ngModel)]="selectedTeacherId">
+            <div style="grid-column:1 / -1;">
+              <label class="form-label">Profesor *</label>
+              <select class="field" [(ngModel)]="selectedTeacherId">
                 <option value="" disabled>Selecciona un profesor</option>
                 @for (t of teachers(); track t.id) {
                   <option [value]="t.id">{{ t.name }}</option>
@@ -38,48 +190,34 @@
               </select>
             </div>
           }
-          <div class="form-control">
-            <label class="label"><span class="label-text">Nombre *</span></label>
-            <input
-              type="text"
-              class="input input-bordered"
-              [(ngModel)]="newName"
-              placeholder="Nombre del alumno"
-            />
+          <div style="grid-column:1 / -1;">
+            <label class="form-label">Nombre *</label>
+            <input class="field" type="text" [(ngModel)]="newName" placeholder="Nombre del alumno" />
           </div>
-          <div class="form-control">
-            <label class="label"><span class="label-text">Género *</span></label>
-            <select class="select select-bordered" [(ngModel)]="newGender">
+          <div>
+            <label class="form-label">Género *</label>
+            <select class="field" [(ngModel)]="newGender">
               <option value="MASCULINO">Masculino</option>
               <option value="FEMENINO">Femenino</option>
             </select>
           </div>
-          <div class="form-control">
-            <label class="label"><span class="label-text">Teléfono</span></label>
-            <input
-              type="text"
-              class="input input-bordered"
-              [(ngModel)]="newNumber"
-              placeholder="Teléfono (opcional)"
-            />
+          <div>
+            <label class="form-label">Teléfono</label>
+            <input class="field" type="text" [(ngModel)]="newNumber" placeholder="Opcional" />
           </div>
-          <div class="form-control">
-            <label class="label"><span class="label-text">Documentos</span></label>
-            <input
-              type="text"
-              class="input input-bordered"
-              [(ngModel)]="newDocuments"
-              placeholder="CI, Pasaporte, etc."
-            />
+          <div>
+            <label class="form-label">Documentos</label>
+            <input class="field" type="text" [(ngModel)]="newDocuments" placeholder="CI, Pasaporte, etc." />
           </div>
         </div>
-        <div class="card-actions justify-end mt-4">
-          <button class="btn btn-ghost btn-sm" (click)="resetForm()">Cancelar</button>
-          <button
-            class="btn btn-primary btn-sm"
-            [disabled]="!newName.trim() || (!teacherId() && !selectedTeacherId)"
-            (click)="addUser()"
-          >
+
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.25rem;">
+          <button class="btn-outline" (click)="resetForm()" [disabled]="saving()">Cancelar</button>
+          <button class="btn-solid"
+                  style="display:flex; align-items:center; gap:0.5rem;"
+                  (click)="addUser()"
+                  [disabled]="saving() || !newName.trim() || (!teacherId() && !selectedTeacherId)">
+            @if (saving()) { <span class="spinner" style="width:16px; height:16px; border-width:2px;"></span> }
             Guardar
           </button>
         </div>
@@ -87,103 +225,4 @@
     </div>
   }
 
-  <!-- Loading -->
-  @if (loading()) {
-    <div class="flex justify-center py-10">
-      <span class="loading loading-spinner loading-lg"></span>
-    </div>
-  }
-
-  <!-- Sin resultados -->
-  @if (!loading() && users().length === 0) {
-    <div class="text-center py-10 opacity-60">
-      <p>No hay alumnos registrados.</p>
-    </div>
-  }
-
-  <!-- Tabla de alumnos -->
-  @if (!loading() && users().length > 0) {
-    <div class="overflow-x-auto">
-      <table class="table table-zebra w-full">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Género</th>
-            <th>Teléfono</th>
-            <th>Documentos</th>
-            <th class="text-center">Asistencia</th>
-            <th class="text-center">Campamento</th>
-            <th class="text-center">Pago Camp.</th>
-            <th class="text-center">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (user of users(); track user.id) {
-            <tr>
-              <td class="font-medium">{{ user.name }}</td>
-              <td>
-                <span class="badge badge-sm" [class.badge-info]="user.Gender === 'MASCULINO'" [class.badge-secondary]="user.Gender === 'FEMENINO'">
-                  {{ user.Gender === 'MASCULINO' ? 'M' : 'F' }}
-                </span>
-              </td>
-              <td class="text-sm opacity-70">{{ user.number || '—' }}</td>
-              <td class="text-sm opacity-70">{{ user.Documents || '—' }}</td>
-              <td class="text-center">
-                <input
-                  type="checkbox"
-                  class="checkbox checkbox-success checkbox-sm"
-                  [checked]="user.attendance"
-                  (change)="toggleAttendance(user.id)"
-                />
-              </td>
-              <td class="text-center">
-                <span
-                  class="badge badge-sm"
-                  [class.badge-success]="user.GoToCampement"
-                  [class.badge-ghost]="!user.GoToCampement"
-                >
-                  {{ user.GoToCampement ? 'Sí' : 'No' }}
-                </span>
-              </td>
-              <td class="text-center">
-                <button
-                  class="badge badge-sm cursor-pointer"
-                  [class.badge-success]="user.payGotoCampement === 'PAGO'"
-                  [class.badge-warning]="user.payGotoCampement === 'DEBE'"
-                  (click)="togglePayment(user)"
-                >
-                  {{ user.payGotoCampement }}
-                </button>
-              </td>
-              <td class="text-center">
-                <button class="btn btn-error btn-outline btn-xs" (click)="deleteUser(user.id)">
-                  Eliminar
-                </button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Resumen -->
-    <div class="stats shadow w-full">
-      <div class="stat">
-        <div class="stat-title">Total Alumnos</div>
-        <div class="stat-value text-lg">{{ totalUsers() }}</div>
-      </div>
-      <div class="stat">
-        <div class="stat-title">Presentes Hoy</div>
-        <div class="stat-value text-lg text-success">
-          {{ presentToday() }}
-        </div>
-      </div>
-      <div class="stat">
-        <div class="stat-title">Van al Campamento</div>
-        <div class="stat-value text-lg text-info">
-          {{ goingToCamp() }}
-        </div>
-      </div>
-    </div>
-  }
 </div>
