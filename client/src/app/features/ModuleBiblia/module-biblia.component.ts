@@ -1,95 +1,112 @@
 import { CommonModule } from "@angular/common";
-import { Component, inject } from "@angular/core";
+import { Component, inject, signal, computed, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { ApiBibliaService } from "src/app/core/services/api-biblia.service";
-import { Router } from "@angular/router";
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
-import { MessageModule } from 'primeng/message';
+import { ApiBibliaService, BibleBook, BibleVerse } from "src/app/core/services/api-biblia.service";
 
 @Component({
   selector: 'module-biblia',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, ButtonModule, SelectModule, MessageModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './module-biblia.component.html'
 })
-export class ModuleBibliaComponent {
+export class ModuleBibliaComponent implements OnInit {
   private api = inject(ApiBibliaService);
-  private router = inject(Router);
 
-  books = ['salmos','proverbios','mateo','marcos','lucas','juan','genesis','exodo','levitico','numeros','deuteronomio'];
-  bookOptions = this.books.map(b => ({ label: b, value: b }));
-  selectedBook = 'salmos';
-  chapters: number[] = [];
-  chapterOptions: { label: string; value: number }[] = [];
-  selectedChapter?: number;
-  version?: string;
-  result: any = null;
-  error?: string;
+  // Books from API
+  allBooks = signal<BibleBook[]>([]);
+  booksLoading = signal(true);
 
-  constructor() {
-    this.onBookChange(); // carga capítulos iniciales
+  // Selection state
+  selectedBookName = signal('Salmos');
+  selectedBook = signal<BibleBook | null>(null);
+  selectedChapter = signal<number>(1);
+  selectedVersion = signal('');
+
+  // Chapters range
+  chapterCount = computed(() => this.selectedBook()?.chapters ?? 50);
+  chapters = computed(() => Array.from({ length: this.chapterCount() }, (_, i) => i + 1));
+
+  // Results
+  verses = signal<BibleVerse[]>([]);
+  rawResult = signal<any>(null);
+  loading = signal(false);
+  error = signal('');
+
+  // UI mode
+  mode: 'chapter' | 'range' | 'verse' = 'chapter';
+  rangeInput = '';
+  verseInput: number | null = null;
+
+  // Filter for search
+  bookSearch = '';
+  get filteredBooks(): BibleBook[] {
+    const q = this.bookSearch.toLowerCase();
+    return this.allBooks().filter(b => b.name.toLowerCase().includes(q));
   }
 
-  onBookChange() {
-    this.error = undefined;
-    this.selectedChapter = undefined;
-    this.chapters = [];
-    this.chapterOptions = [];
-    this.api.getBookInfo(this.selectedBook).subscribe({
-      next: info => {
-        if (typeof info.chapters === 'number') {
-          this.chapters = Array.from({ length: info.chapters }, (_, i) => i + 1);
-        } else if (Array.isArray(info.chapters) && info.chapters.length) {
-          const count = info.chapters.length;
-          this.chapters = Array.from({ length: count }, (_, i) => i + 1);
-        } else if (info.chapterCount) {
-          this.chapters = Array.from({ length: info.chapterCount }, (_, i) => i + 1);
-        } else {
-          this.chapters = Array.from({ length: 50 }, (_, i) => i + 1);
+  ngOnInit() {
+    this.api.getAllBooks().subscribe({
+      next: (books) => {
+        this.allBooks.set(books);
+        this.booksLoading.set(false);
+        const salmos = books.find(b => b.name.toLowerCase() === 'salmos');
+        if (salmos) {
+          this.selectedBook.set(salmos);
+          this.selectedBookName.set(salmos.name);
         }
-        this.chapterOptions = this.chapters.map(c => ({ label: String(c), value: c }));
       },
-      error: err => {
-        this.error = 'No se pudo obtener info del libro: ' + (err?.message || err);
-        this.chapters = Array.from({ length: 50 }, (_, i) => i + 1);
-        this.chapterOptions = this.chapters.map(c => ({ label: String(c), value: c }));
+      error: () => {
+        this.booksLoading.set(false);
+        this.error.set('No se pudieron cargar los libros de la Biblia.');
       }
     });
   }
 
-  fetchChapter() {
-    if (!this.selectedBook || !this.selectedChapter) return;
-    this.result = null;
-    this.error = undefined;
-    this.api.getChapter(this.selectedBook, this.selectedChapter, this.version).subscribe({
-      next: data => { this.result = data; },
-      error: err => { this.error = err?.message || 'Error al cargar capítulo'; }
-    });
+  onBookSelect(book: BibleBook) {
+    this.selectedBook.set(book);
+    this.selectedBookName.set(book.name);
+    this.selectedChapter.set(1);
+    this.verses.set([]);
+    this.rawResult.set(null);
+    this.error.set('');
+    this.bookSearch = '';
   }
 
-  fetchRange(range: string) {
-    if (!this.selectedBook || !this.selectedChapter) return;
-    this.result = null;
-    this.error = undefined;
-    this.api.getRange(this.selectedBook, this.selectedChapter, range, this.version).subscribe({
-      next: data => { this.result = data; },
-      error: err => { this.error = err?.message || 'Error al cargar rango'; }
-    });
-  }
+  load() {
+    const book = this.selectedBook();
+    if (!book) return;
+    this.loading.set(true);
+    this.error.set('');
+    this.verses.set([]);
+    this.rawResult.set(null);
 
-  fetchVerse(verse: number) {
-    if (!this.selectedBook || !this.selectedChapter || !verse) return;
-    this.result = null;
-    this.error = undefined;
-    this.api.getVerse(this.selectedBook, this.selectedChapter, verse, this.version).subscribe({
-      next: data => { this.result = data; },
-      error: err => { this.error = err?.message || 'Error al cargar versículo'; }
-    });
-  }
-  
-    navigateTo(path: string) {
-    this.router.navigate([path]);
+    const bookKey = book.name.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, '-');
+    const version = this.selectedVersion() || undefined;
+
+    let obs$;
+    if (this.mode === 'verse' && this.verseInput) {
+      obs$ = this.api.getVerse(bookKey, this.selectedChapter(), this.verseInput, version);
+    } else if (this.mode === 'range' && this.rangeInput) {
+      obs$ = this.api.getRange(bookKey, this.selectedChapter(), this.rangeInput, version);
+    } else {
+      obs$ = this.api.getChapter(bookKey, this.selectedChapter(), version);
     }
+
+    obs$.subscribe({
+      next: (data) => {
+        if (data?.verses && Array.isArray(data.verses)) {
+          this.verses.set(data.verses);
+        } else {
+          this.rawResult.set(data);
+        }
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.error.set(err?.error?.message || 'Error al cargar el pasaje.');
+        this.loading.set(false);
+      }
+    });
+  }
 }

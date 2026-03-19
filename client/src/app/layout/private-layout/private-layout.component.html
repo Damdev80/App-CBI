@@ -1,132 +1,199 @@
 <!-- ═══════════════════════════════════════════════
-     PRIVATE LAYOUT — Claustro Minimal
+     PRIVATE LAYOUT — Sidebar colapsable
      ═══════════════════════════════════════════════ -->
 <div class="flex h-screen overflow-hidden bg-page">
 
   <!-- ─── Overlay móvil ─── -->
   @if (sidebarOpen()) {
-    <div
-      class="fixed inset-0 z-30 lg:hidden"
-      style="background: rgba(0,0,0,0.3); backdrop-filter: blur(2px);"
-      (click)="sidebarOpen.set(false)">
+    <div class="fixed inset-0 z-30 lg:hidden"
+         style="background: rgba(0,0,0,0.25); backdrop-filter: blur(2px);"
+         (click)="sidebarOpen.set(false)">
     </div>
   }
 
   <!-- ─── SIDEBAR ─── -->
-  <aside
-    class="fixed lg:static inset-y-0 left-0 z-40 flex flex-col bg-surface border-r border-line transition-transform duration-300"
-    style="width: 240px; flex-shrink: 0;"
-    [class.sidebar-visible]="sidebarOpen()">
+  <aside class="fixed lg:static inset-y-0 left-0 z-40 flex flex-col bg-surface border-r border-line"
+         [class.sidebar-visible]="sidebarOpen()"
+         [style.width]="sidebarCollapsed() ? '56px' : '240px'"
+         style="flex-shrink: 0; transition: width 0.22s ease, transform 0.25s ease; overflow: hidden;">
 
-    <!-- Logo -->
-    <div class="flex items-center gap-3 border-b border-line" style="padding: 0 1.25rem; height: 60px;">
-      <img src="img/cbiLogo.svg" alt="CBI" style="width: 30px; height: 30px;" />
-      <span style="font-family: var(--serif); font-size: 1.1rem; font-weight: 600; color: var(--ink); letter-spacing: -0.01em;">
-        Iglesia CBI
-      </span>
+    <!-- Logo / Toggle -->
+    <div class="flex items-center border-b border-line"
+         [style.height]="'60px'"
+         [style.padding]="sidebarCollapsed() ? '0' : '0 1rem'"
+         [style.justifyContent]="sidebarCollapsed() ? 'center' : 'space-between'">
+
+      @if (!sidebarCollapsed()) {
+        <div class="flex items-center gap-2.5">
+          <img src="img/cbiLogo.svg" alt="CBI" style="width: 28px; height: 28px; flex-shrink: 0;" />
+          <span style="font-family: var(--serif); font-size: 1.05rem; font-weight: 600; color: var(--ink); white-space: nowrap; letter-spacing: -0.01em;">
+            Iglesia CBI
+          </span>
+        </div>
+      }
+
+      <button class="btn-ghost" style="padding: 0.375rem; border-radius: 50%;"
+              (click)="sidebarCollapsed.set(!sidebarCollapsed())"
+              [title]="sidebarCollapsed() ? 'Expandir menú' : 'Colapsar menú'">
+        @if (sidebarCollapsed()) {
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 18l6-6-6-6"/>
+          </svg>
+        } @else {
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 18l-6-6 6-6"/>
+          </svg>
+        }
+      </button>
     </div>
 
-    <!-- Navigation -->
-    <nav class="flex-1 overflow-y-auto" style="padding: 1rem 0.75rem;">
+    <!-- Nav items -->
+    <nav class="flex-1 overflow-y-auto overflow-x-hidden" style="padding: 0.75rem 0;">
 
-      <div style="margin-bottom: 0.25rem;">
-        <button class="nav-item" (click)="navegateTo('/dashboard'); sidebarOpen.set(false)">
-          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-          </svg>
-          Dashboard
-        </button>
-      </div>
+      <!-- Dashboard -->
+      <button class="sidebar-btn" [class.collapsed]="sidebarCollapsed()"
+              (click)="navegateTo('/dashboard'); sidebarOpen.set(false)"
+              [title]="sidebarCollapsed() ? 'Dashboard' : ''">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        @if (!sidebarCollapsed()) { <span>Dashboard</span> }
+      </button>
 
-      <!-- Eventos (collapsible) -->
-      <div style="margin-bottom: 0.25rem;">
-        <details style="list-style: none;">
-          <summary class="nav-item" style="list-style: none; cursor: pointer;">
-            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <!-- Eventos (collapsible solo cuando expandido) -->
+      @if (!sidebarCollapsed()) {
+        <details style="padding: 0 0.5rem;">
+          <summary class="sidebar-btn" style="list-style:none; border-radius: 6px;"
+                   [class.collapsed]="false">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
             </svg>
-            Eventos
+            <span>Eventos</span>
           </summary>
-          <div style="padding: 0.25rem 0 0 1.5rem; max-height: 220px; overflow-y: auto;">
+          <div style="padding-left: 1.25rem; max-height: 200px; overflow-y: auto;">
             @if (loadingEvents()) {
-              <div style="padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.5rem; color: var(--ink-3); font-size: 0.8125rem;">
-                <span class="spinner" style="width: 0.75rem; height: 0.75rem; border-width: 1.5px;"></span>
+              <div style="padding: 0.5rem 0.75rem; font-size: 0.8125rem; color: var(--ink-3); display:flex; align-items:center; gap:0.375rem;">
+                <span class="spinner" style="width:0.75rem; height:0.75rem; border-width:1.5px;"></span>
                 Cargando…
               </div>
             }
             @if (!loadingEvents() && events().length === 0) {
-              <p style="padding: 0.5rem 0.75rem; font-size: 0.8125rem; color: var(--ink-3);">Sin eventos</p>
+              <p style="padding: 0.375rem 0.75rem; font-size: 0.8rem; color: var(--ink-3);">Sin eventos</p>
             }
             @for (event of events(); track event.id) {
               <ng-container *ngIf="event.title !== 'Congreso Juvenil' || userRole === 'juvenil'">
-                <button class="nav-item" style="font-size: 0.8125rem;"
+                <button class="sidebar-btn" style="font-size:0.8125rem; padding: 0.375rem 0.75rem;"
                         (click)="navigateToEventDetails(event.id); sidebarOpen.set(false)">
-                  <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                  <div style="display:flex; flex-direction:column; align-items:flex-start;">
                     <span>{{ event.title }}</span>
-                    <span style="font-size: 0.7rem; color: var(--ink-3);">{{ event.eventDate | date:'dd/MM/yyyy' }}</span>
+                    <span style="font-size:0.7rem; color:var(--ink-3);">{{ event.eventDate | date:'dd/MM/yyyy' }}</span>
                   </div>
                 </button>
               </ng-container>
             }
           </div>
         </details>
-      </div>
-
-      <div style="margin-bottom: 0.25rem;">
-        <button class="nav-item" (click)="navegateTo('/dashboard/users'); sidebarOpen.set(false)">
-          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      } @else {
+        <button class="sidebar-btn" [class.collapsed]="true"
+                (click)="navegateTo('/dashboard'); sidebarOpen.set(false)"
+                title="Eventos">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
           </svg>
-          Usuarios
         </button>
-      </div>
+      }
 
-      <div style="margin-bottom: 0.25rem;">
-        <button class="nav-item" (click)="navegateTo('/dashboard/groups'); sidebarOpen.set(false)">
-          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
-          Grupos
-        </button>
-      </div>
+      <!-- Crear Evento -->
+      <button class="sidebar-btn" [class.collapsed]="sidebarCollapsed()"
+              (click)="navegateTo('/dashboard/crear-evento'); sidebarOpen.set(false)"
+              [title]="sidebarCollapsed() ? 'Crear Evento' : ''">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                d="M12 4v16m8-8H4"/>
+        </svg>
+        @if (!sidebarCollapsed()) { <span>Crear Evento</span> }
+      </button>
 
-      <!-- Servicio social (collapsible) -->
-      <div style="margin-bottom: 0.25rem;">
-        <details style="list-style: none;">
-          <summary class="nav-item" style="list-style: none; cursor: pointer;">
-            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <!-- Usuarios -->
+      <button class="sidebar-btn" [class.collapsed]="sidebarCollapsed()"
+              (click)="navegateTo('/dashboard/users'); sidebarOpen.set(false)"
+              [title]="sidebarCollapsed() ? 'Usuarios' : ''">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+        </svg>
+        @if (!sidebarCollapsed()) { <span>Usuarios</span> }
+      </button>
+
+      <!-- Grupos -->
+      <button class="sidebar-btn" [class.collapsed]="sidebarCollapsed()"
+              (click)="navegateTo('/dashboard/groups'); sidebarOpen.set(false)"
+              [title]="sidebarCollapsed() ? 'Grupos' : ''">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+        </svg>
+        @if (!sidebarCollapsed()) { <span>Grupos</span> }
+      </button>
+
+      <!-- Servicio Social (collapsible) -->
+      @if (!sidebarCollapsed()) {
+        <details style="padding: 0 0.5rem;">
+          <summary class="sidebar-btn" style="list-style:none; border-radius:6px;">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
             </svg>
-            Servicio Social
+            <span>Servicio Social</span>
           </summary>
-          <div style="padding: 0.25rem 0 0 1.5rem;">
-            <button class="nav-item" style="font-size: 0.8125rem;"
+          <div style="padding-left: 1.25rem;">
+            <button class="sidebar-btn" style="font-size:0.8125rem;"
                     (click)="navegateTo('/dashboard/profesores'); sidebarOpen.set(false)">
               Profesores
             </button>
-            <button class="nav-item" style="font-size: 0.8125rem;"
+            <button class="sidebar-btn" style="font-size:0.8125rem;"
                     (click)="navegateTo('/dashboard/servicio-social'); sidebarOpen.set(false)">
               Alumnos
             </button>
           </div>
         </details>
-      </div>
+      } @else {
+        <button class="sidebar-btn" [class.collapsed]="true"
+                (click)="navegateTo('/dashboard/servicio-social')"
+                title="Servicio Social">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+        </button>
+      }
+
+      <!-- Estudio Bíblico -->
+      <button class="sidebar-btn" [class.collapsed]="sidebarCollapsed()"
+              (click)="navegateTo('/dashboard/biblia'); sidebarOpen.set(false)"
+              [title]="sidebarCollapsed() ? 'Estudio Bíblico' : ''">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+        @if (!sidebarCollapsed()) { <span>Estudio Bíblico</span> }
+      </button>
 
     </nav>
 
     <!-- Logout -->
-    <div class="border-t border-line" style="padding: 0.75rem;">
-      <button class="nav-item" style="color: var(--err); width: 100%;" (click)="logout()">
-        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="border-t border-line" style="padding: 0.5rem;">
+      <button class="sidebar-btn" [class.collapsed]="sidebarCollapsed()"
+              style="color: var(--err);" (click)="logout()"
+              [title]="sidebarCollapsed() ? 'Cerrar sesión' : ''">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
         </svg>
-        Cerrar sesión
+        @if (!sidebarCollapsed()) { <span>Cerrar sesión</span> }
       </button>
     </div>
 
@@ -137,76 +204,74 @@
 
     <!-- Header -->
     <header class="bg-surface border-b border-line flex items-center justify-between flex-shrink-0"
-            style="height: 60px; padding: 0 1.5rem;">
+            style="height: 60px; padding: 0 1.25rem;">
 
       <!-- Hamburger (móvil) -->
       <button class="btn-ghost lg:hidden" style="padding: 0.375rem;"
               (click)="sidebarOpen.set(!sidebarOpen())" aria-label="Menú">
         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 6h16M4 12h16M4 18h16" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
       </button>
 
-      <!-- Logo (móvil) -->
-      <span class="lg:hidden" style="font-family: var(--serif); font-size: 1.1rem; font-weight: 600; color: var(--ink);">
-        Iglesia CBI
-      </span>
+      <div class="flex-1"></div>
 
-      <!-- Acciones -->
-      <div class="flex items-center gap-1 ml-auto">
+      <!-- Acciones derechas -->
+      <div class="flex items-center gap-1">
         <app-theme-toggle />
-
-        <!-- User dropdown -->
-        <div style="position: relative;" class="group">
-          <button class="btn-ghost flex items-center gap-2" style="padding: 0.375rem 0.5rem; font-size: 0.875rem;">
-            <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--accent-tint); display: flex; align-items: center; justify-content: center;">
-              <svg width="15" height="15" fill="none" stroke="var(--accent)" viewBox="0 0 24 24">
+        <!-- Avatar + menú -->
+        <div style="position: relative;">
+          <button class="btn-ghost" id="userMenuBtn"
+                  style="display:flex; align-items:center; gap:0.375rem; padding:0.375rem 0.5rem;"
+                  (click)="userMenuOpen = !userMenuOpen">
+            <div style="width:30px; height:30px; border-radius:50%; background:var(--accent-tint); display:flex; align-items:center; justify-content:center;">
+              <svg width="16" height="16" fill="none" stroke="var(--accent)" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
               </svg>
             </div>
-            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
           </button>
-          <!-- Dropdown -->
-          <div class="bg-surface border border-line"
-               style="position: absolute; right: 0; top: calc(100% + 4px); width: 180px; border-radius: var(--r); box-shadow: 0 4px 20px rgba(0,0,0,0.08); opacity: 0; pointer-events: none; transition: opacity 0.15s ease; z-index: 50;"
-               [style.opacity]="''"
-               [style.pointerEvents]="''"
-               #userMenu>
-            <div style="padding: 0.25rem;">
-              <button class="nav-item" style="font-size: 0.8125rem; width: 100%;"
-                      (click)="navegateTo('/dashboard/profile')">
+          @if (userMenuOpen) {
+            <div class="bg-surface border border-line"
+                 style="position:absolute; right:0; top:calc(100% + 4px); width:170px; border-radius:var(--r); box-shadow:0 8px 24px rgba(0,0,0,0.1); z-index:50; padding:0.25rem;">
+              <button class="sidebar-btn" style="width:100%; font-size:0.8125rem;"
+                      (click)="navegateTo('/dashboard/profile'); userMenuOpen = false">
+                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
                 Mi perfil
               </button>
-              <div class="divider-h" style="margin: 0.25rem 0;"></div>
-              <button class="nav-item" style="font-size: 0.8125rem; color: var(--err); width: 100%;"
-                      (click)="logout()">
+              <div style="height:1px; background:var(--line); margin:0.25rem 0;"></div>
+              <button class="sidebar-btn" style="width:100%; font-size:0.8125rem; color:var(--err);"
+                      (click)="logout(); userMenuOpen = false">
+                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
                 Cerrar sesión
               </button>
             </div>
-          </div>
+          }
         </div>
       </div>
-
     </header>
 
-    <!-- Notificación global -->
+    <!-- Notificación -->
     @if (notification()) {
-      <div style="padding: 0.75rem 1.5rem 0;">
+      <div style="padding: 0.625rem 1.25rem 0; flex-shrink:0;">
         <div [class]="'alert ' + (
           notification()!.type === 'success' ? 'alert-ok' :
           notification()!.type === 'error'   ? 'alert-err' :
           notification()!.type === 'warning' ? 'alert-warn' : 'alert-info'
         )">
-          <span>{{ notification()!.message }}</span>
+          {{ notification()!.message }}
         </div>
       </div>
     }
 
-    <!-- Page content -->
-    <main class="flex-1 overflow-y-auto bg-page" style="padding: 2rem 1.5rem;">
+    <!-- Content -->
+    <main class="flex-1 overflow-y-auto bg-page" style="padding: 1.75rem 1.5rem;">
       <router-outlet></router-outlet>
     </main>
 

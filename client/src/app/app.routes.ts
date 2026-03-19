@@ -67,6 +67,16 @@ export const routes: Routes = [
                 path: 'servicio-social',
                 loadComponent: () => import('./features/user-service/user-service')
                   .then(m => m.UserServiceComponent)
+            },
+            {
+                path: 'biblia',
+                loadComponent: () => import('./features/ModuleBiblia/module-biblia.component')
+                  .then(m => m.ModuleBibliaComponent)
+            },
+            {
+                path: 'crear-evento',
+                loadComponent: () => import('./features/create-event/create-event.component')
+                  .then(m => m.CreateEventComponent)
             }
         ]
     },

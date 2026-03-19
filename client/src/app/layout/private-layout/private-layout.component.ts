@@ -29,6 +29,8 @@ export class PrivateLayoutComponent implements OnInit {
     loadingEvents = signal<boolean>(false);
     notification = signal<Notification | null>(null);
     sidebarOpen = signal<boolean>(false);
+    sidebarCollapsed = signal<boolean>(true);
+    userMenuOpen = false;
 
     ngOnInit() {
         this.loadEvents();

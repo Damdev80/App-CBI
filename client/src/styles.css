@@ -279,6 +279,32 @@ select.field {
   border-radius: var(--r2);
 }
 
+/* ─── Sidebar button (colapsable) ─── */
+.sidebar-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  margin: 0.125rem 0.5rem;
+  border-radius: var(--r);
+  font-size: 0.875rem;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+  border: none;
+  background: transparent;
+  width: calc(100% - 1rem);
+  text-align: left;
+  white-space: nowrap;
+}
+.sidebar-btn:hover { color: var(--ink); background-color: var(--surface-2); }
+.sidebar-btn.collapsed {
+  justify-content: center;
+  padding: 0.5rem;
+  width: calc(100% - 0.5rem);
+  margin: 0.125rem 0.25rem;
+}
+
 /* ─── Sidebar nav item ─── */
 .nav-item {
   display: flex;

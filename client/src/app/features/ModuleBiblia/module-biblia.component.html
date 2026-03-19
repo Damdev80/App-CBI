@@ -1,48 +1,202 @@
-<div class="flex gap-3 items-end flex-wrap">
-  <div class="flex flex-col gap-1">
-    <label class="text-sm font-medium text-main">Libro</label>
-    <p-select [(ngModel)]="selectedBook" (onChange)="onBookChange()" [options]="bookOptions" optionLabel="label" optionValue="value" styleClass="w-48" />
+<!-- ═══════════════════════════════════════════════
+     ESTUDIO BÍBLICO — Bible API
+     ═══════════════════════════════════════════════ -->
+<div style="max-width: 960px; margin: 0 auto;" class="fade-up">
+
+  <!-- Page header -->
+  <div style="margin-bottom: 2rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--line);">
+    <p style="font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); font-weight: 500; margin-bottom: 0.375rem;">
+      Recurso
+    </p>
+    <h1 style="font-family: var(--serif); font-size: 2.25rem; font-weight: 600; color: var(--ink); letter-spacing: -0.02em; margin-bottom: 0.375rem;">
+      Estudio Bíblico
+    </h1>
+    <p style="font-size: 0.9375rem; color: var(--ink-2);">
+      Explora la Palabra — 66 libros, múltiples versiones.
+    </p>
   </div>
 
-  <div class="flex flex-col gap-1">
-    <label class="text-sm font-medium text-main">Capítulo</label>
-    <p-select [(ngModel)]="selectedChapter" [options]="chapterOptions" optionLabel="label" optionValue="value" placeholder="--" styleClass="w-28" />
-  </div>
+  <!-- Controls -->
+  <div class="card fade-up fade-up-1" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: end;"
+         class="md:grid-cols-3">
 
-  <div class="flex flex-col gap-1">
-    <label class="text-sm font-medium text-main">Versión</label>
-    <input [(ngModel)]="version" placeholder="nvi (opcional)" pInputText class="w-36" />
-  </div>
+      <!-- Selector de libro -->
+      <div>
+        <label class="form-label">Libro</label>
+        @if (booksLoading()) {
+          <div class="field" style="color: var(--ink-3); display:flex; align-items:center; gap:0.5rem;">
+            <span class="spinner" style="width:0.875rem; height:0.875rem; border-width:1.5px;"></span>
+            Cargando libros…
+          </div>
+        } @else {
+          <!-- Dropdown custom -->
+          <div style="position: relative;">
+            <input class="field" type="text" [(ngModel)]="bookSearch"
+                   [placeholder]="selectedBookName()"
+                   style="cursor: pointer;" />
+            @if (bookSearch) {
+              <div class="bg-surface border border-line"
+                   style="position:absolute; top:100%; left:0; right:0; z-index:50;
+                          border-radius: var(--r); box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+                          max-height: 220px; overflow-y: auto;">
+                @if (filteredBooks.length === 0) {
+                  <p style="padding: 0.75rem; font-size:0.875rem; color:var(--ink-3); text-align:center;">Sin resultados</p>
+                }
+                @for (book of filteredBooks; track book.abrev) {
+                  <button (click)="onBookSelect(book)"
+                          style="display:flex; align-items:center; justify-content:space-between; width:100%; padding: 0.5rem 0.875rem; background:none; border:none; cursor:pointer; font-size:0.875rem; text-align:left; color:var(--ink);"
+                          onmouseenter="this.style.background='var(--surface-2)'"
+                          onmouseleave="this.style.background='none'">
+                    <span>{{ book.name }}</span>
+                    <span style="font-size:0.75rem; color:var(--ink-3);">{{ book.testament === 'Antiguo Testamento' ? 'AT' : 'NT' }} · {{ book.chapters }} cap.</span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
 
-  <p-button label="Cargar capítulo" (click)="fetchChapter()" />
-</div>
+      <!-- Capítulo -->
+      <div>
+        <label class="form-label">Capítulo</label>
+        <select class="field" [(ngModel)]="selectedChapter" (ngModelChange)="selectedChapter.set($event)">
+          @for (c of chapters(); track c) {
+            <option [value]="c">{{ c }}</option>
+          }
+        </select>
+      </div>
 
-<div class="flex gap-3 items-end flex-wrap mt-3">
-  <div class="flex flex-col gap-1">
-    <label class="text-sm font-medium text-main">Rango (ej. 5-10)</label>
-    <input #rangeInput pInputText class="w-36" />
-  </div>
-  <p-button label="Cargar rango" (click)="fetchRange(rangeInput.value)" />
+      <!-- Versión -->
+      <div>
+        <label class="form-label">Versión <span style="color:var(--ink-3); font-weight:400;">(opcional)</span></label>
+        <input class="field" type="text" [(ngModel)]="selectedVersion" [ngModel]="selectedVersion()"
+               (ngModelChange)="selectedVersion.set($event)"
+               placeholder="ej. nvi, rv1960" />
+      </div>
 
-  <div class="flex flex-col gap-1 ml-4">
-    <label class="text-sm font-medium text-main">Versículo #</label>
-    <input #verseInput type="number" pInputText class="w-28" />
-  </div>
-  <p-button label="Cargar versículo" (click)="fetchVerse(+verseInput.value)" />
-</div>
+    </div>
 
-<p-message *ngIf="error" severity="error" styleClass="mt-3">{{ error }}</p-message>
+    <!-- Modo de lectura -->
+    <div style="margin-top: 1.25rem; display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+      <span style="font-size:0.8125rem; color:var(--ink-3); margin-right:0.25rem;">Modo:</span>
+      <button (click)="mode = 'chapter'"
+              [style.background]="mode === 'chapter' ? 'var(--accent)' : 'transparent'"
+              [style.color]="mode === 'chapter' ? 'white' : 'var(--ink-2)'"
+              [style.borderColor]="mode === 'chapter' ? 'var(--accent)' : 'var(--line)'"
+              style="padding:0.3125rem 0.875rem; border:1px solid; border-radius:var(--r); font-size:0.8125rem; cursor:pointer; transition:all 0.15s;">
+        Capítulo
+      </button>
+      <button (click)="mode = 'range'"
+              [style.background]="mode === 'range' ? 'var(--accent)' : 'transparent'"
+              [style.color]="mode === 'range' ? 'white' : 'var(--ink-2)'"
+              [style.borderColor]="mode === 'range' ? 'var(--accent)' : 'var(--line)'"
+              style="padding:0.3125rem 0.875rem; border:1px solid; border-radius:var(--r); font-size:0.8125rem; cursor:pointer; transition:all 0.15s;">
+        Rango
+      </button>
+      <button (click)="mode = 'verse'"
+              [style.background]="mode === 'verse' ? 'var(--accent)' : 'transparent'"
+              [style.color]="mode === 'verse' ? 'white' : 'var(--ink-2)'"
+              [style.borderColor]="mode === 'verse' ? 'var(--accent)' : 'var(--line)'"
+              style="padding:0.3125rem 0.875rem; border:1px solid; border-radius:var(--r); font-size:0.8125rem; cursor:pointer; transition:all 0.15s;">
+        Versículo
+      </button>
 
-<div *ngIf="result" class="mt-3">
-  <h3 class="text-xl font-semibold text-main">{{ selectedBook }} {{ selectedChapter }}</h3>
+      <!-- Input de rango/versículo -->
+      @if (mode === 'range') {
+        <input class="field" type="text" [(ngModel)]="rangeInput"
+               placeholder="ej. 5-10" style="width: 100px;" />
+      }
+      @if (mode === 'verse') {
+        <input class="field" type="number" [(ngModel)]="verseInput"
+               placeholder="# versículo" style="width: 110px;" min="1" />
+      }
 
-  <div *ngIf="result.verses; else raw">
-    <div *ngFor="let v of result.verses" class="mb-2">
-      <strong>{{ v.number }}</strong> — {{ v.verse }}
+      <button class="btn-solid" style="margin-left:auto;" (click)="load()" [disabled]="loading()">
+        @if (loading()) { <span class="spinner"></span> }
+        @else {
+          <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        }
+        Cargar
+      </button>
     </div>
   </div>
 
-  <ng-template #raw>
-    <pre>{{ result | json }}</pre>
-  </ng-template>
+  <!-- Error -->
+  @if (error()) {
+    <div class="alert alert-err fade-up" style="margin-bottom: 1.25rem;">{{ error() }}</div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div style="display:flex; justify-content:center; padding: 3rem 0;">
+      <span class="spinner spinner-lg" style="color:var(--accent);"></span>
+    </div>
+  }
+
+  <!-- Results -->
+  @if (!loading() && (verses().length || rawResult())) {
+    <div class="card fade-up" style="overflow: hidden;">
+
+      <!-- Result header -->
+      <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--line); display:flex; align-items:baseline; gap:0.75rem; background:var(--surface-2);">
+        <h2 style="font-family:var(--serif); font-size:1.5rem; font-weight:600; color:var(--ink); margin:0;">
+          {{ selectedBookName() }} {{ selectedChapter() }}
+        </h2>
+        @if (selectedVersion()) {
+          <span class="badge badge-accent">{{ selectedVersion().toUpperCase() }}</span>
+        }
+        @if (verses().length) {
+          <span style="font-size:0.8125rem; color:var(--ink-3); margin-left:auto;">{{ verses().length }} versículos</span>
+        }
+      </div>
+
+      <!-- Verses -->
+      @if (verses().length) {
+        <div style="padding: 1.5rem; display:flex; flex-direction:column; gap: 0;">
+          @for (v of verses(); track v.number) {
+            <div style="display:flex; gap:1rem; padding: 0.625rem 0; border-bottom: 1px solid var(--line-2);"
+                 onmouseenter="this.style.background='var(--surface-2)'"
+                 onmouseleave="this.style.background='transparent'"
+                 [style.margin]="'0 -0.25rem'"
+                 [style.padding]="'0.625rem 0.25rem'"
+                 [style.borderRadius]="'4px'">
+              <span style="font-family:var(--sans); font-size:0.75rem; font-weight:600; color:var(--accent); min-width:1.75rem; padding-top:0.125rem; flex-shrink:0;">
+                {{ v.number }}
+              </span>
+              <p style="font-size:1rem; color:var(--ink); line-height:1.7; margin:0; font-family:var(--sans);">
+                {{ v.verse }}
+              </p>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Raw fallback -->
+      @if (rawResult() && !verses().length) {
+        <div style="padding: 1.5rem;">
+          <pre style="font-size: 0.8125rem; color: var(--ink-2); overflow-x: auto; white-space: pre-wrap;">{{ rawResult() | json }}</pre>
+        </div>
+      }
+
+    </div>
+  }
+
+  <!-- Empty state -->
+  @if (!loading() && !verses().length && !rawResult() && !error()) {
+    <div style="text-align:center; padding: 4rem 2rem; color:var(--ink-3);">
+      <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin:0 auto 1rem; opacity:0.4;">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+      </svg>
+      <p style="font-family:var(--serif); font-size:1.25rem; color:var(--ink-2); margin-bottom:0.5rem;">
+        Selecciona un libro y capítulo
+      </p>
+      <p style="font-size:0.875rem;">Presiona <strong>Cargar</strong> para leer el pasaje.</p>
+    </div>
+  }
+
 </div>

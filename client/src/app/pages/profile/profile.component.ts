@@ -8,14 +8,6 @@ import { Signal, signal } from "@angular/core";
 import { profileService, UserProfile, Gender, Dicipules } from "../../core/services/profile.service";
 import { MembersService } from '../../core/services/members.service';
 import { GroupsService } from '../../core/services/groups.service';
-import { CardModule } from 'primeng/card';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
-import { MessageModule } from 'primeng/message';
-import { DialogModule } from 'primeng/dialog';
-import { DividerModule } from 'primeng/divider';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 export interface GroupInfo {
   groupId: string;
@@ -28,8 +20,6 @@ export interface GroupInfo {
     standalone: true,
     imports: [
         CommonModule, ReactiveFormsModule, FormsModule,
-        CardModule, InputTextModule, ButtonModule, SelectModule,
-        MessageModule, DialogModule, DividerModule, ProgressSpinnerModule
     ],
     templateUrl: './profile.component.html',
 })
