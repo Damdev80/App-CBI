@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from "@angular/common";
-import { Component, inject, signal, OnInit, PLATFORM_ID } from "@angular/core";
+import { Component, inject, signal, computed, OnInit, PLATFORM_ID } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { ApiBibliaService, BibleBook, BibleVerse } from "src/app/core/services/api-biblia.service";
@@ -117,25 +117,31 @@ export class ModuleBibliaComponent implements OnInit {
   loading   = signal(false);
   error     = signal('');
 
+  /** Panel de palabras repetidas (solo palabras que aparecen 2+ veces) */
+  showRepeatedWords = signal(false);
+  repeatedWordsList = computed(() => this.buildRepeatedWords(this.verses()));
+
   // ── Mode ──
   mode: 'chapter' | 'range' | 'verse' = 'chapter';
   rangeInput  = '';
   verseInput: any = '';
 
   ngOnInit() {
-    // Only fetch in the browser — avoid SSR network calls to external APIs
-    if (!isPlatformBrowser(this.platformId)) {
-      this.booksLoading.set(false);
-      return;
-    }
+    // Siempre cargar lista estática primero: así hay libros y selección por defecto aunque falle la API o sea SSR
+    this.allBooks.set(BIBLE_BOOKS_FALLBACK);
+    const defaultBook = BIBLE_BOOKS_FALLBACK.find(b => b.name === 'Salmos') ?? BIBLE_BOOKS_FALLBACK[0];
+    this.selectedBook = defaultBook;
+    this.selectedChapter = 1;
+    this.booksLoading.set(false);
+
+    // En el navegador, opcionalmente intentar reemplazar con /api/books
+    if (!isPlatformBrowser(this.platformId)) return;
 
     this.http.get<any>('https://bible-api.deno.dev/api/books').subscribe({
       next: (resp) => {
-        // API can return an array directly or { books: [...] }
         const raw: any[] = Array.isArray(resp)
           ? resp
           : (resp?.books ?? resp?.data ?? Object.values(resp ?? {}));
-
         const books: BibleBook[] = raw
           .filter(b => b && typeof b === 'object' && (b.name || b.Name))
           .map(b => ({
@@ -144,29 +150,14 @@ export class ModuleBibliaComponent implements OnInit {
             chapters:  Number(b.chapters ?? b.chapter_count ?? 150) || 150,
             testament: String(b.testament ?? b.Testament ?? ''),
           }));
-
-        this.allBooks.set(books);
-        this.booksLoading.set(false);
-
-        // Default: Salmos
-        const def = books.find(b => b.name.toLowerCase().includes('salm'))
-                 ?? books.find(b => b.name.toLowerCase().includes('psalm'))
-                 ?? books[0];
-        if (def) {
-          this.selectedBook    = def;
-          this.selectedChapter = 1;
+        if (books.length > 0) {
+          this.allBooks.set(books);
+          const currentAbrev = this.selectedBook?.abrev;
+          const same = books.find(b => b.abrev === currentAbrev || b.name === this.selectedBook?.name);
+          this.selectedBook = same ?? books.find(b => b.name.toLowerCase().includes('salm')) ?? books[0];
         }
       },
-      error: (e) => {
-        console.warn('Bible API books failed, using fallback list', e);
-        this.allBooks.set(BIBLE_BOOKS_FALLBACK);
-        this.booksLoading.set(false);
-        const def = BIBLE_BOOKS_FALLBACK.find(b => b.name.toLowerCase().includes('salm')) ?? BIBLE_BOOKS_FALLBACK[0];
-        if (def) {
-          this.selectedBook = def;
-          this.selectedChapter = 1;
-        }
-      }
+      error: () => { /* mantener lista estática ya cargada */ }
     });
   }
 
@@ -249,5 +240,52 @@ export class ModuleBibliaComponent implements OnInit {
     if (t.includes('antiguo') || t.includes('old')) return 'AT';
     if (t.includes('nuevo') || t.includes('new'))   return 'NT';
     return '';
+  }
+
+  /** Construye lista de palabras repetidas (2+ veces) ordenada por frecuencia */
+  buildRepeatedWords(verses: BibleVerse[]): { word: string; count: number }[] {
+    if (!verses?.length) return [];
+    const map = new Map<string, number>();
+    const stop = new Set(['el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas', 'de', 'del', 'al', 'a', 'en', 'y', 'que', 'es', 'por', 'con', 'para', 'su', 'se', 'lo', 'como', 'pero', 'sus', 'le', 'ya', 'o', 'fue', 'este', 'ha', 'si', 'sin', 'sobre', 'ser', 'tiene', 'me', 'hasta', 'hay', 'donde', 'han', 'quien', 'desde', 'todo', 'nos', 'durante', 'estos', 'uno', 'les', 'ni', 'contra', 'otros', 'ese', 'eso', 'ante', 'ellos', 'e', 'esto', 'mí', 'antes', 'algunos', 'qué', 'unos', 'yo', 'otro', 'otra', 'otras', 'él', 'ella', 'te', 'ti', 'qué']);
+    for (const v of verses) {
+      const text = (v.verse ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const words = text.toLowerCase().match(/\b[a-záéíóúñü]+\b/g) ?? [];
+      for (const w of words) {
+        if (w.length < 2 || stop.has(w)) continue;
+        map.set(w, (map.get(w) ?? 0) + 1);
+      }
+    }
+    return Array.from(map.entries())
+      .filter(([, count]) => count >= 2)
+      .map(([word, count]) => ({ word, count }))
+      .sort((a, b) => b.count - a.count);
+  }
+
+  toggleRepeatedWords() {
+    this.showRepeatedWords.update(v => !v);
+  }
+
+  /** Divide el texto del versículo en segmentos para resaltar las palabras repetidas */
+  getVerseSegments(verseText: string): { text: string; highlight: boolean }[] {
+    if (!verseText || !this.showRepeatedWords()) {
+      return [{ text: verseText || '', highlight: false }];
+    }
+    const repeatedSet = new Set(this.repeatedWordsList().map(x => x.word));
+    const segments: { text: string; highlight: boolean }[] = [];
+    const regex = /\b[a-záéíóúñüA-ZÁÉÍÓÚÑÜ]+\b/g;
+    let lastEnd = 0;
+    let m: RegExpExecArray | null;
+    while ((m = regex.exec(verseText)) !== null) {
+      if (m.index > lastEnd) {
+        segments.push({ text: verseText.slice(lastEnd, m.index), highlight: false });
+      }
+      const normalized = m[0].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      segments.push({ text: m[0], highlight: repeatedSet.has(normalized) });
+      lastEnd = regex.lastIndex;
+    }
+    if (lastEnd < verseText.length) {
+      segments.push({ text: verseText.slice(lastEnd), highlight: false });
+    }
+    return segments.length ? segments : [{ text: verseText, highlight: false }];
   }
 }

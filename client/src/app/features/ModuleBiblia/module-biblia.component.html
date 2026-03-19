@@ -161,7 +161,7 @@
     <div class="card fade-up" style="overflow:hidden;">
 
       <!-- Result header -->
-      <div style="padding:1.25rem 1.5rem; border-bottom:1px solid var(--line); background:var(--surface-2); display:flex; align-items:baseline; gap:0.75rem;">
+      <div style="padding:1.25rem 1.5rem; border-bottom:1px solid var(--line); background:var(--surface-2); display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
         <h2 style="font-family:var(--serif); font-size:1.625rem; font-weight:600; color:var(--ink); margin:0;">
           {{ selectedBook?.name }} {{ selectedChapter }}
         </h2>
@@ -172,8 +172,40 @@
           <span style="font-size:0.8125rem; color:var(--ink-3); margin-left:auto;">
             {{ verses().length }} versículos
           </span>
+          <button type="button"
+                  (click)="toggleRepeatedWords()"
+                  [style.background]="showRepeatedWords() ? 'var(--accent)' : 'transparent'"
+                  [style.color]="showRepeatedWords() ? 'white' : 'var(--ink-2)'"
+                  [style.borderColor]="showRepeatedWords() ? 'var(--accent)' : 'var(--line)'"
+                  style="padding:0.375rem 0.75rem; border:1px solid; border-radius:var(--r); font-size:0.8125rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.375rem;">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 8h10M7 12h4m5 0l2-2-2-2"/>
+            </svg>
+            Palabras repetidas
+          </button>
         }
       </div>
+
+      <!-- Panel palabras repetidas -->
+      @if (verses().length && showRepeatedWords()) {
+        <div style="padding:1rem 1.5rem; border-bottom:1px solid var(--line); background:var(--surface-2);">
+          <p style="font-size:0.75rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.75rem;">
+            Palabras que se repiten en este pasaje
+          </p>
+          @if (repeatedWordsList().length === 0) {
+            <p style="font-size:0.875rem; color:var(--ink-3); margin:0;">No hay palabras repetidas en este texto.</p>
+          } @else {
+            <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+              @for (item of repeatedWordsList(); track item.word) {
+                <span style="display:inline-flex; align-items:center; gap:0.25rem; padding:0.25rem 0.625rem; background:var(--accent-tint); border-radius:999px; font-size:0.8125rem; color:var(--accent);">
+                  <strong>{{ item.word }}</strong>
+                  <span style="opacity:0.8;">×{{ item.count }}</span>
+                </span>
+              }
+            </div>
+          }
+        </div>
+      }
 
       <!-- Verses -->
       @if (verses().length) {
@@ -186,7 +218,17 @@
                 {{ v.number }}
               </span>
               <p style="font-size:1.0625rem; color:var(--ink); line-height:1.75; margin:0;">
-                {{ v.verse }}
+                @if (showRepeatedWords()) {
+                  @for (seg of getVerseSegments(v.verse); track $index) {
+                    @if (seg.highlight) {
+                      <mark class="verse-highlight">{{ seg.text }}</mark>
+                    } @else {
+                      {{ seg.text }}
+                    }
+                  }
+                } @else {
+                  {{ v.verse }}
+                }
               </p>
             </div>
           }

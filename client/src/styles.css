@@ -464,3 +464,16 @@ aside.fixed.sidebar-visible {
   box-shadow: 0 8px 32px rgba(27, 52, 84, 0.1);
   border-color: var(--line-2);
 }
+
+/* ─── Módulo Biblia: resaltado de palabras repetidas ─── */
+.verse-highlight {
+  background: var(--warn-tint);
+  color: var(--warn);
+  padding: 0.05em 0.15em;
+  border-radius: 3px;
+  font-weight: 600;
+}
+.dark-mode .verse-highlight {
+  background: color-mix(in srgb, var(--warn) 25%, transparent);
+  color: var(--warn);
+}
