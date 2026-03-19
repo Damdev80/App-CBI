@@ -4,6 +4,76 @@ import { FormsModule } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { ApiBibliaService, BibleBook, BibleVerse } from "src/app/core/services/api-biblia.service";
 
+/** Lista estática según docs (name como en API) por si /api/books falla */
+const BIBLE_BOOKS_FALLBACK: BibleBook[] = [
+  { name: 'Genesis', abrev: 'GN', chapters: 50, testament: 'Antiguo Testamento' },
+  { name: 'Exodo', abrev: 'EX', chapters: 40, testament: 'Antiguo Testamento' },
+  { name: 'Levitico', abrev: 'LV', chapters: 27, testament: 'Antiguo Testamento' },
+  { name: 'Numeros', abrev: 'NM', chapters: 36, testament: 'Antiguo Testamento' },
+  { name: 'Deuteronomio', abrev: 'DT', chapters: 34, testament: 'Antiguo Testamento' },
+  { name: 'Josue', abrev: 'JOS', chapters: 24, testament: 'Antiguo Testamento' },
+  { name: 'Jueces', abrev: 'JUE', chapters: 21, testament: 'Antiguo Testamento' },
+  { name: 'Rut', abrev: 'RT', chapters: 4, testament: 'Antiguo Testamento' },
+  { name: '1-Samuel', abrev: '1S', chapters: 31, testament: 'Antiguo Testamento' },
+  { name: '2-Samuel', abrev: '2S', chapters: 24, testament: 'Antiguo Testamento' },
+  { name: '1-Reyes', abrev: '1R', chapters: 22, testament: 'Antiguo Testamento' },
+  { name: '2-Reyes', abrev: '2R', chapters: 25, testament: 'Antiguo Testamento' },
+  { name: '1-Cronicas', abrev: '1CR', chapters: 29, testament: 'Antiguo Testamento' },
+  { name: '2-Cronicas', abrev: '2CR', chapters: 36, testament: 'Antiguo Testamento' },
+  { name: 'Esdras', abrev: 'ESD', chapters: 10, testament: 'Antiguo Testamento' },
+  { name: 'Nehemias', abrev: 'NEH', chapters: 13, testament: 'Antiguo Testamento' },
+  { name: 'Ester', abrev: 'EST', chapters: 10, testament: 'Antiguo Testamento' },
+  { name: 'Job', abrev: 'JOB', chapters: 42, testament: 'Antiguo Testamento' },
+  { name: 'Salmos', abrev: 'SAL', chapters: 150, testament: 'Antiguo Testamento' },
+  { name: 'Proverbios', abrev: 'PR', chapters: 31, testament: 'Antiguo Testamento' },
+  { name: 'Eclesiastes', abrev: 'EC', chapters: 12, testament: 'Antiguo Testamento' },
+  { name: 'Cantares', abrev: 'CNT', chapters: 8, testament: 'Antiguo Testamento' },
+  { name: 'Isaias', abrev: 'IS', chapters: 66, testament: 'Antiguo Testamento' },
+  { name: 'Jeremias', abrev: 'JER', chapters: 52, testament: 'Antiguo Testamento' },
+  { name: 'Lamentaciones', abrev: 'LM', chapters: 5, testament: 'Antiguo Testamento' },
+  { name: 'Ezequiel', abrev: 'EZ', chapters: 48, testament: 'Antiguo Testamento' },
+  { name: 'Daniel', abrev: 'DN', chapters: 12, testament: 'Antiguo Testamento' },
+  { name: 'Oseas', abrev: 'OS', chapters: 14, testament: 'Antiguo Testamento' },
+  { name: 'Joel', abrev: 'JL', chapters: 3, testament: 'Antiguo Testamento' },
+  { name: 'Amos', abrev: 'AM', chapters: 9, testament: 'Antiguo Testamento' },
+  { name: 'Abdias', abrev: 'ABD', chapters: 1, testament: 'Antiguo Testamento' },
+  { name: 'Jonas', abrev: 'JON', chapters: 4, testament: 'Antiguo Testamento' },
+  { name: 'Miqueas', abrev: 'MI', chapters: 7, testament: 'Antiguo Testamento' },
+  { name: 'Nahum', abrev: 'NAH', chapters: 3, testament: 'Antiguo Testamento' },
+  { name: 'Habacuc', abrev: 'HAB', chapters: 3, testament: 'Antiguo Testamento' },
+  { name: 'Sofonias', abrev: 'SOF', chapters: 3, testament: 'Antiguo Testamento' },
+  { name: 'Hageo', abrev: 'HAG', chapters: 2, testament: 'Antiguo Testamento' },
+  { name: 'Zacarias', abrev: 'ZAC', chapters: 14, testament: 'Antiguo Testamento' },
+  { name: 'Malaquias', abrev: 'MAL', chapters: 4, testament: 'Antiguo Testamento' },
+  { name: 'Mateo', abrev: 'MT', chapters: 28, testament: 'Nuevo Testamento' },
+  { name: 'Marcos', abrev: 'MR', chapters: 16, testament: 'Nuevo Testamento' },
+  { name: 'Lucas', abrev: 'LC', chapters: 24, testament: 'Nuevo Testamento' },
+  { name: 'Juan', abrev: 'JN', chapters: 21, testament: 'Nuevo Testamento' },
+  { name: 'Hechos', abrev: 'HCH', chapters: 28, testament: 'Nuevo Testamento' },
+  { name: 'Romanos', abrev: 'RO', chapters: 16, testament: 'Nuevo Testamento' },
+  { name: '1-Corintios', abrev: '1CO', chapters: 16, testament: 'Nuevo Testamento' },
+  { name: '2-Corintios', abrev: '2CO', chapters: 13, testament: 'Nuevo Testamento' },
+  { name: 'Galatas', abrev: 'GA', chapters: 6, testament: 'Nuevo Testamento' },
+  { name: 'Efesios', abrev: 'EF', chapters: 6, testament: 'Nuevo Testamento' },
+  { name: 'Filipenses', abrev: 'FIL', chapters: 4, testament: 'Nuevo Testamento' },
+  { name: 'Colosenses', abrev: 'COL', chapters: 4, testament: 'Nuevo Testamento' },
+  { name: '1-Tesalonicenses', abrev: '1TS', chapters: 5, testament: 'Nuevo Testamento' },
+  { name: '2-Tesalonicenses', abrev: '2TS', chapters: 3, testament: 'Nuevo Testamento' },
+  { name: '1-Timoteo', abrev: '1TI', chapters: 6, testament: 'Nuevo Testamento' },
+  { name: '2-Timoteo', abrev: '2TI', chapters: 4, testament: 'Nuevo Testamento' },
+  { name: 'Tito', abrev: 'TIT', chapters: 3, testament: 'Nuevo Testamento' },
+  { name: 'Filemon', abrev: 'FLM', chapters: 1, testament: 'Nuevo Testamento' },
+  { name: 'Hebreos', abrev: 'HE', chapters: 13, testament: 'Nuevo Testamento' },
+  { name: 'Santiago', abrev: 'STG', chapters: 5, testament: 'Nuevo Testamento' },
+  { name: '1-Pedro', abrev: '1P', chapters: 5, testament: 'Nuevo Testamento' },
+  { name: '2-Pedro', abrev: '2P', chapters: 3, testament: 'Nuevo Testamento' },
+  { name: '1-Juan', abrev: '1JN', chapters: 5, testament: 'Nuevo Testamento' },
+  { name: '2-Juan', abrev: '2JN', chapters: 1, testament: 'Nuevo Testamento' },
+  { name: '3-Juan', abrev: '3JN', chapters: 1, testament: 'Nuevo Testamento' },
+  { name: 'Judas', abrev: 'JUD', chapters: 1, testament: 'Nuevo Testamento' },
+  { name: 'Apocalipsis', abrev: 'AP', chapters: 22, testament: 'Nuevo Testamento' },
+];
+
 @Component({
   selector: 'module-biblia',
   standalone: true,
@@ -23,7 +93,8 @@ export class ModuleBibliaComponent implements OnInit {
   selectedBook: BibleBook | null = null;
   // Use string for ngModel compatibility with <select>, coerce to number on use
   selectedChapter: any = 1;
-  selectedVersion = '';
+  /** Versión obligatoria en la API (rv1960, nvi, etc.) */
+  selectedVersion = 'rv1960';
 
   // ── Search / dropdown ──
   bookSearch   = '';
@@ -87,9 +158,14 @@ export class ModuleBibliaComponent implements OnInit {
         }
       },
       error: (e) => {
-        console.error('Bible API books error:', e);
+        console.warn('Bible API books failed, using fallback list', e);
+        this.allBooks.set(BIBLE_BOOKS_FALLBACK);
         this.booksLoading.set(false);
-        this.error.set('No se pudieron cargar los libros. Verifica tu conexión.');
+        const def = BIBLE_BOOKS_FALLBACK.find(b => b.name.toLowerCase().includes('salm')) ?? BIBLE_BOOKS_FALLBACK[0];
+        if (def) {
+          this.selectedBook = def;
+          this.selectedChapter = 1;
+        }
       }
     });
   }
@@ -104,14 +180,14 @@ export class ModuleBibliaComponent implements OnInit {
     this.error.set('');
   }
 
-  /** Normaliza el nombre del libro para el path de la API */
+  /** Normaliza el nombre del libro para la API: minúsculas, sin tildes, espacios → guión (ej. Genesis → genesis, 1-Samuel → 1-samuel) */
   private toApiKey(name: string): string {
     return name
       .trim()
       .toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quitar tildes
-      .replace(/[^a-z0-9\s-]/g, '')                     // solo alfanumérico
-      .replace(/\s+/g, '-');                             // espacios → guión
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-');
   }
 
   load() {
@@ -128,7 +204,7 @@ export class ModuleBibliaComponent implements OnInit {
 
     const key     = this.toApiKey(book.name);
     const chapter = Number(this.selectedChapter) || 1;
-    const ver     = this.selectedVersion.trim() || undefined;
+    const ver     = (this.selectedVersion || this.api.defaultVersion).trim();
 
     let obs$;
     const verse = Number(this.verseInput);
@@ -142,9 +218,13 @@ export class ModuleBibliaComponent implements OnInit {
 
     obs$.subscribe({
       next: (data: any) => {
-        // Normalize response: verses may be at root or nested
-        const verseList: BibleVerse[] = Array.isArray(data?.verses)
-          ? data.verses.map((v: any) => ({ number: v.number ?? v.verse_number, verse: v.verse ?? v.text ?? '' }))
+        // API devuelve "vers" (doc) o a veces "verses"
+        const rawList = data?.vers ?? data?.verses ?? [];
+        const verseList: BibleVerse[] = Array.isArray(rawList)
+          ? rawList.map((v: any) => ({
+              number: v.number ?? v.verse_number ?? 0,
+              verse:  v.verse ?? v.text ?? '',
+            }))
           : [];
 
         if (verseList.length) {

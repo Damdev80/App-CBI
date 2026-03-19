@@ -16,36 +16,53 @@ export interface BibleVerse {
 
 export interface BibleChapterResult {
   verses?: BibleVerse[];
+  vers?: Array<{ number: number; verse: string; [key: string]: any }>;
   [key: string]: any;
 }
 
-@Injectable({
-    providedIn: "root",
-})
+/** Según documentación: https://docs-bible-api.netlify.app/api/chapter
+ *  La API exige VERSIÓN y devuelve { vers: [{ verse, number }] }
+ */
+@Injectable({ providedIn: "root" })
 export class ApiBibliaService {
-    private http = inject(HttpClient);
-    private apiUrl = "https://bible-api.deno.dev/api";
+  private http = inject(HttpClient);
+  private apiUrl = "https://bible-api.deno.dev/api";
 
-    getAllBooks(): Observable<BibleBook[]> {
-        return this.http.get<BibleBook[]>(`${this.apiUrl}/books`);
-    }
+  /** Versión por defecto (obligatoria en /read) */
+  readonly defaultVersion = "rv1960";
 
-    getBookInfo(book: string): Observable<BibleBook> {
-        return this.http.get<BibleBook>(`${this.apiUrl}/book/${book}`);
-    }
+  getAllBooks(): Observable<BibleBook[]> {
+    return this.http.get<BibleBook[]>(`${this.apiUrl}/books`);
+  }
 
-    getChapter(book: string, chapter: number, version?: string): Observable<BibleChapterResult> {
-        const prefix = version ? `${this.apiUrl}/read/${version}` : `${this.apiUrl}/read`;
-        return this.http.get<BibleChapterResult>(`${prefix}/${book}/${chapter}`);
-    }
+  getBookInfo(book: string): Observable<BibleBook> {
+    return this.http.get<BibleBook>(`${this.apiUrl}/book/${book}`);
+  }
 
-    getVerse(book: string, chapter: number, verse: number, version?: string): Observable<BibleChapterResult> {
-        const prefix = version ? `${this.apiUrl}/read/${version}` : `${this.apiUrl}/read`;
-        return this.http.get<BibleChapterResult>(`${prefix}/${book}/${chapter}/${verse}`);
-    }
+  /**
+   * Capítulo completo.
+   * URL: /api/read/{version}/{book}/{chapter}
+   */
+  getChapter(book: string, chapter: number, version?: string): Observable<BibleChapterResult> {
+    const ver = (version || this.defaultVersion).trim().toLowerCase();
+    return this.http.get<BibleChapterResult>(`${this.apiUrl}/read/${ver}/${book}/${chapter}`);
+  }
 
-    getRange(book: string, chapter: number, range: string, version?: string): Observable<BibleChapterResult> {
-        const prefix = version ? `${this.apiUrl}/read/${version}` : `${this.apiUrl}/read`;
-        return this.http.get<BibleChapterResult>(`${prefix}/${book}/${chapter}/${range}`);
-    }
+  /**
+   * Un versículo.
+   * URL: /api/read/{version}/{book}/{chapter}/{verse}
+   */
+  getVerse(book: string, chapter: number, verse: number, version?: string): Observable<BibleChapterResult> {
+    const ver = (version || this.defaultVersion).trim().toLowerCase();
+    return this.http.get<BibleChapterResult>(`${this.apiUrl}/read/${ver}/${book}/${chapter}/${verse}`);
+  }
+
+  /**
+   * Rango de versículos (ej. "5-10").
+   * URL: /api/read/{version}/{book}/{chapter}/{range}
+   */
+  getRange(book: string, chapter: number, range: string, version?: string): Observable<BibleChapterResult> {
+    const ver = (version || this.defaultVersion).trim().toLowerCase();
+    return this.http.get<BibleChapterResult>(`${this.apiUrl}/read/${ver}/${book}/${chapter}/${range}`);
+  }
 }

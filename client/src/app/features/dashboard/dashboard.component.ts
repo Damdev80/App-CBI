@@ -120,6 +120,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     const baut     = this.totalBautized();
     const noBaut   = Math.max(0, total - baut);
     const pct      = total > 0 ? Math.round((baut / total) * 100) : 0;
+    const hasData  = total > 0;
 
     this.donutInstance = echarts.init(this.donutRef.nativeElement);
     this.donutInstance.setOption({
@@ -129,19 +130,21 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         formatter: '{b}: {c} ({d}%)',
         backgroundColor: 'var(--surface)',
         borderColor: 'var(--line)',
-        textStyle: { color: 'var(--ink)', fontFamily: 'DM Sans' }
+        textStyle: { color: 'var(--ink)', fontFamily: 'DM Sans', fontSize: 12 }
       },
       legend: {
-        bottom: '5%',
-        textStyle: { color: 'var(--ink-2)', fontFamily: 'DM Sans', fontSize: 12 }
+        show: true,
+        bottom: 8,
+        left: 'center',
+        textStyle: { color: 'var(--ink-2)', fontFamily: 'DM Sans', fontSize: 11 }
       },
       graphic: [{
         type: 'text',
         left: 'center',
-        top: '38%',
+        top: '44%',
         style: {
-          text: `${pct}%`,
-          fontSize: 28,
+          text: hasData ? `${pct}%` : '—',
+          fontSize: 26,
           fontWeight: 'bold',
           fontFamily: 'Cormorant Garant, Georgia, serif',
           fill: 'var(--accent)',
@@ -149,7 +152,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       }, {
         type: 'text',
         left: 'center',
-        top: '50%',
+        top: '56%',
         style: {
           text: 'bautizados',
           fontSize: 11,
@@ -160,23 +163,30 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       series: [{
         name: 'Bautizados',
         type: 'pie',
-        radius: ['50%', '72%'],
+        radius: ['48%', '70%'],
+        center: ['50%', '50%'],
         avoidLabelOverlap: false,
         label: { show: false },
-        emphasis: { label: { show: false } },
-        data: [
-          { value: baut,  name: 'Bautizados',    itemStyle: { color: '#1B3454' } },
-          { value: noBaut, name: 'No bautizados', itemStyle: { color: '#E3E3DE' } },
-        ]
+        labelLine: { show: false },
+        emphasis: { scale: false, label: { show: false } },
+        data: hasData
+          ? [
+              { value: baut,  name: 'Bautizados',    itemStyle: { color: '#1B3454' } },
+              { value: noBaut, name: 'No bautizados', itemStyle: { color: '#E3E3DE' } },
+            ]
+          : [
+              { value: 1, name: 'Sin datos', itemStyle: { color: '#E3E3DE' } },
+            ],
       }]
     });
+    this.donutInstance.resize();
   }
 
   private buildGender(echarts: any) {
     if (!this.genderRef?.nativeElement) return;
     if (this.genderInstance) this.genderInstance.dispose();
 
-    const total  = this.totalUsers();
+    const total   = this.totalUsers();
     const mujeres = this.totalWomenRegistered();
     const hombres = Math.max(0, total - mujeres);
 
@@ -187,25 +197,31 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         trigger: 'axis',
         backgroundColor: 'var(--surface)',
         borderColor: 'var(--line)',
-        textStyle: { color: 'var(--ink)', fontFamily: 'DM Sans' }
+        textStyle: { color: 'var(--ink)', fontFamily: 'DM Sans', fontSize: 12 }
       },
-      grid: { left: '5%', right: '5%', top: '10%', bottom: '15%', containLabel: true },
+      grid: { left: 12, right: 12, top: 24, bottom: 28, containLabel: true },
       xAxis: {
         type: 'category',
         data: ['Hombres', 'Mujeres'],
         axisLine: { lineStyle: { color: 'var(--line)' } },
-        axisLabel: { color: 'var(--ink-2)', fontFamily: 'DM Sans', fontSize: 12 }
+        axisLabel: { color: 'var(--ink-2)', fontFamily: 'DM Sans', fontSize: 11 },
+        axisTick: { show: false }
       },
       yAxis: {
         type: 'value',
-        axisLabel: { color: 'var(--ink-3)', fontFamily: 'DM Sans', fontSize: 11 },
-        splitLine: { lineStyle: { color: 'var(--line-2)' } }
+        min: 0,
+        minInterval: 1,
+        axisLabel: { color: 'var(--ink-3)', fontFamily: 'DM Sans', fontSize: 10 },
+        splitLine: { lineStyle: { color: 'var(--line-2)', type: 'dashed' } },
+        axisLine: { show: false },
+        axisTick: { show: false }
       },
       series: [{
         name: 'Miembros',
         type: 'bar',
-        barWidth: '45%',
-        borderRadius: [4, 4, 0, 0],
+        barWidth: '42%',
+        barGap: '30%',
+        borderRadius: [6, 6, 0, 0],
         data: [
           { value: hombres, itemStyle: { color: '#1B3454' } },
           { value: mujeres, itemStyle: { color: '#8BADCC' } },
@@ -213,13 +229,15 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         label: {
           show: true,
           position: 'top',
-          fontFamily: 'Cormorant Garant, serif',
-          fontSize: 16,
-          fontWeight: 'bold',
-          color: 'var(--ink)'
+          fontFamily: 'DM Sans',
+          fontSize: 14,
+          fontWeight: '600',
+          color: 'var(--ink)',
+          formatter: (params: any) => params.value > 0 ? params.value : ''
         }
       }]
     });
+    this.genderInstance.resize();
   }
 
   private setupResize(echarts: any) {
@@ -246,7 +264,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   formatEventDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('es-MX', {
+    return new Date(dateStr).toLocaleDateString('es', {
       weekday: 'short', day: 'numeric', month: 'short'
     });
   }

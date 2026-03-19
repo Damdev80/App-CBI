@@ -67,6 +67,14 @@
         [icon]="'<svg width=&quot;20&quot; height=&quot;20&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; viewBox=&quot;0 0 24 24&quot;><path stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; stroke-width=&quot;1.75&quot; d=&quot;M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z&quot;/></svg>'"
       />
 
+      <app-stat-card
+        [title]="'Próximos eventos'"
+        [value]="upcomingEvents().length"
+        [description]="'En agenda'"
+        [color]="'primary'"
+        [icon]="'<svg width=&quot;20&quot; height=&quot;20&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; viewBox=&quot;0 0 24 24&quot;><path stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; stroke-width=&quot;1.75&quot; d=&quot;M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z&quot;/></svg>'"
+      />
+
     </div>
 
     <!-- ─── CHARTS ROW ─── -->
@@ -83,7 +91,7 @@
             Bautizados vs No bautizados
           </h3>
         </div>
-        <div #donutChart style="height: 260px; padding: 0.5rem;"></div>
+        <div #donutChart style="width: 100%; min-width: 200px; height: 260px; padding: 0.5rem;"></div>
         <!-- Legend extra -->
         <div style="display: flex; gap: 1.5rem; padding: 0 1.5rem 1.25rem; justify-content: center;">
           <div style="display: flex; align-items: center; gap: 0.375rem;">
@@ -107,7 +115,7 @@
             Distribución por género
           </h3>
         </div>
-        <div #genderChart style="height: 260px; padding: 0.5rem;"></div>
+        <div #genderChart style="width: 100%; min-width: 200px; height: 260px; padding: 0.5rem;"></div>
       </div>
 
     </div>

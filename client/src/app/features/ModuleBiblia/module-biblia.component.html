@@ -88,11 +88,11 @@
         </select>
       </div>
 
-      <!-- ─ Versión ─ -->
+      <!-- ─ Versión (obligatoria en la API) ─ -->
       <div>
-        <label class="form-label">Versión <span style="color:var(--ink-3); font-weight:400;">(opcional)</span></label>
+        <label class="form-label">Versión</label>
         <input class="field" type="text" [(ngModel)]="selectedVersion"
-               placeholder="ej. nvi, rv1960" />
+               placeholder="rv1960, nvi, dhh, pdt" />
       </div>
     </div>
 
