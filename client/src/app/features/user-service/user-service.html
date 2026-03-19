@@ -3,21 +3,6 @@
   <div class="flex items-center justify-between flex-wrap gap-2">
     <div class="flex items-center gap-3">
       @if (teacherId()) {
-<<<<<<< HEAD
-        <p-button icon="pi pi-arrow-left" [rounded]="true" [text]="true" size="small" (click)="goBack()" />
-      }
-      <div>
-        <h1 class="text-2xl font-bold text-main">Servicio Social - Niños</h1>
-        @if (teacher()) {
-          <p class="text-sm text-muted">Profesor: {{ teacher()!.name }}</p>
-        }
-      </div>
-    </div>
-    <p-button [label]="showForm() ? 'Cancelar' : '+ Nuevo Alumno'" 
-              [severity]="showForm() ? 'secondary' : 'primary'" 
-              size="small" 
-              (click)="showForm.set(!showForm())" />
-=======
         <button class="btn btn-ghost btn-sm btn-circle" (click)="goBack()">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -34,76 +19,10 @@
     <button class="btn btn-primary btn-sm" (click)="showForm.set(!showForm())">
       @if (showForm()) { Cancelar } @else { + Nuevo Alumno }
     </button>
->>>>>>> 269214b (feat: add teachers and user service management)
   </div>
 
   <!-- Formulario nuevo alumno -->
   @if (showForm()) {
-<<<<<<< HEAD
-    <p-card>
-      <h2 class="text-lg font-semibold mb-4 text-main">Agregar Alumno</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        @if (!teacherId()) {
-          <div class="flex flex-col gap-2">
-            <label class="font-medium text-sm text-main">Profesor *</label>
-            <p-select [(ngModel)]="selectedTeacherId" 
-                      [options]="teacherSelectOptions" 
-                      optionLabel="label" 
-                      optionValue="value" 
-                      placeholder="Selecciona un profesor"
-                      styleClass="w-full" />
-          </div>
-        }
-        <div class="flex flex-col gap-2">
-          <label class="font-medium text-sm text-main">Nombre *</label>
-          <input
-            type="text"
-            pInputText
-            [(ngModel)]="newName"
-            placeholder="Nombre del alumno"
-            class="w-full"
-          />
-        </div>
-        <div class="flex flex-col gap-2">
-          <label class="font-medium text-sm text-main">Género *</label>
-          <p-select [(ngModel)]="newGender" 
-                    [options]="genderSelectOptions" 
-                    optionLabel="label" 
-                    optionValue="value" 
-                    styleClass="w-full" />
-        </div>
-        <div class="flex flex-col gap-2">
-          <label class="font-medium text-sm text-main">Teléfono</label>
-          <input
-            type="text"
-            pInputText
-            [(ngModel)]="newNumber"
-            placeholder="Teléfono (opcional)"
-            class="w-full"
-          />
-        </div>
-        <div class="flex flex-col gap-2">
-          <label class="font-medium text-sm text-main">Documentos</label>
-          <input
-            type="text"
-            pInputText
-            [(ngModel)]="newDocuments"
-            placeholder="CI, Pasaporte, etc."
-            class="w-full"
-          />
-        </div>
-      </div>
-      <div class="flex justify-end mt-4 gap-2">
-        <p-button label="Cancelar" [text]="true" size="small" (click)="resetForm()" />
-        <p-button
-          label="Guardar"
-          size="small"
-          [disabled]="!newName.trim() || (!teacherId() && !selectedTeacherId)"
-          (click)="addUser()"
-        />
-      </div>
-    </p-card>
-=======
     <div class="card bg-base-100 shadow-md">
       <div class="card-body">
         <h2 class="card-title text-lg">Agregar Alumno</h2>
@@ -166,95 +85,24 @@
         </div>
       </div>
     </div>
->>>>>>> 269214b (feat: add teachers and user service management)
   }
 
   <!-- Loading -->
   @if (loading()) {
     <div class="flex justify-center py-10">
-<<<<<<< HEAD
-      <p-progressSpinner />
-=======
       <span class="loading loading-spinner loading-lg"></span>
->>>>>>> 269214b (feat: add teachers and user service management)
     </div>
   }
 
   <!-- Sin resultados -->
   @if (!loading() && users().length === 0) {
-<<<<<<< HEAD
-    <div class="text-center py-10 text-muted">
-=======
     <div class="text-center py-10 opacity-60">
->>>>>>> 269214b (feat: add teachers and user service management)
       <p>No hay alumnos registrados.</p>
     </div>
   }
 
   <!-- Tabla de alumnos -->
   @if (!loading() && users().length > 0) {
-<<<<<<< HEAD
-    <p-table [value]="users()" [tableStyle]="{ 'min-width': '60rem' }" styleClass="p-datatable-striped p-datatable-sm">
-      <ng-template #header>
-        <tr>
-          <th>Nombre</th>
-          <th>Género</th>
-          <th>Teléfono</th>
-          <th>Documentos</th>
-          <th class="text-center text-main">Asistencia</th>
-          <th class="text-center text-main">Campamento</th>
-          <th class="text-center text-main">Pago Camp.</th>
-          <th class="text-center text-main">Acciones</th>
-        </tr>
-      </ng-template>
-      <ng-template #body let-user>
-        <tr>
-          <td class="font-medium">{{ user.name }}</td>
-          <td>
-            <p-tag [value]="user.Gender === 'MASCULINO' ? 'M' : 'F'" 
-                   [severity]="user.Gender === 'MASCULINO' ? 'info' : 'secondary'" />
-          </td>
-          <td class="text-sm text-muted">{{ user.number || '—' }}</td>
-          <td class="text-sm text-muted">{{ user.Documents || '—' }}</td>
-          <td class="text-center text-main">
-            <p-checkbox 
-              [binary]="true"
-              [ngModel]="user.attendance"
-              (ngModelChange)="toggleAttendance(user.id)"
-            />
-          </td>
-          <td class="text-center">
-            <p-tag [value]="user.GoToCampement ? 'Sí' : 'No'" 
-                   [severity]="user.GoToCampement ? 'success' : 'secondary'" />
-          </td>
-          <td class="text-center">
-            <p-tag [value]="user.payGotoCampement" 
-                   [severity]="user.payGotoCampement === 'PAGO' ? 'success' : 'warn'"
-                   styleClass="cursor-pointer"
-                   (click)="togglePayment(user)" />
-          </td>
-          <td class="text-center">
-            <p-button label="Eliminar" severity="danger" [outlined]="true" size="small" (click)="deleteUser(user.id)" />
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-
-    <!-- Resumen -->
-    <div class="grid grid-cols-3 gap-4">
-      <p-card>
-        <div class="text-sm text-muted">Total Alumnos</div>
-        <div class="text-lg font-bold text-main">{{ totalUsers() }}</div>
-      </p-card>
-      <p-card>
-        <div class="text-sm text-muted">Presentes Hoy</div>
-        <div class="text-lg font-bold text-primary-color">{{ presentToday() }}</div>
-      </p-card>
-      <p-card>
-        <div class="text-sm text-muted">Van al Campamento</div>
-        <div class="text-lg font-bold text-secondary-color">{{ goingToCamp() }}</div>
-      </p-card>
-=======
     <div class="overflow-x-auto">
       <table class="table table-zebra w-full">
         <thead>
@@ -336,7 +184,6 @@
           {{ goingToCamp() }}
         </div>
       </div>
->>>>>>> 269214b (feat: add teachers and user service management)
     </div>
   }
 </div>

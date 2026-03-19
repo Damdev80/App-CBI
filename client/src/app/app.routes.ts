@@ -66,7 +66,7 @@ export const routes: Routes = [
             {
                 path: 'servicio-social',
                 loadComponent: () => import('./features/user-service/user-service')
-                  .then(m => m.UserService)
+                  .then(m => m.UserServiceComponent)
             }
         ]
     },

@@ -4,26 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TeacherServiceService } from '@app/core/services/teacher-service.service';
 import { Teacher } from '@app/shared/models/service-social.model';
-<<<<<<< HEAD
-import { CardModule } from 'primeng/card';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-=======
->>>>>>> 269214b (feat: add teachers and user service management)
 
 @Component({
   selector: 'app-teachers',
   standalone: true,
-<<<<<<< HEAD
-  imports: [
-    CommonModule, FormsModule,
-    CardModule, InputTextModule, ButtonModule, TagModule, ProgressSpinnerModule
-  ],
-=======
   imports: [CommonModule, FormsModule],
->>>>>>> 269214b (feat: add teachers and user service management)
   templateUrl: './teachers.html',
 })
 export class TeachersComponent {

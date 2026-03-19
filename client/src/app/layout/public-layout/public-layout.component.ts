@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
-import { ToolbarModule } from 'primeng/toolbar';
-import { ButtonModule } from 'primeng/button';
+import { ThemeToggleComponent } from '@app/shared/components/theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-public-layout',
-  imports: [RouterOutlet, ToolbarModule, ButtonModule],
+  standalone: true,
+  imports: [RouterOutlet, ThemeToggleComponent],
   templateUrl: './public-layout.component.html',
 })
 export class PublicLayoutComponent {

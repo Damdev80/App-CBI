@@ -1,91 +1,135 @@
-<div class="min-h-screen flex items-center justify-center bg-surface-50">
-  <p-card styleClass="w-full max-w-md shadow-lg">
-    <h2 class="text-3xl font-bold text-center mb-4">Pre-Registro</h2>
+<!-- ═══════════════════════════════════════════════
+     PRE-REGISTRO — Formulario de incorporación
+     ═══════════════════════════════════════════════ -->
+<div class="min-h-screen bg-page" style="padding: 3rem 1rem;">
 
+  <div class="w-full mx-auto fade-up" style="max-width: 480px;">
+
+    <!-- Header -->
+    <div style="margin-bottom: 2.5rem;">
+      <p style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 0.5rem; font-weight: 500;">
+        Incorporación
+      </p>
+      <h1 style="font-family: var(--serif); font-size: 2.25rem; font-weight: 600; color: var(--ink); letter-spacing: -0.02em; margin-bottom: 0.5rem;">
+        Pre-Registro
+      </h1>
+      <p style="font-size: 0.875rem; color: var(--ink-2);">
+        Completa el formulario para incorporarte a la comunidad CBI.
+      </p>
+    </div>
+
+    <!-- Error -->
     @if (errorMessage()) {
-      <p-message severity="error" styleClass="w-full mb-4">{{ errorMessage() }}</p-message>
+      <div class="alert alert-err" style="margin-bottom: 1.5rem;">{{ errorMessage() }}</div>
     }
 
-    <form [formGroup]="preRegisterForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+    <form [formGroup]="preRegisterForm" (ngSubmit)="onSubmit()" style="display: flex; flex-direction: column; gap: 1.125rem;">
 
       <!-- Nombre -->
-      <div class="flex flex-col gap-2">
-        <label for="name">Nombre Completo</label>
-        <input pInputText id="name" type="text" formControlName="name" placeholder="Juan Pérez" class="w-full" />
+      <div class="fade-up fade-up-1">
+        <label class="form-label" for="name">Nombre completo</label>
+        <input id="name" type="text" class="field"
+               [class.field-error]="preRegisterForm.get('name')?.invalid && preRegisterForm.get('name')?.touched"
+               placeholder="Juan Pérez" formControlName="name" />
         @if (preRegisterForm.get('name')?.invalid && preRegisterForm.get('name')?.touched) {
-          <small class="text-red-500">El nombre es requerido (mínimo 2 caracteres)</small>
+          <p style="font-size: 0.75rem; color: var(--err); margin-top: 0.375rem;">Nombre requerido (mín. 2 caracteres)</p>
         }
       </div>
 
       <!-- Sexo -->
-      <div class="flex flex-col gap-2">
-        <label for="sexo">Sexo</label>
-        <p-select id="sexo" formControlName="sexo" [options]="[{label: 'Selecciona una opción', value: ''}, {label: 'Masculino', value: 'Masculino'}, {label: 'Femenino', value: 'Femenino'}]" optionLabel="label" optionValue="value" placeholder="Selecciona una opción" styleClass="w-full" />
+      <div class="fade-up fade-up-1">
+        <label class="form-label" for="sexo">Sexo</label>
+        <select id="sexo" class="field"
+                [class.field-error]="preRegisterForm.get('sexo')?.invalid && preRegisterForm.get('sexo')?.touched"
+                formControlName="sexo">
+          <option value="">Selecciona una opción</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+        </select>
         @if (preRegisterForm.get('sexo')?.invalid && preRegisterForm.get('sexo')?.touched) {
-          <small class="text-red-500">El sexo es requerido</small>
+          <p style="font-size: 0.75rem; color: var(--err); margin-top: 0.375rem;">Selecciona una opción</p>
         }
       </div>
 
-      <!-- Número -->
-      <div class="flex flex-col gap-2">
-        <label for="number">Número de Teléfono</label>
-        <input pInputText id="number" type="tel" formControlName="number" placeholder="1234567890" class="w-full" />
+      <!-- Teléfono -->
+      <div class="fade-up fade-up-2">
+        <label class="form-label" for="number">Número de teléfono</label>
+        <input id="number" type="tel" class="field"
+               [class.field-error]="preRegisterForm.get('number')?.invalid && preRegisterForm.get('number')?.touched"
+               placeholder="1234567890" formControlName="number" />
         @if (preRegisterForm.get('number')?.invalid && preRegisterForm.get('number')?.touched) {
-          <small class="text-red-500">El número es requerido (mínimo 10 dígitos)</small>
+          <p style="font-size: 0.75rem; color: var(--err); margin-top: 0.375rem;">Número requerido (mín. 10 dígitos)</p>
         }
       </div>
 
       <!-- Dirección -->
-      <div class="flex flex-col gap-2">
-        <label for="address">Dirección</label>
-        <input pInputText id="address" type="text" formControlName="address" placeholder="Calle 123, Colonia Centro" class="w-full" />
+      <div class="fade-up fade-up-2">
+        <label class="form-label" for="address">Dirección</label>
+        <input id="address" type="text" class="field"
+               [class.field-error]="preRegisterForm.get('address')?.invalid && preRegisterForm.get('address')?.touched"
+               placeholder="Calle 123, Colonia Centro" formControlName="address" />
         @if (preRegisterForm.get('address')?.invalid && preRegisterForm.get('address')?.touched) {
-          <small class="text-red-500">La dirección es requerida (mínimo 5 caracteres)</small>
+          <p style="font-size: 0.75rem; color: var(--err); margin-top: 0.375rem;">Dirección requerida (mín. 5 caracteres)</p>
         }
       </div>
 
-      <!-- Fecha de Cumpleaños -->
-      <div class="flex flex-col gap-2">
-        <label for="happybirth">Fecha de Cumpleaños</label>
-        <input pInputText id="happybirth" type="date" formControlName="happybirth" class="w-full" />
+      <!-- Cumpleaños -->
+      <div class="fade-up fade-up-3">
+        <label class="form-label" for="happybirth">Fecha de cumpleaños</label>
+        <input id="happybirth" type="date" class="field"
+               [class.field-error]="preRegisterForm.get('happybirth')?.invalid && preRegisterForm.get('happybirth')?.touched"
+               formControlName="happybirth" />
         @if (preRegisterForm.get('happybirth')?.invalid && preRegisterForm.get('happybirth')?.touched) {
-          <small class="text-red-500">La fecha de cumpleaños es requerida</small>
+          <p style="font-size: 0.75rem; color: var(--err); margin-top: 0.375rem;">La fecha es requerida</p>
         }
       </div>
 
-      <!-- Bautizado -->
-      <div class="flex items-center gap-3">
-        <p-checkbox formControlName="baptized" [binary]="true" inputId="baptized" />
-        <label for="baptized">¿Está bautizado?</label>
+      <!-- Checkboxes -->
+      <div class="fade-up fade-up-3" style="display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r);">
+        <label style="display: flex; align-items: center; gap: 0.625rem; cursor: pointer; font-size: 0.875rem; color: var(--ink-2);">
+          <input id="baptized" type="checkbox" class="check" formControlName="baptized" />
+          ¿Está bautizado?
+        </label>
+        <label style="display: flex; align-items: center; gap: 0.625rem; cursor: pointer; font-size: 0.875rem; color: var(--ink-2);">
+          <input id="isServing" type="checkbox" class="check" formControlName="isServing" />
+          ¿Está sirviendo actualmente?
+        </label>
       </div>
 
-      <!-- Está Sirviendo -->
-      <div class="flex items-center gap-3">
-        <p-checkbox formControlName="isServing" [binary]="true" inputId="isServing" />
-        <label for="isServing">¿Está sirviendo actualmente?</label>
-      </div>
-
-      <!-- Grupo (solo si está sirviendo) -->
+      <!-- Grupo (condicional) -->
       @if (preRegisterForm.get('isServing')?.value) {
-        <div class="flex flex-col gap-2">
-          <label for="group">Grupo</label>
-          <p-select id="group" formControlName="group" [options]="groups()" placeholder="Selecciona un grupo" styleClass="w-full" />
+        <div class="fade-up">
+          <label class="form-label" for="group">Grupo de servicio</label>
+          <select id="group" class="field"
+                  [class.field-error]="preRegisterForm.get('group')?.invalid && preRegisterForm.get('group')?.touched"
+                  formControlName="group">
+            <option value="">Selecciona un grupo</option>
+            @for (g of groups(); track g) {
+              <option [value]="g">{{ g }}</option>
+            }
+          </select>
           @if (preRegisterForm.get('group')?.invalid && preRegisterForm.get('group')?.touched) {
-            <small class="text-red-500">El grupo es requerido</small>
+            <p style="font-size: 0.75rem; color: var(--err); margin-top: 0.375rem;">El grupo es requerido</p>
           }
         </div>
       }
 
-      <!-- Submit Button -->
-      <p-button type="submit" label="Completar Pre-Registro" styleClass="w-full mt-2" [loading]="isLoading()" [disabled]="isLoading()" />
+      <!-- Submit -->
+      <button class="btn-solid fade-up fade-up-4" style="margin-top: 0.5rem; justify-content: center;"
+              type="submit" [disabled]="isLoading()">
+        @if (isLoading()) { <span class="spinner"></span> }
+        Completar registro
+      </button>
 
-      <!-- Login Link -->
-      <div class="text-center mt-2">
-        <p class="text-sm">
-          ¿Ya tienes una cuenta?
-          <a routerLink="/login" class="text-primary hover:underline">Inicia sesión aquí</a>
-        </p>
-      </div>
     </form>
-  </p-card>
+
+    <!-- Login link -->
+    <p style="text-align: center; font-size: 0.875rem; color: var(--ink-2); margin-top: 1.5rem;">
+      ¿Ya tienes cuenta?
+      <a routerLink="/login" style="color: var(--accent); font-weight: 500; text-decoration: none;">
+        Inicia sesión aquí
+      </a>
+    </p>
+
+  </div>
 </div>

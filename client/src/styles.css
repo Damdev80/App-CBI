@@ -1,388 +1,363 @@
-/* PrimeNG Global Styles */
 @import "tailwindcss";
 
-/* ========== COLOR SYSTEM ========== */
-/* Church-themed color palette for light and dark modes */
+/* ═══════════════════════════════════════════════
+   CLAUSTRO — Design Token System
+   Minimalismo refinado para Iglesia CBI
+   ═══════════════════════════════════════════════ */
 
 :root {
-  --font-family: 'Inter', sans-serif;
-  
-  /* === LIGHT MODE COLORS === */
-  /* Primary colors - Church blue/royal */
-  --color-primary: #1e40af; /* Blue 700 */
-  --color-primary-hover: #1d4ed8; /* Blue 600 */
-  --color-primary-light: #dbeafe; /* Blue 100 */
-  
-  /* Secondary colors - Warm gold/amber */
-  --color-secondary: #d97706; /* Amber 600 */
-  --color-secondary-hover: #f59e0b; /* Amber 500 */
-  --color-secondary-light: #fef3c7; /* Amber 50 */
-  
-  /* Neutral backgrounds */
-  --color-background: #ffffff;
-  --color-background-secondary: #f8fafc; /* Slate 50 */
-  --color-background-tertiary: #f1f5f9; /* Slate 100 */
-  
-  /* Text colors */
-  --color-text-primary: #0f172a; /* Slate 900 */
-  --color-text-secondary: #475569; /* Slate 600 */
-  --color-text-tertiary: #64748b; /* Slate 500 */
-  --color-text-muted: #94a3b8; /* Slate 400 */
-  
-  /* Border colors */
-  --color-border: #e2e8f0; /* Slate 200 */
-  --color-border-light: #f1f5f9; /* Slate 100 */
-  
-  /* Status colors */
-  --color-success: #059669; /* Emerald 600 */
-  --color-warning: #d97706; /* Amber 600 */
-  --color-error: #dc2626; /* Red 600 */
-  --color-info: #2563eb; /* Blue 600 */
+  /* Backgrounds */
+  --bg:           #F7F7F4;
+  --surface:      #FFFFFF;
+  --surface-2:    #F2F2EF;
 
-  /* PrimeNG token bridge (light mode) */
-  --p-surface-0: var(--color-background);
-  --p-surface-50: var(--color-background-secondary);
-  --p-surface-100: var(--color-background-tertiary);
-  --p-content-background: var(--color-background);
-  --p-content-color: var(--color-text-primary);
-  --p-text-color: var(--color-text-primary);
-  --p-text-muted-color: var(--color-text-muted);
-  --p-border-color: var(--color-border);
-  --p-primary-color: var(--color-primary);
-  --p-primary-hover-color: var(--color-primary-hover);
+  /* Typography */
+  --ink:          #181817;
+  --ink-2:        #6D6C69;
+  --ink-3:        #AEADA9;
+
+  /* Accent — deep navy (fe, confianza, profundidad) */
+  --accent:       #1B3454;
+  --accent-h:     #132843;
+  --accent-tint:  #EBF0F7;
+
+  /* Borders */
+  --line:         #E3E3DE;
+  --line-2:       #EBEBEA;
+
+  /* Status */
+  --ok:           #15803D;
+  --ok-tint:      #F0FDF4;
+  --err:          #B91C1C;
+  --err-tint:     #FEF2F2;
+  --warn:         #B45309;
+  --warn-tint:    #FFFBEB;
+
+  /* Fonts */
+  --serif:  'Cormorant Garant', Georgia, 'Times New Roman', serif;
+  --sans:   'DM Sans', system-ui, -apple-system, sans-serif;
+
+  /* Radius */
+  --r:  6px;
+  --r2: 12px;
 }
 
+/* ─── Dark mode ─── */
 .dark-mode {
-  /* === DARK MODE COLORS === */
-  /* Primary colors - Brighter blue for dark mode */
-  --color-primary: #3b82f6; /* Blue 500 */
-  --color-primary-hover: #2563eb; /* Blue 600 */
-  --color-primary-light: #1e3a8a; /* Blue 800 */
-  
-  /* Secondary colors - Warmer amber for dark */
-  --color-secondary: #f59e0b; /* Amber 500 */
-  --color-secondary-hover: #d97706; /* Amber 600 */
-  --color-secondary-light: #451a03; /* Amber 950 */
-  
-  /* Neutral backgrounds */
-  --color-background: #0f172a; /* Slate 900 */
-  --color-background-secondary: #1e293b; /* Slate 800 */
-  --color-background-tertiary: #334155; /* Slate 700 */
-  
-  /* Text colors */
-  --color-text-primary: #f8fafc; /* Slate 50 */
-  --color-text-secondary: #cbd5e1; /* Slate 300 */
-  --color-text-tertiary: #94a3b8; /* Slate 400 */
-  --color-text-muted: #64748b; /* Slate 500 */
-  
-  /* Border colors */
-  --color-border: #475569; /* Slate 600 */
-  --color-border-light: #334155; /* Slate 700 */
-  
-  /* Status colors - Adjusted for dark mode */
-  --color-success: #10b981; /* Emerald 500 */
-  --color-warning: #f59e0b; /* Amber 500 */
-  --color-error: #ef4444; /* Red 500 */
-  --color-info: #3b82f6; /* Blue 500 */
-
-  /* PrimeNG token bridge (dark mode) */
-  --p-surface-0: var(--color-background);
-  --p-surface-50: var(--color-background-secondary);
-  --p-surface-100: var(--color-background-tertiary);
-  --p-content-background: var(--color-background);
-  --p-content-color: var(--color-text-primary);
-  --p-text-color: var(--color-text-primary);
-  --p-text-muted-color: var(--color-text-muted);
-  --p-border-color: var(--color-border);
-  --p-primary-color: var(--color-primary);
-  --p-primary-hover-color: var(--color-primary-hover);
+  --bg:           #0F0F0E;
+  --surface:      #1A1A19;
+  --surface-2:    #242421;
+  --ink:          #EDEDE9;
+  --ink-2:        #8A8A86;
+  --ink-3:        #5C5C59;
+  --accent:       #8BADCC;
+  --accent-h:     #9BBAD6;
+  --accent-tint:  #192030;
+  --line:         #2A2A27;
+  --line-2:       #222220;
+  --ok:           #34D399;
+  --ok-tint:      #064E3B;
+  --err:          #F87171;
+  --err-tint:     #450A0A;
+  --warn:         #FBBF24;
+  --warn-tint:    #451A03;
 }
 
-/* ========== UTILITY CLASSES ========== */
-/* Custom utility classes using Tailwind v4 @utility directive */
-
-@utility bg-main {
-  background-color: var(--color-background);
-}
-@utility bg-secondary-bg {
-  background-color: var(--color-background-secondary);
-}
-@utility bg-tertiary {
-  background-color: var(--color-background-tertiary);
-}
-@utility bg-primary-light {
-  background-color: var(--color-primary-light);
-}
-@utility bg-secondary-light {
-  background-color: var(--color-secondary-light);
-}
-
-@utility text-main {
-  color: var(--color-text-primary);
-}
-@utility text-secondary-text {
-  color: var(--color-text-secondary);
-}
-@utility text-tertiary {
-  color: var(--color-text-tertiary);
-}
-@utility text-muted {
-  color: var(--color-text-muted);
-}
-@utility text-primary-color {
-  color: var(--color-primary);
-}
-@utility text-secondary-color {
-  color: var(--color-secondary);
-}
-
-@utility border-main {
-  border-color: var(--color-border);
-}
-@utility border-light {
-  border-color: var(--color-border-light);
-}
-@utility border-primary-border {
-  border-color: var(--color-primary);
-}
-
-/* Compatibility layer for existing surface-* classes used across templates */
-.bg-surface-0 { background-color: var(--color-background) !important; }
-.bg-surface-50 { background-color: var(--color-background-secondary) !important; }
-/* bg-surface-100 and bg-surface-200 both map to the tertiary background since
-   this theme has only three background levels (primary, secondary, tertiary). */
-.bg-surface-100 { background-color: var(--color-background-tertiary) !important; }
-.bg-surface-200 { background-color: var(--color-background-tertiary) !important; }
-/* text-surface-300 and text-surface-400 both map to muted text; the theme has
-   three text levels (primary/secondary/tertiary/muted) without a distinct 300 shade. */
-.text-surface-300 { color: var(--color-text-muted) !important; }
-.text-surface-400 { color: var(--color-text-muted) !important; }
-.text-surface-500 { color: var(--color-text-tertiary) !important; }
-.text-surface-700 { color: var(--color-text-secondary) !important; }
-.text-surface-800 { color: var(--color-text-primary) !important; }
-.border-surface-100 { border-color: var(--color-border-light) !important; }
-.border-surface-200 { border-color: var(--color-border) !important; }
-/* Shorthand primary color utilities */
-.text-primary { color: var(--color-primary) !important; }
-.bg-primary { background-color: var(--color-primary) !important; }
-
-/* ========== GLOBAL STYLES ========== */
+/* ═══════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════ */
 html, body {
   margin: 0;
   padding: 0;
-  font-family: var(--font-family);
-  background-color: var(--color-background);
-  color: var(--color-text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* ========== PRIMENG OVERRIDES ========== */
-/* PrimeNG toast z-index fix */
-.p-toast {
-  z-index: 9999 !important;
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-/* Override PrimeNG component colors to use our CSS variables */
-.p-component {
-  color: var(--color-text-primary);
+/* ═══════════════════════════════════════════════
+   UTILITIES — shorthand para templates
+   ═══════════════════════════════════════════════ */
+
+/* --- Backgrounds --- */
+@utility bg-page      { background-color: var(--bg); }
+@utility bg-surface   { background-color: var(--surface); }
+@utility bg-surface-2 { background-color: var(--surface-2); }
+@utility bg-accent    { background-color: var(--accent); }
+@utility bg-accent-tint { background-color: var(--accent-tint); }
+@utility bg-ok-tint   { background-color: var(--ok-tint); }
+@utility bg-err-tint  { background-color: var(--err-tint); }
+@utility bg-warn-tint { background-color: var(--warn-tint); }
+
+/* --- Text --- */
+@utility text-ink   { color: var(--ink); }
+@utility text-ink-2 { color: var(--ink-2); }
+@utility text-ink-3 { color: var(--ink-3); }
+@utility text-accent { color: var(--accent); }
+@utility text-ok    { color: var(--ok); }
+@utility text-err   { color: var(--err); }
+@utility text-warn  { color: var(--warn); }
+
+/* --- Borders --- */
+@utility border-line  { border-color: var(--line); }
+@utility border-line-2 { border-color: var(--line-2); }
+@utility border-accent { border-color: var(--accent); }
+
+/* --- Typography --- */
+@utility font-serif { font-family: var(--serif); }
+@utility font-sans  { font-family: var(--sans); }
+
+/* ═══════════════════════════════════════════════
+   COMPONENT PATTERNS
+   ═══════════════════════════════════════════════ */
+
+/* ─── Inputs ─── */
+.field {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 0.9375rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.field::placeholder { color: var(--ink-3); }
+.field:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.field.field-error {
+  border-color: var(--err);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--err) 10%, transparent);
 }
 
-.p-card {
-  background-color: var(--color-background);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-primary);
+/* Select */
+select.field {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236D6C69' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  padding-right: 2.5rem;
 }
 
-.p-card .p-card-header {
-  background-color: var(--color-background-secondary);
-  border-bottom: 1px solid var(--color-border);
-  color: var(--color-text-primary);
-}
-
-.p-card .p-card-content {
-  color: var(--color-text-primary);
-}
-
-.p-button.p-button-primary {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-}
-
-.p-button.p-button-primary:hover {
-  background-color: var(--color-primary-hover) !important;
-  border-color: var(--color-primary-hover) !important;
-}
-
-/* Force semantic variants into a minimal palette */
-.p-button.p-button-success,
-.p-button.p-button-info {
-  background-color: var(--color-primary) !important;
-  border-color: var(--color-primary) !important;
-  color: #fff !important;
-}
-
-.p-button.p-button-success:hover,
-.p-button.p-button-info:hover {
-  background-color: var(--color-primary-hover) !important;
-  border-color: var(--color-primary-hover) !important;
-}
-
-.p-button.p-button-warning {
-  background-color: var(--color-secondary) !important;
-  border-color: var(--color-secondary) !important;
-  color: #fff !important;
-}
-
-.p-button.p-button-warning:hover {
-  background-color: var(--color-secondary-hover) !important;
-  border-color: var(--color-secondary-hover) !important;
-}
-
-.p-button.p-button-success.p-button-outlined,
-.p-button.p-button-info.p-button-outlined {
-  color: var(--color-primary) !important;
-  border-color: var(--color-primary) !important;
-  background: transparent !important;
-}
-
-.p-button.p-button-warning.p-button-outlined {
-  color: var(--color-secondary) !important;
-  border-color: var(--color-secondary) !important;
-  background: transparent !important;
-}
-
-.p-tag.p-tag-success,
-.p-tag.p-tag-info,
-.p-tag.p-tag-secondary {
-  background-color: var(--color-primary-light) !important;
-  color: var(--color-primary) !important;
-}
-
-.p-message.p-message-success,
-.p-message.p-message-info {
-  background-color: var(--color-primary-light) !important;
-  border-color: var(--color-primary) !important;
-  color: var(--color-text-primary) !important;
-}
-
-.p-toolbar {
-  background-color: var(--color-background);
-  border-color: var(--color-border);
-}
-
-.p-table .p-datatable-thead > tr > th {
-  background-color: var(--color-background-secondary);
-  color: var(--color-text-primary);
-  border-color: var(--color-border);
-}
-
-.p-table .p-datatable-tbody > tr > td {
-  color: var(--color-text-primary);
-  border-color: var(--color-border-light);
-}
-
-.p-table .p-datatable-tbody > tr:nth-child(even) {
-  background-color: var(--color-background-secondary);
-}
-
-/* Input field overrides */
-.p-inputtext, .p-dropdown, .p-multiselect {
-  background-color: var(--color-background);
-  border-color: var(--color-border);
-  color: var(--color-text-primary);
-}
-
-.p-inputtext:focus, .p-dropdown:focus, .p-multiselect:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px var(--color-primary-light);
-}
-
-/* Strong dark-mode overrides to prevent white surfaces */
-.dark-mode .p-card,
-.dark-mode .p-drawer,
-.dark-mode .p-menu,
-.dark-mode .p-toolbar,
-.dark-mode .p-dialog,
-.dark-mode .p-paginator,
-.dark-mode .p-select,
-.dark-mode .p-select-overlay,
-.dark-mode .p-dropdown,
-.dark-mode .p-multiselect,
-.dark-mode .p-message,
-.dark-mode .p-tag {
-  background-color: var(--color-background-secondary) !important;
-  color: var(--color-text-primary) !important;
-  border-color: var(--color-border) !important;
-}
-
-.dark-mode .p-card .p-card-body,
-.dark-mode .p-card .p-card-content,
-.dark-mode .p-dialog .p-dialog-content,
-.dark-mode .p-menu .p-menu-list,
-.dark-mode .p-datatable-table-container {
-  background-color: var(--color-background) !important;
-  color: var(--color-text-primary) !important;
-}
-
-.dark-mode .p-inputtext,
-.dark-mode .p-password input,
-.dark-mode .p-select-label,
-.dark-mode .p-dropdown-label,
-.dark-mode .p-multiselect-label,
-.dark-mode input,
-.dark-mode textarea {
-  background-color: var(--color-background) !important;
-  color: var(--color-text-primary) !important;
-  border-color: var(--color-border) !important;
-}
-
-.dark-mode .p-inputtext::placeholder,
-.dark-mode .p-password input::placeholder,
-.dark-mode input::placeholder,
-.dark-mode textarea::placeholder {
-  color: var(--color-text-muted) !important;
-}
-
-.dark-mode .p-inputicon,
-.dark-mode .p-password-toggle-mask-icon,
-.dark-mode .pi {
-  color: var(--color-text-muted) !important;
-}
-
-.dark-mode .p-divider .p-divider-content {
-  background-color: var(--color-background) !important;
-  color: var(--color-text-muted) !important;
-}
-
-.dark-mode .p-checkbox .p-checkbox-box {
-  background-color: var(--color-background) !important;
-  border-color: var(--color-border) !important;
-}
-
-/* ========== DARK MODE TOGGLE ========== */
-.theme-toggle {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 999;
-  background-color: var(--color-background-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-  padding: 0.5rem;
+/* ─── Buttons ─── */
+.btn-solid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background-color: var(--accent);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid var(--accent);
+  border-radius: var(--r);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn-solid:hover { background-color: var(--accent-h); border-color: var(--accent-h); }
+.btn-solid:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background-color: transparent;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn-outline:hover { border-color: var(--ink-2); color: var(--ink); }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: transparent;
+  color: var(--ink-2);
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  border: none;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+.btn-ghost:hover { color: var(--ink); background-color: var(--surface-2); }
+
+/* ─── Form label ─── */
+.form-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ink-2);
+  margin-bottom: 0.375rem;
+  letter-spacing: 0.01em;
 }
 
-.theme-toggle:hover {
-  background-color: var(--color-background-tertiary);
+/* ─── Alert / Notification banners ─── */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--r);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.alert-err  { background-color: var(--err-tint); color: var(--err); border: 1px solid color-mix(in srgb, var(--err) 20%, transparent); }
+.alert-ok   { background-color: var(--ok-tint);  color: var(--ok);  border: 1px solid color-mix(in srgb, var(--ok) 20%, transparent); }
+.alert-warn { background-color: var(--warn-tint); color: var(--warn); border: 1px solid color-mix(in srgb, var(--warn) 20%, transparent); }
+.alert-info { background-color: var(--accent-tint); color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent); }
+
+/* ─── Badge ─── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.badge-accent { background-color: var(--accent-tint); color: var(--accent); }
+.badge-ok     { background-color: var(--ok-tint); color: var(--ok); }
+.badge-err    { background-color: var(--err-tint); color: var(--err); }
+.badge-warn   { background-color: var(--warn-tint); color: var(--warn); }
+
+/* ─── Spinner ─── */
+.spinner {
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 2px solid color-mix(in srgb, currentColor 25%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+}
+.spinner-lg {
+  width: 2rem;
+  height: 2rem;
+  border-width: 3px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Divider ─── */
+.divider-h {
+  height: 1px;
+  background-color: var(--line);
+  margin: 1.25rem 0;
 }
 
-/* ========== RESPONSIVE DESIGN ========== */
-@media (max-width: 768px) {
-  .theme-toggle {
-    top: 0.5rem;
-    right: 0.5rem;
+/* ─── Card ─── */
+.card {
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+}
+
+/* ─── Sidebar nav item ─── */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--r);
+  font-size: 0.875rem;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+.nav-item:hover { color: var(--ink); background-color: var(--surface-2); }
+.nav-item.active { color: var(--accent); background-color: var(--accent-tint); font-weight: 500; }
+
+/* ─── Checkbox ─── */
+.check {
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background-color: var(--surface);
+  cursor: pointer;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ─── Table ─── */
+.cbi-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.cbi-table th {
+  text-align: left;
+  padding: 0.625rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--line);
+  background-color: var(--surface-2);
+}
+.cbi-table td {
+  padding: 0.75rem 1rem;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line-2);
+}
+.cbi-table tr:last-child td { border-bottom: none; }
+.cbi-table tr:hover td { background-color: var(--surface-2); }
+
+/* ─── Sidebar responsive ─── */
+/* En mobile: oculto por defecto, visible con .sidebar-visible */
+aside.fixed {
+  transform: translateX(-100%);
+}
+aside.fixed.sidebar-visible {
+  transform: translateX(0);
+}
+/* En desktop (lg): siempre visible vía Tailwind lg:static */
+@media (min-width: 1024px) {
+  aside.fixed {
+    transform: translateX(0) !important;
   }
 }
 
-
+/* ─── Page entrance animation ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.35s ease both; }
+.fade-up-1 { animation-delay: 0.05s; }
+.fade-up-2 { animation-delay: 0.10s; }
+.fade-up-3 { animation-delay: 0.15s; }
+.fade-up-4 { animation-delay: 0.20s; }

@@ -1,21 +1,28 @@
-<p-card styleClass="shadow-xl hover:shadow-2xl transition-shadow duration-300">
-  <div class="flex items-center justify-between">
-    <div class="flex-1">
-      <h2 class="text-secondary-text text-sm font-medium mb-2">
+<div class="card fade-up" style="padding: 1.5rem; transition: box-shadow 0.15s ease;"
+     onmouseenter="this.style.boxShadow='0 4px 20px rgba(0,0,0,0.06)'"
+     onmouseleave="this.style.boxShadow='none'">
+
+  <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;">
+
+    <div style="flex: 1; min-width: 0;">
+      <p style="font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 0.75rem;">
         {{ title() }}
-      </h2>
-      <p class="text-4xl font-bold text-main" [class]="'text-4xl font-bold text-main ' + valueColorClass()">
+      </p>
+      <p style="font-family: var(--serif); font-size: 2.5rem; font-weight: 600; line-height: 1; color: var(--ink); margin-bottom: 0.5rem;"
+         [style.color]="accentColor()">
         {{ value() }}
       </p>
-      <p class="text-sm text-muted mt-2" *ngIf="description()">
+      <p *ngIf="description()" style="font-size: 0.8125rem; color: var(--ink-3);">
         {{ description() }}
       </p>
     </div>
-    
-    <div *ngIf="icon()" class="flex items-center justify-center">
-      <div class="w-16 h-16 rounded-full flex items-center justify-center" [class]="'w-16 h-16 rounded-full flex items-center justify-center ' + iconColorClass()">
-        <span [innerHTML]="icon()"></span>
-      </div>
+
+    <div *ngIf="icon()"
+         style="width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"
+         [style.background]="accentColor() + '18'"
+         [style.color]="accentColor()">
+      <span [innerHTML]="icon()"></span>
     </div>
+
   </div>
-</p-card>
+</div>
