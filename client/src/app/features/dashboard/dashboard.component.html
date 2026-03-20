@@ -1,7 +1,7 @@
 <!-- ═══════════════════════════════════════════════
      DASHBOARD — Panel de Control con ECharts
      ═══════════════════════════════════════════════ -->
-<div style="max-width: 1280px; margin: 0 auto;">
+<div class="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
 
   <!-- Error -->
   @if (error()) {
@@ -10,7 +10,7 @@
 
   <!-- Loading shimmer -->
   @if (isLoading()) {
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.125rem; margin-bottom: 2rem;">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
       @for (i of [1,2,3,4]; track i) {
         <div style="height: 110px; background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface) 50%, var(--surface-2) 75%); background-size: 200%; border: 1px solid var(--line); border-radius: 12px; animation: shimmer 1.4s infinite;">
         </div>
@@ -21,17 +21,17 @@
   @if (!isLoading()) {
 
     <!-- ─── Page title ─── -->
-    <div class="fade-up" style="margin-bottom: 1.75rem;">
+    <div class="fade-up mb-6 sm:mb-7">
       <p style="font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); font-weight: 500; margin-bottom: 0.25rem;">
         Resumen general
       </p>
-      <h1 style="font-family: var(--serif); font-size: 2.25rem; font-weight: 600; color: var(--ink); letter-spacing: -0.02em; margin: 0;">
+      <h1 class="font-serif font-semibold text-ink tracking-tight m-0" style="font-family: var(--serif); font-size: clamp(1.5rem, 5vw, 2.25rem); color: var(--ink); letter-spacing: -0.02em;">
         Panel de Control
       </h1>
     </div>
 
     <!-- ─── STAT CARDS ─── -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.125rem; margin-bottom: 1.75rem;">
+    <div class="grid gap-3 sm:gap-4 mb-6 sm:mb-7" style="grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));">
 
       <app-stat-card
         [title]="'Total Miembros'"
@@ -78,8 +78,7 @@
     </div>
 
     <!-- ─── CHARTS ROW ─── -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.75rem;"
-         class="lg:grid-cols-2">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 mb-6 sm:mb-7">
 
       <!-- Donut: Bautizados -->
       <div class="card fade-up fade-up-1">
@@ -91,9 +90,9 @@
             Bautizados vs No bautizados
           </h3>
         </div>
-        <div #donutChart style="width: 100%; min-width: 200px; height: 260px; padding: 0.5rem;"></div>
+        <div #donutChart class="w-full min-w-0" style="min-width: 180px; height: clamp(200px, 40vw, 260px); padding: 0.5rem;"></div>
         <!-- Legend extra -->
-        <div style="display: flex; gap: 1.5rem; padding: 0 1.5rem 1.25rem; justify-content: center;">
+        <div class="flex flex-wrap gap-3 sm:gap-6 justify-center px-4 sm:px-6 pb-5">
           <div style="display: flex; align-items: center; gap: 0.375rem;">
             <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex-shrink: 0;"></span>
             <span style="font-size: 0.8125rem; color: var(--ink-2);">Bautizados ({{ totalBautized() }})</span>
@@ -115,14 +114,13 @@
             Distribución por género
           </h3>
         </div>
-        <div #genderChart style="width: 100%; min-width: 200px; height: 260px; padding: 0.5rem;"></div>
+        <div #genderChart class="w-full min-w-0" style="min-width: 180px; height: clamp(200px, 40vw, 260px); padding: 0.5rem;"></div>
       </div>
 
     </div>
 
     <!-- ─── BOTTOM ROW: Métricas + Eventos ─── -->
-    <div style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 1.25rem;"
-         class="lg:grid-cols-2">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_1.6fr] gap-4 sm:gap-5">
 
       <!-- Métricas rápidas -->
       <div class="card fade-up fade-up-3" style="padding: 1.5rem;">
@@ -156,8 +154,8 @@
           </div>
         </div>
 
-        <!-- Hombres stat -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1rem;">
+          <!-- Hombres stat -->
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 mt-4">
           <div style="text-align: center; padding: 0.875rem; background: var(--surface-2); border-radius: var(--r);">
             <p style="font-family: var(--serif); font-size: 2rem; font-weight: 700; color: var(--accent); margin: 0; line-height: 1;">
               {{ menCount }}
@@ -198,11 +196,12 @@
           </div>
         }
 
-        <div style="padding: 0.5rem 0;">
+        <div class="py-2">
           @for (event of upcomingEvents(); track event.id) {
-            <div style="display: flex; align-items: center; gap: 1rem; padding: 0.875rem 1.5rem; border-bottom: 1px solid var(--line-2);"
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-3 px-4 sm:px-6 border-b border-line-2"
                  onmouseenter="this.style.background='var(--surface-2)'"
-                 onmouseleave="this.style.background='transparent'">
+                 onmouseleave="this.style.background='transparent'"
+                 style="border-bottom: 1px solid var(--line-2);">
 
               <!-- Date pill -->
               <div style="flex-shrink: 0; width: 44px; height: 44px; background: var(--accent-tint); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center;">

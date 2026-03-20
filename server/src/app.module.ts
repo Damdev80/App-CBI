@@ -17,9 +17,10 @@ import { ProfileModule } from './profile/profile.module';
 import { SessionsModule } from './sessions/sessions.module';
 import { UsersServiceModule } from './users-service/users-service.module';
 import { TeachersServiceModule } from './teachers-service/teachers-service.module';
+import { ForumModule } from './forum/forum.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, UsersModule, MembersModule, GroupsModule, EventModule, UsersEventModule, DashboardModule, PreRegisterModule, ProfileModule, SessionsModule, UsersServiceModule, TeachersServiceModule],
+  imports: [AuthModule, PrismaModule, UsersModule, MembersModule, GroupsModule, ForumModule, EventModule, UsersEventModule, DashboardModule, PreRegisterModule, ProfileModule, SessionsModule, UsersServiceModule, TeachersServiceModule],
   controllers: [AppController, MembersController],
   providers: [AppService, AuthService, MembersService],
 })

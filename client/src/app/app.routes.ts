@@ -79,6 +79,11 @@ export const routes: Routes = [
                   .then(m => m.EventsComponent)
             },
             {
+                path: 'foro',
+                loadComponent: () => import('./features/foro/foro.component')
+                  .then(m => m.ForoComponent)
+            },
+            {
                 path: 'crear-evento',
                 loadComponent: () => import('./features/events/events.component')
                   .then(m => m.EventsComponent)

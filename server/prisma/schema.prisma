@@ -76,13 +76,28 @@ model User {
 }
 
 model Groups {
-  id          String    @id @default(uuid())
-  name        String     @unique
+  id          String       @id @default(uuid())
+  name        String       @unique
   description String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  members     Members[] // un Group puede tener muchos Members
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  members     Members[]
   sessions    Session[]
+  forumPosts  ForumPost[]
+}
+
+model ForumPost {
+  id        String   @id @default(uuid())
+  groupId   String
+  group     Groups   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  title     String
+  content   String   @db.Text
+  authorId  String?
+  authorName String?  // nombre para mostrar si no hay user
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("forum_posts")
 }
 
 model Members {

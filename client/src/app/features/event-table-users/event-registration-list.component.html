@@ -1,7 +1,7 @@
-<div class="min-h-screen bg-surface-50 p-4">
-  <div class="max-w-7xl mx-auto">
+<div class="min-h-screen bg-surface-50 p-4 sm:p-6">
+  <div class="max-w-7xl mx-auto w-full overflow-x-hidden">
 
-    <div class="mb-4 flex items-start justify-between">
+    <div class="mb-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
       <div class="flex-1">
         <h1 class="text-2xl font-bold mb-1">Registros de Eventos</h1>
         <p class="text-sm text-surface-400">Administra inscripciones y pagos</p>
@@ -19,7 +19,7 @@
       <p-button label="Nuevo Registro" icon="pi pi-plus" (click)="navigateToNewRegistration()" />
     </div>
 
-    <div class="grid grid-cols-3 gap-3 mb-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
       <p-card styleClass="shadow-sm">
         <div class="text-xs text-surface-400">Total Inscritos</div>
         <div class="text-xl font-bold text-primary">{{ filteredRegistrations().length }}</div>
@@ -37,7 +37,7 @@
     </div>
 
     <p-card styleClass="shadow-sm mb-4">
-      <div class="grid grid-cols-3 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <input type="text" placeholder="Buscar..." pInputText
           [ngModel]="searchTerm()"
           (ngModelChange)="onSearchChange($event)">

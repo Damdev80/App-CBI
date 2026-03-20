@@ -107,6 +107,7 @@ html, body {
 
 /* --- Borders --- */
 @utility border-line  { border-color: var(--line); }
+@utility bg-line      { background-color: var(--line); }
 @utility border-line-2 { border-color: var(--line-2); }
 @utility border-accent { border-color: var(--accent); }
 
@@ -463,6 +464,18 @@ aside.fixed.sidebar-visible {
 .dep-card:hover {
   box-shadow: 0 8px 32px rgba(27, 52, 84, 0.1);
   border-color: var(--line-2);
+}
+
+/* ─── Responsive: contenedor para tablas con scroll horizontal ─── */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ─── Responsive: utilidades de breakpoint ─── */
+@media (max-width: 639px) {
+  .card, .dep-card, .cbi-table { border-radius: var(--r); }
 }
 
 /* ─── Módulo Biblia: resaltado de palabras repetidas ─── */

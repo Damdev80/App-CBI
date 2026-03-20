@@ -1,7 +1,7 @@
 <!-- ═══════════════════════════════════════════════
      PERFIL — Diseño editorial refinado
      ═══════════════════════════════════════════════ -->
-<div style="max-width: 960px; margin: 0 auto;" class="fade-up">
+<div class="w-full max-w-[960px] mx-auto px-4 sm:px-6 fade-up">
 
   <!-- Loading state -->
   @if (isLoading()) {
@@ -12,8 +12,7 @@
 
   @if (!isLoading()) {
     <!-- Two-column layout -->
-    <div style="display:grid; grid-template-columns: 240px 1fr; gap: 2rem; align-items: start;"
-         class="lg:grid-cols-profile">
+    <div class="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6 lg:gap-8 items-start">
 
       <!-- ─── Left panel: Identity card ─── -->
       <div class="fade-up fade-up-1">
@@ -108,7 +107,7 @@
         }
 
         <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
             <div>
               <label class="form-label" for="p-name">Nombre completo</label>
@@ -199,8 +198,7 @@
      Modal de grupos
      ═══════════════════════════════════════════════ -->
 @if (showGroupsModal) {
-  <div style="position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center; padding:1rem;"
-       onclick="if(event.target===this) this.style.display='none'">
+  <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
     <div style="position:absolute; inset:0; background:rgba(0,0,0,0.3); backdrop-filter:blur(3px);"
          (click)="showGroupsModal = false"></div>
     <div class="bg-surface" style="position:relative; width:100%; max-width:560px; border-radius:var(--r2);
