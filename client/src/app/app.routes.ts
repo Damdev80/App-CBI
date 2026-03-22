@@ -17,22 +17,29 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                component: WelcomeComponent, 
+                component: WelcomeComponent,
                 pathMatch: 'full'
             },
             {
-                path: 'login', 
+                path: 'login',
                 component: LoginComponent
             },
             {
-                path: 'register', 
+                path: 'register',
                 component: RegisterComponent
             },
             {
                 path: 'pre-register',
                 component: PreRegisterComponent
+            },
+            {
+                path: 'foro',
+                loadComponent: () => import('./features/foro/foro.component').then(m => m.ForoComponent)
+            },
+            {
+                path: 'biblia',
+                loadComponent: () => import('./features/ModuleBiblia/module-biblia.component').then(m => m.ModuleBibliaComponent)
             }
-
         ]
     },
     // Rutas privadas (Dashboard)
@@ -54,6 +61,11 @@ export const routes: Routes = [
                 path: 'event-registrations-list',
                 loadComponent: () => import('./features/event-table-users/event-table-users')
                   .then(m => m.EventRegistrationListComponent)
+            },
+            {
+                path: 'users',
+                redirectTo: 'event-registrations-list',
+                pathMatch: 'full'
             },
             {
                 path: 'profile',
@@ -100,6 +112,16 @@ export const routes: Routes = [
                 path: 'crear-evento',
                 loadComponent: () => import('./features/events/events.component')
                   .then(m => m.EventsComponent)
+            },
+            {
+                path: 'ministerio/exploradores-rey',
+                loadComponent: () => import('./features/user-service/user-service')
+                  .then(m => m.UserServiceComponent)
+            },
+            {
+                path: 'ministerio/:slug',
+                loadComponent: () => import('./features/en-desarrollo/en-desarrollo.component')
+                  .then(m => m.EnDesarrolloComponent)
             }
         ]
     },

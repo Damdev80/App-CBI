@@ -4,7 +4,8 @@
          (click)="sidebarOpen.set(false)"></div>
   }
 
-  <aside class="fixed lg:static inset-y-0 left-0 z-40 flex flex-col bg-surface border-r border-line w-56">
+  <aside class="fixed lg:static inset-y-0 left-0 z-40 flex flex-col bg-surface border-r border-line w-56"
+         [class.sidebar-visible]="sidebarOpen()">
     <div class="flex items-center gap-2.5 p-4 border-b border-line">
       <img src="img/cbiLogo.svg" alt="CBI" style="width: 28px; height: 28px;" />
       <span style="font-family: var(--serif); font-size: 1.05rem; font-weight: 600;">Iglesia CBI</span>
@@ -41,7 +42,7 @@
 
   <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
     <header class="bg-surface border-b border-line h-14 px-4 flex items-center justify-between flex-shrink-0">
-      <button class="btn-ghost lg:hidden" (click)="sidebarOpen.set(!sidebarOpen())">
+      <button class="btn-ghost lg:hidden" (click)="sidebarOpen.set(!sidebarOpen())" aria-label="Menú">
         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
       <span class="text-sm text-ink-2">Vista general</span>

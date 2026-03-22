@@ -1,5 +1,5 @@
 <!-- ═══════════════════════════════════════════════
-     PRIVATE LAYOUT — Sidebar colapsable
+     PRIVATE LAYOUT — Sidebar
      ═══════════════════════════════════════════════ -->
 <div class="flex h-screen overflow-hidden bg-page">
 
@@ -12,171 +12,178 @@
   }
 
   <!-- ─── SIDEBAR ─── -->
-  <aside class="fixed lg:static inset-y-0 left-0 z-40 flex flex-col bg-surface border-r border-line"
+  <aside class="fixed lg:static inset-y-0 left-0 z-40 flex flex-col bg-surface border-r border-line shrink-0 overflow-hidden"
          [class.sidebar-visible]="sidebarOpen()"
-         [style.width]="sidebarCollapsed() ? '56px' : '240px'"
-         style="flex-shrink: 0; transition: width 0.22s ease, transform 0.25s ease; overflow: hidden;">
+         [style.width]="sidebarCollapsed() ? '64px' : '240px'"
+         style="transition: width 0.25s ease, transform 0.25s ease;">
 
     <!-- Logo / Toggle -->
-    <div class="flex items-center border-b border-line"
-         [style.height]="'60px'"
-         [style.padding]="sidebarCollapsed() ? '0' : '0 1rem'"
-         [style.justifyContent]="sidebarCollapsed() ? 'center' : 'space-between'">
-
-      @if (!sidebarCollapsed()) {
-        <div class="flex items-center gap-2.5">
-          <img src="img/cbiLogo.svg" alt="CBI" style="width: 28px; height: 28px; flex-shrink: 0;" />
+    <div class="flex items-center justify-between border-b border-line h-[60px] px-2 shrink-0"
+         [class.px-4]="!sidebarCollapsed()">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <img src="img/cbiLogo.svg" alt="CBI" class="shrink-0" style="width: 28px; height: 28px;" />
+        @if (!sidebarCollapsed()) {
           <span style="font-family: var(--serif); font-size: 1.05rem; font-weight: 600; color: var(--ink); white-space: nowrap; letter-spacing: -0.01em;">
             Iglesia CBI
           </span>
-        </div>
-      }
-
-      <button class="btn-ghost" style="padding: 0.375rem; border-radius: 50%;"
-              (click)="sidebarCollapsed.set(!sidebarCollapsed())"
-              [title]="sidebarCollapsed() ? 'Expandir menú' : 'Colapsar menú'">
-        @if (sidebarCollapsed()) {
-          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 18l6-6-6-6"/>
-          </svg>
-        } @else {
-          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 18l-6-6 6-6"/>
-          </svg>
         }
+      </div>
+      <button class="btn-ghost hidden lg:flex shrink-0" style="padding: 0.25rem;" (click)="toggleSidebarCollapsed()"
+              [attr.aria-label]="sidebarCollapsed() ? 'Expandir menú' : 'Colapsar menú'">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+             [class.rotate-180]="sidebarCollapsed()"
+             style="transition: transform 0.2s;">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+        </svg>
       </button>
     </div>
 
     <!-- Nav items -->
-    <nav class="flex-1 overflow-y-auto overflow-x-hidden" style="padding: 0.75rem 0;">
+    <nav class="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-0" style="padding: 0.75rem 0;">
 
-      <!-- Dashboard -->
+      <!-- Arriba: Dashboard, Eventos, Foro, Estudio Bíblico -->
       @if (canSee('dashboard')) {
-      <button class="sidebar-btn" [class.collapsed]="sidebarCollapsed()"
-              (click)="navegateTo('/dashboard'); sidebarOpen.set(false)"
-              [title]="sidebarCollapsed() ? 'Dashboard' : ''">
-        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-        </svg>
-        @if (!sidebarCollapsed()) { <span>Dashboard</span> }
-      </button>
+        <button class="sidebar-btn shrink-0" [class.collapsed]="sidebarCollapsed()"
+                (click)="navegateTo('/dashboard'); sidebarOpen.set(false)">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="shrink-0">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          @if (!sidebarCollapsed()) { <span>Dashboard</span> }
+        </button>
+      }
+      @if (canSee('eventos')) {
+        <button class="sidebar-btn shrink-0" [class.collapsed]="sidebarCollapsed()"
+                (click)="navegateTo('/dashboard/eventos'); sidebarOpen.set(false)">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="shrink-0">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          @if (!sidebarCollapsed()) { <span>Eventos</span> }
+        </button>
+      }
+      @if (canSee('foro')) {
+        <button class="sidebar-btn shrink-0" [class.collapsed]="sidebarCollapsed()"
+                (click)="navegateTo('/dashboard/foro'); sidebarOpen.set(false)">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="shrink-0">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+          @if (!sidebarCollapsed()) { <span>Foro</span> }
+        </button>
+      }
+      @if (canSee('biblia')) {
+        <button class="sidebar-btn shrink-0" [class.collapsed]="sidebarCollapsed()"
+                (click)="navegateTo('/dashboard/biblia'); sidebarOpen.set(false)">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="shrink-0">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+          @if (!sidebarCollapsed()) { <span>Estudio Bíblico</span> }
+        </button>
       }
 
-      <!-- Eventos -->
-      @if (canSee('eventos')) {
-      <button class="sidebar-btn" [class.collapsed]="sidebarCollapsed()"
-              (click)="navegateTo('/dashboard/eventos'); sidebarOpen.set(false)"
-              [title]="sidebarCollapsed() ? 'Eventos' : ''">
-        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-        </svg>
-        @if (!sidebarCollapsed()) { <span>Eventos</span> }
-      </button>
-      }
+      <!-- Ministerios / Departamentos (resto, sin Exploradores del Rey) -->
+      <div class="border-t border-line mt-3 pt-3 mx-2 shrink-0">
+        @if (!sidebarCollapsed()) {
+          <p class="text-[0.625rem] font-semibold uppercase tracking-wider text-ink-3 px-2 mb-2">Mi ministerio</p>
+        }
+        <div class="flex flex-col gap-0">
+          @for (m of ministerios; track m.slug) {
+            @if (m.slug !== 'exploradores-rey' && canSee(m.module)) {
+              <button class="sidebar-btn w-full justify-start text-left shrink-0" [class.collapsed]="sidebarCollapsed()"
+                      style="font-size:0.8125rem;"
+                      (click)="navegateTo('/dashboard/ministerio/' + m.slug); sidebarOpen.set(false)">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="shrink-0 opacity-70">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" [attr.d]="deptIcons[m.slug] || deptIcons['staff']"/>
+                </svg>
+                @if (!sidebarCollapsed()) { <span class="truncate">{{ m.name }}</span> }
+              </button>
+            }
+          }
+        </div>
+      </div>
 
       <!-- Usuarios -->
       @if (canSee('usuarios')) {
-      <button class="sidebar-btn" [class.collapsed]="sidebarCollapsed()"
-              (click)="navegateTo('/dashboard/users'); sidebarOpen.set(false)"
-              [title]="sidebarCollapsed() ? 'Usuarios' : ''">
-        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-        </svg>
-        @if (!sidebarCollapsed()) { <span>Usuarios</span> }
-      </button>
+        <button class="sidebar-btn shrink-0" [class.collapsed]="sidebarCollapsed()"
+                (click)="navegateTo('/dashboard/users'); sidebarOpen.set(false)">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="shrink-0">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+          @if (!sidebarCollapsed()) { <span>Usuarios</span> }
+        </button>
       }
 
-      <!-- Admin (solo ADMIN) -->
+      <!-- Admin -->
       @if (canSee('admin')) {
-        <button class="sidebar-btn" [class.collapsed]="sidebarCollapsed()"
-                (click)="navegateTo('/dashboard/admin'); sidebarOpen.set(false)"
-                [title]="sidebarCollapsed() ? 'Administrador' : ''"
-                style="color: var(--err);">
-          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
+        <button class="sidebar-btn shrink-0" [class.collapsed]="sidebarCollapsed()"
+                (click)="navegateTo('/dashboard/admin'); sidebarOpen.set(false)" style="color: var(--err);">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="shrink-0">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
                   d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
           </svg>
           @if (!sidebarCollapsed()) { <span>Administrador</span> }
         </button>
       }
 
-      <!-- Foro -->
-      @if (canSee('foro')) {
-      <button class="sidebar-btn" [class.collapsed]="sidebarCollapsed()"
-              (click)="navegateTo('/dashboard/foro'); sidebarOpen.set(false)"
-              [title]="sidebarCollapsed() ? 'Foro' : ''">
-        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-        </svg>
-        @if (!sidebarCollapsed()) { <span>Foro</span> }
-      </button>
-      }
-
-      <!-- Servicio Social (collapsible) -->
+      <!-- Servicio Social -->
       @if (canSee('serv-social')) {
-      @if (!sidebarCollapsed()) {
-        <details style="padding: 0 0.5rem;">
-          <summary class="sidebar-btn" style="list-style:none; border-radius:6px;">
-            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
+        <details class="shrink-0 mt-1">
+          <summary class="sidebar-btn" [class.collapsed]="sidebarCollapsed()" style="list-style:none; border-radius:6px; cursor:pointer;">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="shrink-0">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    d="M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
             </svg>
-            <span>Servicio Social</span>
+            @if (!sidebarCollapsed()) { <span>Servicio Social</span> }
           </summary>
-          <div style="padding-left: 1.25rem;">
-            <button class="sidebar-btn" style="font-size:0.8125rem;"
-                    (click)="navegateTo('/dashboard/profesores'); sidebarOpen.set(false)">
-              Profesores
-            </button>
-            <button class="sidebar-btn" style="font-size:0.8125rem;"
-                    (click)="navegateTo('/dashboard/asistencia'); sidebarOpen.set(false)">
-              Asistencia dominical
-            </button>
-            <button class="sidebar-btn" style="font-size:0.8125rem;"
-                    (click)="navegateTo('/dashboard/servicio-social'); sidebarOpen.set(false)">
-              Alumnos
-            </button>
-          </div>
+          @if (!sidebarCollapsed()) {
+            <div class="flex flex-col gap-0" style="padding-left: 1.25rem;">
+              <button class="sidebar-btn shrink-0" style="font-size:0.8125rem;"
+                      (click)="navegateTo('/dashboard/profesores'); sidebarOpen.set(false)">Profesores</button>
+              <button class="sidebar-btn shrink-0" style="font-size:0.8125rem;"
+                      (click)="navegateTo('/dashboard/asistencia'); sidebarOpen.set(false)">Asistencia dominical</button>
+              <button class="sidebar-btn shrink-0" style="font-size:0.8125rem;"
+                      (click)="navegateTo('/dashboard/servicio-social'); sidebarOpen.set(false)">Alumnos</button>
+            </div>
+          }
         </details>
-      } @else {
-        <button class="sidebar-btn" [class.collapsed]="true"
-                (click)="navegateTo('/dashboard/servicio-social')"
-                title="Servicio Social">
-          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-          </svg>
-        </button>
-      }
       }
 
-      <!-- Estudio Bíblico -->
-      @if (canSee('biblia')) {
-      <button class="sidebar-btn" [class.collapsed]="sidebarCollapsed()"
-              (click)="navegateTo('/dashboard/biblia'); sidebarOpen.set(false)"
-              [title]="sidebarCollapsed() ? 'Estudio Bíblico' : ''">
-        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-        </svg>
-        @if (!sidebarCollapsed()) { <span>Estudio Bíblico</span> }
-      </button>
+      <!-- Spacer para empujar Exploradores al final -->
+      <div class="flex-1 min-h-4" aria-hidden="true"></div>
+
+      <!-- Ministerio Exploradores del Rey (abajo, solo para ese grupo) -->
+      @if (canSee('dept-exploradores-rey')) {
+        <details class="shrink-0 border-t border-line pt-2 mt-2" style="padding: 0 0.5rem;">
+          <summary class="sidebar-btn" [class.collapsed]="sidebarCollapsed()" style="list-style:none; border-radius:6px; cursor:pointer;">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="shrink-0">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                    [attr.d]="deptIcons['exploradores-rey']"/>
+            </svg>
+            @if (!sidebarCollapsed()) { <span>Exploradores del Rey</span> }
+          </summary>
+          @if (!sidebarCollapsed()) {
+            <div class="flex flex-col gap-0" style="padding-left: 1.25rem;">
+              <button class="sidebar-btn shrink-0" style="font-size:0.8125rem;"
+                      (click)="navegateTo('/dashboard/profesores'); sidebarOpen.set(false)">Profesores</button>
+              <button class="sidebar-btn shrink-0" style="font-size:0.8125rem;"
+                      (click)="navegateTo('/dashboard/asistencia'); sidebarOpen.set(false)">Asistencia dominical</button>
+              <button class="sidebar-btn shrink-0" style="font-size:0.8125rem;"
+                      (click)="navegateTo('/dashboard/ministerio/exploradores-rey'); sidebarOpen.set(false)">Alumnos</button>
+            </div>
+          }
+        </details>
       }
 
     </nav>
 
     <!-- Logout -->
-    <div class="border-t border-line" style="padding: 0.5rem;">
-      <button class="sidebar-btn" [class.collapsed]="sidebarCollapsed()"
-              style="color: var(--err);" (click)="logout()"
-              [title]="sidebarCollapsed() ? 'Cerrar sesión' : ''">
-        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0">
+    <div class="border-t border-line shrink-0" style="padding: 0.5rem;">
+      <button class="sidebar-btn" [class.collapsed]="sidebarCollapsed()" style="color: var(--err);" (click)="logout()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="shrink-0">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
         </svg>
@@ -192,9 +199,9 @@
     <!-- Header -->
     <header class="bg-surface border-b border-line flex items-center justify-between flex-shrink-0 h-[60px] px-4 sm:px-5 lg:px-6">
 
-      <!-- Hamburger (móvil) -->
-      <button class="btn-ghost lg:hidden" style="padding: 0.375rem;"
-              (click)="sidebarOpen.set(!sidebarOpen())" aria-label="Menú">
+      <!-- Hamburger (móvil) — único control: 1 clic abre menú expandido -->
+      <button class="btn-ghost lg:hidden flex items-center justify-center" style="padding: 0.375rem;"
+              (click)="toggleMobileMenu()" aria-label="Menú">
         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>

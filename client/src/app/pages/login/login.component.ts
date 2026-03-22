@@ -4,7 +4,8 @@ import { CommonModule } from "@angular/common";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { LoginEventService } from "@app/core/services/login-event.service";
 import { profileService } from "@app/core/services/profile.service";
-import { LoginResponse, HttpErrorResponse } from "@app/shared/models/login.model";
+import { LoginResponse } from "@app/shared/models/login.model";
+import { HttpErrorResponse } from "@angular/common/http";
 import { NotificationService } from "@app/core/services/notification.service";
 
 @Component({
@@ -32,7 +33,7 @@ export class LoginComponent {
     constructor() {
         this.loginForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required, Validators.minLength(2)]],
+            password: ['', [Validators.required, Validators.minLength(8)]],
             rememberMe: [false]
         });
     }
@@ -47,8 +48,12 @@ export class LoginComponent {
         this.errorMessage.set('');
 
         const { email, password, rememberMe } = this.loginForm.value;
+        const credentials = {
+          email: String(email || '').trim().toLowerCase(),
+          password: String(password || '').trim(),
+        };
 
-        this.loginService.login({ email, password }).subscribe({
+        this.loginService.login(credentials).subscribe({
             next: (response: LoginResponse) => {
                 const storage = rememberMe ? localStorage : sessionStorage;
                 storage.setItem('access_token', response.access_token);
@@ -70,9 +75,10 @@ export class LoginComponent {
                     },
                 });
             },
-            error: (httpError: HttpErrorResponse) => {
+            error: (err: HttpErrorResponse) => {
                 this.isLoading.set(false);
-                this.errorMessage.set(httpError.error?.message || 'Error en el inicio de sesión');
+                const msg = err?.error?.message ?? 'Error en el inicio de sesión';
+                this.errorMessage.set(msg);
                 this.cdr.detectChanges();
             }
         });

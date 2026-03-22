@@ -8,7 +8,7 @@ import { UsersEventService } from "@app/core/services/users-event.services";
 import { profileService } from "@app/core/services/profile.service";
 import { Event } from "@app/shared/models/userEvent.model";
 import { ThemeToggleComponent } from "@app/shared/components/theme-toggle/theme-toggle.component";
-import { getModulesForGroups, SIDEBAR_MODULES, type SidebarModuleKey } from "@app/core/config/sidebar-modules.config";
+import { getModulesForGroups, MINISTERIOS, DEPT_ICONS, SIDEBAR_MODULES, type SidebarModuleKey } from "@app/core/config/sidebar-modules.config";
 
 @Component({
     selector: 'app-private-layout',
@@ -34,10 +34,13 @@ export class PrivateLayoutComponent implements OnInit {
     sidebarOpen = signal<boolean>(false);
     sidebarCollapsed = signal<boolean>(true);
     userMenuOpen = false;
+    deptIcons = DEPT_ICONS;
     visibleModules = signal<Set<SidebarModuleKey>>(new Set());
+    ministerios = MINISTERIOS;
 
     canSee = (key: SidebarModuleKey): boolean => {
-        if (key === SIDEBAR_MODULES.admin) return this.userRole === 'ADMIN';
+        if (this.userRole === 'ADMIN') return true;
+        if (key === SIDEBAR_MODULES.admin) return false;
         return this.visibleModules().has(key);
     };
 
@@ -54,7 +57,18 @@ export class PrivateLayoutComponent implements OnInit {
                 const groupNames = groups.map((g) => g.name);
                 this.visibleModules.set(getModulesForGroups(groupNames));
                 if (this.userRole === 'ADMIN') {
-                    this.visibleModules.update((s) => new Set([...s, SIDEBAR_MODULES.admin]));
+                    const allModules = new Set<SidebarModuleKey>([
+                        SIDEBAR_MODULES.dashboard, SIDEBAR_MODULES.eventos, SIDEBAR_MODULES.usuarios,
+                        SIDEBAR_MODULES.admin, SIDEBAR_MODULES.foro, SIDEBAR_MODULES.servSocial,
+                        SIDEBAR_MODULES.biblia,
+                        SIDEBAR_MODULES.deptStaff, SIDEBAR_MODULES.deptVisionJuvenil, SIDEBAR_MODULES.deptAdoremos,
+                        SIDEBAR_MODULES.deptEscuelaFormacion, SIDEBAR_MODULES.deptExploradoresRey,
+                        SIDEBAR_MODULES.deptSalvacion, SIDEBAR_MODULES.deptAudiovisuales,
+                        SIDEBAR_MODULES.deptMujeresReinan, SIDEBAR_MODULES.deptVaronesAmigosDios,
+                        SIDEBAR_MODULES.deptDanzaKadosh, SIDEBAR_MODULES.deptIntercesion,
+                        SIDEBAR_MODULES.deptEntrelazados, SIDEBAR_MODULES.deptProtocolo,
+                    ]);
+                    this.visibleModules.set(allModules);
                 }
             },
             error: () => this.visibleModules.set(new Set([SIDEBAR_MODULES.dashboard, SIDEBAR_MODULES.eventos, SIDEBAR_MODULES.foro, SIDEBAR_MODULES.biblia])),
@@ -77,6 +91,14 @@ export class PrivateLayoutComponent implements OnInit {
                 this.loadingEvents.set(false);
             }
         });
+    }
+
+    toggleMobileMenu() {
+        this.sidebarOpen.update((v) => !v);
+    }
+
+    toggleSidebarCollapsed() {
+        this.sidebarCollapsed.update((v) => !v);
     }
 
     navegateTo(path: string) {

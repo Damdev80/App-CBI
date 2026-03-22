@@ -1,6 +1,20 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
+/** Añade connection_limit a la URL para evitar agotar el pool (Neon, Supabase, etc.) */
+function getDatabaseUrl(): string {
+  const url = process.env.DATABASE_URL;
+  if (!url) return url ?? '';
+  try {
+    const parsed = new URL(url);
+    if (parsed.searchParams.has('connection_limit')) return url;
+    parsed.searchParams.set('connection_limit', '1');
+    return parsed.toString();
+  } catch {
+    return url.includes('?') ? `${url}&connection_limit=1` : `${url}?connection_limit=1`;
+  }
+}
+
 @Injectable()
 export class PrismaService
   extends PrismaClient
@@ -10,7 +24,7 @@ export class PrismaService
     super({
       datasources: {
         db: {
-          url: process.env.DATABASE_URL,
+          url: getDatabaseUrl(),
         },
       },
       log: ['error', 'warn'],

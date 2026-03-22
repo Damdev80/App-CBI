@@ -295,10 +295,14 @@ select.field {
   border: none;
   background: transparent;
   width: calc(100% - 1rem);
+  min-height: 36px;
   text-align: left;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .sidebar-btn:hover { color: var(--ink); background-color: var(--surface-2); }
+details summary::-webkit-details-marker { display: none; }
+details summary { display: block; }
 .sidebar-btn.collapsed {
   justify-content: center;
   padding: 0.5rem;
@@ -371,6 +375,13 @@ aside.fixed {
 aside.fixed.sidebar-visible {
   transform: translateX(0);
 }
+/* En mobile: sidebar overlay siempre ancho completo */
+@media (max-width: 1023px) {
+  aside.fixed[class*="border-r"] {
+    width: 240px !important;
+  }
+}
+
 /* En desktop (lg): siempre visible vía Tailwind lg:static */
 @media (min-width: 1024px) {
   aside.fixed {
