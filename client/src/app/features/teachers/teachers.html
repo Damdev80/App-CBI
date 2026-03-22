@@ -1,4 +1,4 @@
-<div style="max-width:1100px; margin:0 auto;" class="fade-up">
+<div class="w-full max-w-[1100px] mx-auto px-4 sm:px-6 fade-up">
 
   <!-- Header -->
   <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1.25rem;">
@@ -47,7 +47,7 @@
 
   <!-- Grid -->
   @if (!loading() && filteredTeachers().length > 0) {
-    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem;">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       @for (teacher of filteredTeachers(); track teacher.id) {
         <div class="card" style="padding:1.25rem; display:flex; flex-direction:column; gap:0.75rem;">
           <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:0.75rem;">
@@ -69,11 +69,15 @@
             </span>
           </div>
 
-          <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
             <p style="font-size:0.8125rem; color:var(--ink-3); margin:0;">
-              Alumnos: <strong style="color:var(--ink); font-weight:600;">{{ teacher.students?.length || 0 }}</strong>
+              Alumnos: <strong style="color:var(--ink); font-weight:600;">{{ teacher._studentCount ?? teacher.students?.length ?? 0 }}</strong>
             </p>
-            <div style="display:flex; gap:0.5rem;">
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <a [routerLink]="['/dashboard/asistencia']" [queryParams]="{ teacherId: teacher.id }"
+                 class="btn-solid" style="padding:0.375rem 0.75rem; font-size:0.8125rem; text-decoration:none;">
+                Tomar asistencia
+              </a>
               <button class="btn-outline" style="padding:0.375rem 0.75rem; font-size:0.8125rem;"
                       (click)="viewStudents(teacher.id)">
                 Ver alumnos

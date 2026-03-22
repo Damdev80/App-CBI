@@ -20,9 +20,19 @@ export class TeachersServiceService {
   }
 
   async findAll() {
-    return this.prisma.teachersService.findMany({
-      include: { students: true },
+    const teachers = await this.prisma.teachersService.findMany({
+      include: {
+        students: true,
+        studentTeachers: { select: { studentId: true } },
+      },
       orderBy: { createdAt: 'desc' },
+    });
+    return teachers.map((t) => {
+      const viaTeacher = new Set(t.students.map((s) => s.id));
+      for (const st of t.studentTeachers) {
+        viaTeacher.add(st.studentId);
+      }
+      return { ...t, _studentCount: viaTeacher.size };
     });
   }
 

@@ -9,8 +9,13 @@ export class ProfileController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async getProfile(@Req() req) {
-    // req.user debe tener el id del usuario autenticado
     return this.usersService.findById(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('with-groups')
+  async getProfileWithGroups(@Req() req) {
+    return this.usersService.findByIdWithGroups(req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -18,9 +18,10 @@ export class UsersServiceController {
     @Body() body: { 
       name: string; 
       number?: string; 
-      teacherId: string;
+      teacherIds: string[];
       Gender: 'MASCULINO' | 'FEMENINO';
       Documents?: string;
+      groupId?: string;
     },
   ) {
     return this.usersServiceService.create(body);
@@ -48,19 +49,15 @@ export class UsersServiceController {
     body: {
       name?: string;
       number?: string;
-      attendance?: boolean;
       GoToCampement?: boolean;
       payGotoCampement?: 'PAGO' | 'DEBE';
       Gender?: 'MASCULINO' | 'FEMENINO';
       Documents?: string;
+      groupId?: string | null;
+      teacherIds?: string[];
     },
   ) {
     return this.usersServiceService.update(id, body);
-  }
-
-  @Patch(':id/toggle-attendance')
-  toggleAttendance(@Param('id') id: string) {
-    return this.usersServiceService.toggleAttendance(id);
   }
 
   @Delete(':id')

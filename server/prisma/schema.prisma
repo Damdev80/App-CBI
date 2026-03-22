@@ -4,6 +4,8 @@ generator client {
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
+// Ejecutar con: pnpm prisma db seed
+
 
 datasource db {
   provider = "postgresql"
@@ -166,29 +168,88 @@ model GroupJoinRequest {
 }
 
 model TeachersService {
-  id             String               @id @default(uuid())
-  name           String
-  number         String?              @unique
-  GoToCampement  Boolean              @default(false)
-  createdAt      DateTime             @default(now())
-  updatedAt      DateTime             @updatedAt
-  teacherId      String
-  students       UserServiceSocial[]
+  id              String             @id @default(uuid())
+  name            String
+  number          String?            @unique
+  GoToCampement   Boolean            @default(false)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  teacherId       String
+  students        UserServiceSocial[] // via teacherId (legacy)
+  studentTeachers StudentTeacher[]
+  studentGroups   StudentGroup[]
+}
+
+model StudentTeacher {
+  id         String            @id @default(uuid())
+  studentId  String
+  teacherId  String
+  student    UserServiceSocial @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  teacher    TeachersService   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  createdAt  DateTime          @default(now())
+
+  @@unique([studentId, teacherId])
+  @@map("student_teachers")
+}
+
+model StudentGroup {
+  id         String             @id @default(uuid())
+  name       String
+  number     String?            // Número o código del grupo (ej: "01", "A1")
+  teacherId  String?
+  teacher    TeachersService?   @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+  students   UserServiceSocial[]
+
+  @@map("student_groups")
 }
 
 model UserServiceSocial {
-  id               String          @id @default(uuid())
-  name             String
-  number           String?         @unique
-  GoToCampement    Boolean         @default(false)
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  attendance       Boolean         @default(false)
-  Gender           Gender
+  id                String            @id @default(uuid())
+  name              String
+  number            String?           @unique
+  GoToCampement     Boolean           @default(false)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  Gender            Gender
   Documents         String?
-  payGotoCampement Pay             @default(DEBE)
-  teacherId        String
-  School           TeachersService @relation(fields: [teacherId], references: [id])
+  payGotoCampement  Pay               @default(DEBE)
+  groupId           String?
+  group             StudentGroup?     @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  teacherId         String?           // Profesor principal (legacy) - estudiantes pueden tener varios vía studentTeachers
+  School            TeachersService?  @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+  studentTeachers   StudentTeacher[]
+  attendanceRecords AttendanceRecord[]
+  moneyCollections  MoneyCollection[]
+
+  @@map("user_service_social")
+}
+
+model AttendanceRecord {
+  id         String            @id @default(uuid())
+  studentId  String
+  student    UserServiceSocial @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  date       DateTime          @db.Date
+  present    Boolean           @default(false)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  @@unique([studentId, date])
+  @@map("attendance_records")
+}
+
+model MoneyCollection {
+  id         String            @id @default(uuid())
+  date       DateTime          @db.Date
+  amount     Float
+  studentId  String
+  student    UserServiceSocial @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  notes      String?           @db.Text
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  @@map("money_collections")
 }
 
 

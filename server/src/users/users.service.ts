@@ -25,6 +25,43 @@ export class UsersService {
     });
   }
 
+  async findByIdWithGroups(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        number: true,
+        role: true,
+        isActive: true,
+        address: true,
+        age: true,
+        baptized: true,
+        createdAt: true,
+        updatedAt: true,
+        dicipules: true,
+        gender: true,
+        happybirth: true,
+        hobbies: true,
+        dreams: true,
+        job: true,
+        vulnerable_area: true,
+        members: {
+          include: {
+            group: { select: { id: true, name: true } },
+          },
+        },
+      },
+    });
+    if (!user) return null;
+    const { members, ...rest } = user;
+    return {
+      ...rest,
+      groups: members.map((m) => m.group),
+    };
+  }
+
   async create(
     data: CreateUserDto,
   ): Promise<User> {
@@ -81,8 +118,11 @@ export class UsersService {
     password: string,
   ): Promise<Omit<User, 'password'> | null> {
     try {
-      const user = await this.prisma.user.findUnique({
-        where: { email },
+      const emailNorm = email.trim().toLowerCase();
+      const user = await this.prisma.user.findFirst({
+        where: {
+          email: { equals: emailNorm, mode: 'insensitive' },
+        },
       });
       if (!user || !user.password) return null;
 

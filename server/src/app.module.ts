@@ -18,9 +18,13 @@ import { SessionsModule } from './sessions/sessions.module';
 import { UsersServiceModule } from './users-service/users-service.module';
 import { TeachersServiceModule } from './teachers-service/teachers-service.module';
 import { ForumModule } from './forum/forum.module';
+import { AttendanceModule } from './attendance/attendance.module';
+import { MoneyCollectionModule } from './money-collection/money-collection.module';
+import { StudentGroupsModule } from './student-groups/student-groups.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, UsersModule, MembersModule, GroupsModule, ForumModule, EventModule, UsersEventModule, DashboardModule, PreRegisterModule, ProfileModule, SessionsModule, UsersServiceModule, TeachersServiceModule],
+  imports: [AuthModule, PrismaModule, UsersModule, MembersModule, GroupsModule, ForumModule, EventModule, UsersEventModule, DashboardModule, PreRegisterModule, ProfileModule, SessionsModule, UsersServiceModule, TeachersServiceModule, AttendanceModule, MoneyCollectionModule, StudentGroupsModule, AdminModule],
   controllers: [AppController, MembersController],
   providers: [AppService, AuthService, MembersService],
 })

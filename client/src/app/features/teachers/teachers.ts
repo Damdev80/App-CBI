@@ -1,5 +1,6 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TeacherServiceService } from '@app/core/services/teacher-service.service';
@@ -8,7 +9,7 @@ import { Teacher } from '@app/shared/models/service-social.model';
 @Component({
   selector: 'app-teachers',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './teachers.html',
 })
 export class TeachersComponent {

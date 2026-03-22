@@ -1,12 +1,14 @@
 
-import { Component, inject, OnInit, signal } from "@angular/core";
+import { Component, inject, OnInit, signal, computed } from "@angular/core";
 import { AuthService } from "@app/core/services/auth.service";
 import { CommonModule } from "@angular/common";
 import { Router, RouterModule } from "@angular/router";
 import { Notification, NotificationService } from "@app/core/services/notification.service";
 import { UsersEventService } from "@app/core/services/users-event.services";
+import { profileService } from "@app/core/services/profile.service";
 import { Event } from "@app/shared/models/userEvent.model";
 import { ThemeToggleComponent } from "@app/shared/components/theme-toggle/theme-toggle.component";
+import { getModulesForGroups, SIDEBAR_MODULES, type SidebarModuleKey } from "@app/core/config/sidebar-modules.config";
 
 @Component({
     selector: 'app-private-layout',
@@ -24,6 +26,7 @@ export class PrivateLayoutComponent implements OnInit {
     private notificationService = inject(NotificationService);
     private usersEventService = inject(UsersEventService);
     private authService = inject(AuthService);
+    private profileService = inject(profileService);
 
     events = signal<Event[]>([]);
     loadingEvents = signal<boolean>(false);
@@ -31,12 +34,31 @@ export class PrivateLayoutComponent implements OnInit {
     sidebarOpen = signal<boolean>(false);
     sidebarCollapsed = signal<boolean>(true);
     userMenuOpen = false;
+    visibleModules = signal<Set<SidebarModuleKey>>(new Set());
+
+    canSee = (key: SidebarModuleKey): boolean => {
+        if (key === SIDEBAR_MODULES.admin) return this.userRole === 'ADMIN';
+        return this.visibleModules().has(key);
+    };
 
     ngOnInit() {
         this.loadEvents();
-        if (this.authService.getRole) {
-            this.userRole = this.authService.getRole();
-        }
+        this.userRole = this.authService.getRole();
+        this.profileService.getProfileWithGroups().subscribe({
+            next: (p) => {
+                const groups = p.groups || [];
+                if (groups.length === 0 && this.userRole !== 'ADMIN') {
+                    this.router.navigate(['/app']);
+                    return;
+                }
+                const groupNames = groups.map((g) => g.name);
+                this.visibleModules.set(getModulesForGroups(groupNames));
+                if (this.userRole === 'ADMIN') {
+                    this.visibleModules.update((s) => new Set([...s, SIDEBAR_MODULES.admin]));
+                }
+            },
+            error: () => this.visibleModules.set(new Set([SIDEBAR_MODULES.dashboard, SIDEBAR_MODULES.eventos, SIDEBAR_MODULES.foro, SIDEBAR_MODULES.biblia])),
+        });
 
         this.notificationService.notification$.subscribe((n) => {
             this.notification.set(n);

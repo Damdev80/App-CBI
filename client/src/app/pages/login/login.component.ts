@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { LoginEventService } from "@app/core/services/login-event.service";
+import { profileService } from "@app/core/services/profile.service";
 import { LoginResponse, HttpErrorResponse } from "@app/shared/models/login.model";
 import { NotificationService } from "@app/core/services/notification.service";
 
@@ -20,6 +21,7 @@ export class LoginComponent {
     private router = inject(Router);
     private fb = inject(FormBuilder);
     private loginService = inject(LoginEventService);
+    private profileService = inject(profileService);
     private cdr = inject(ChangeDetectorRef);
     private notificationService = inject(NotificationService);
 
@@ -30,7 +32,7 @@ export class LoginComponent {
     constructor() {
         this.loginForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required, Validators.minLength(8)]],
+            password: ['', [Validators.required, Validators.minLength(2)]],
             rememberMe: [false]
         });
     }
@@ -50,9 +52,23 @@ export class LoginComponent {
             next: (response: LoginResponse) => {
                 const storage = rememberMe ? localStorage : sessionStorage;
                 storage.setItem('access_token', response.access_token);
-                this.isLoading.set(false);
                 this.notificationService.showSuccess('Inicio de sesión exitoso');
-                this.router.navigate(['/dashboard']);
+                this.profileService.getProfileWithGroups().subscribe({
+                    next: (profile) => {
+                        const groups = profile.groups || [];
+                        const isAdmin = profile.role === 'ADMIN';
+                        this.isLoading.set(false);
+                        if (groups.length === 0 && !isAdmin) {
+                            this.router.navigate(['/app']);
+                        } else {
+                            this.router.navigate(['/dashboard']);
+                        }
+                    },
+                    error: () => {
+                        this.isLoading.set(false);
+                        this.router.navigate(['/dashboard']);
+                    },
+                });
             },
             error: (httpError: HttpErrorResponse) => {
                 this.isLoading.set(false);

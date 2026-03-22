@@ -26,9 +26,10 @@ export class UserServiceService {
   create(data: {
     name: string;
     number?: string;
-    teacherId: string;
+    teacherIds: string[];
     Gender: 'MASCULINO' | 'FEMENINO';
     Documents?: string;
+    groupId?: string;
   }): Observable<UserServiceSocial> {
     return this.http.post<UserServiceSocial>(this.apiUrl, data);
   }
@@ -38,13 +39,6 @@ export class UserServiceService {
     data: Partial<UserServiceSocial>,
   ): Observable<UserServiceSocial> {
     return this.http.patch<UserServiceSocial>(`${this.apiUrl}/${id}`, data);
-  }
-
-  toggleAttendance(id: string): Observable<UserServiceSocial> {
-    return this.http.patch<UserServiceSocial>(
-      `${this.apiUrl}/${id}/toggle-attendance`,
-      {},
-    );
   }
 
   delete(id: string): Observable<void> {

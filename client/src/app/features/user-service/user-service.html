@@ -1,4 +1,4 @@
-<div style="max-width:1100px; margin:0 auto;" class="fade-up">
+<div class="w-full max-w-[1100px] mx-auto px-4 sm:px-6 fade-up">
 
   <!-- Header -->
   <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:1.25rem;">
@@ -29,31 +29,35 @@
       </div>
     </div>
 
-    <div style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
-      <input class="field" type="text" [(ngModel)]="query" placeholder="Buscar por nombre, teléfono o documento…"
-             style="min-width:280px;" />
-      <button class="btn-solid" (click)="showForm.set(true)">+ Nuevo alumno</button>
+    <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+      <input class="field min-w-0 sm:min-w-[260px]" type="text" [(ngModel)]="query"
+             placeholder="Buscar por nombre, teléfono o documento…" />
+      <button class="btn-solid shrink-0" (click)="openForm()">+ Nuevo alumno</button>
     </div>
   </div>
 
   <!-- Resumen -->
-  <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:0.75rem; margin-bottom:1rem;">
-    <div class="card" style="padding:1rem;">
-      <p style="font-size:0.6875rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.25rem;">Total</p>
-      <p style="font-family:var(--serif); font-size:1.75rem; font-weight:600; color:var(--ink); margin:0;">{{ totalUsers() }}</p>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
+    <div class="card p-4">
+      <p class="text-[0.6875rem] font-semibold tracking-wider uppercase text-ink-3 m-0 mb-1">Total</p>
+      <p class="font-serif text-xl sm:text-2xl font-semibold text-ink m-0">{{ totalUsers() }}</p>
     </div>
-    <div class="card" style="padding:1rem;">
-      <p style="font-size:0.6875rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.25rem;">Presentes</p>
-      <p style="font-family:var(--serif); font-size:1.75rem; font-weight:600; color:var(--ok); margin:0;">{{ presentToday() }}</p>
+    <div class="card p-4">
+      <p class="text-[0.6875rem] font-semibold tracking-wider uppercase text-ink-3 m-0 mb-1">Campamento</p>
+      <p class="font-serif text-xl sm:text-2xl font-semibold m-0" style="color: var(--accent);">{{ goingToCamp() }}</p>
     </div>
-    <div class="card" style="padding:1rem;">
-      <p style="font-size:0.6875rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.25rem;">Campamento</p>
-      <p style="font-family:var(--serif); font-size:1.75rem; font-weight:600; color:var(--accent); margin:0;">{{ goingToCamp() }}</p>
+    <div class="card p-4">
+      <p class="text-[0.6875rem] font-semibold tracking-wider uppercase text-ink-3 m-0 mb-1">Pendientes pago</p>
+      <p class="font-serif text-xl sm:text-2xl font-semibold m-0" style="color: var(--warn);">{{ unpaidCount() }}</p>
     </div>
-    <div class="card" style="padding:1rem;">
-      <p style="font-size:0.6875rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.25rem;">Pendientes</p>
-      <p style="font-family:var(--serif); font-size:1.75rem; font-weight:600; color:var(--warn); margin:0;">{{ unpaidCount() }}</p>
-    </div>
+    @if (teacherId()) {
+      <div class="card p-4 col-span-2 sm:col-span-1 flex items-center">
+        <a [routerLink]="['/dashboard/asistencia']" [queryParams]="{ teacherId: teacherId() }"
+           class="btn-solid w-full justify-center text-sm py-2">
+          Tomar asistencia
+        </a>
+      </div>
+    }
   </div>
 
   @if (error()) {
@@ -88,15 +92,14 @@
         <button class="btn-ghost" style="font-size:0.8125rem; color:var(--accent);" (click)="loadData()">Actualizar</button>
       </div>
 
-      <div style="overflow-x:auto;">
-        <table class="cbi-table">
+      <div class="table-wrapper">
+        <table class="cbi-table min-w-[700px]">
           <thead>
             <tr>
               <th>Alumno</th>
+              <th>Grupo</th>
               <th>Género</th>
               <th>Teléfono</th>
-              <th>Documentos</th>
-              <th class="text-center">Asistencia</th>
               <th class="text-center">Campamento</th>
               <th class="text-center">Pago</th>
               <th class="text-center">Acciones</th>
@@ -107,6 +110,13 @@
               <tr>
                 <td style="font-weight:600; color:var(--ink);">{{ user.name }}</td>
                 <td>
+                  @if (user.group) {
+                    <span class="badge badge-accent text-xs">{{ user.group.name }}</span>
+                  } @else {
+                    <span style="color:var(--ink-3);">—</span>
+                  }
+                </td>
+                <td>
                   <span class="badge"
                         [style.background]="user.Gender === 'MASCULINO' ? 'var(--accent-tint)' : 'var(--surface-2)'"
                         [style.color]="user.Gender === 'MASCULINO' ? 'var(--accent)' : 'var(--ink-2)'">
@@ -114,17 +124,6 @@
                   </span>
                 </td>
                 <td style="color:var(--ink-2);">{{ user.number || '—' }}</td>
-                <td style="color:var(--ink-2);">{{ user.Documents || '—' }}</td>
-                <td class="text-center">
-                  <button class="btn-ghost" style="padding:0.25rem 0.5rem; font-size:0.8125rem;"
-                          (click)="toggleAttendance(user.id)">
-                    <span class="badge"
-                          [style.background]="user.attendance ? 'var(--ok-tint)' : 'var(--surface-2)'"
-                          [style.color]="user.attendance ? 'var(--ok)' : 'var(--ink-2)'">
-                      {{ user.attendance ? 'Presente' : 'Ausente' }}
-                    </span>
-                  </button>
-                </td>
                 <td class="text-center">
                   <span class="badge"
                         [style.background]="user.GoToCampement ? 'var(--ok-tint)' : 'var(--surface-2)'"
@@ -178,21 +177,43 @@
           </button>
         </div>
 
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem;">
-          @if (!teacherId()) {
-            <div style="grid-column:1 / -1;">
-              <label class="form-label">Profesor *</label>
-              <select class="field" [(ngModel)]="selectedTeacherId">
-                <option value="" disabled>Selecciona un profesor</option>
-                @for (t of teachers(); track t.id) {
-                  <option [value]="t.id">{{ t.name }}</option>
-                }
-              </select>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="md:col-span-2">
+            <label class="form-label">Profesores * (un alumno puede tener varios)</label>
+            <div class="flex flex-wrap gap-3 p-3 rounded-lg border border-line bg-surface-2">
+              @for (t of teachers(); track t.id) {
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" [checked]="isTeacherSelected(t.id)" (change)="toggleTeacherSelection(t.id)">
+                  <span>{{ t.name }}</span>
+                </label>
+              }
+              @if (teachers().length === 0) {
+                <span class="text-ink-3 text-sm">No hay profesores. Crea profesores primero.</span>
+              }
             </div>
-          }
-          <div style="grid-column:1 / -1;">
+            @if (teacherId() && !isTeacherSelected(teacherId()!)) {
+              <p class="text-xs text-ink-3 mt-1">Estás en vista del profesor {{ teacher()?.name }}. Selecciónalo si este alumno es suyo.</p>
+            }
+          </div>
+          <div class="md:col-span-2">
             <label class="form-label">Nombre *</label>
             <input class="field" type="text" [(ngModel)]="newName" placeholder="Nombre del alumno" />
+          </div>
+          <div>
+            <label class="form-label">Grupo</label>
+            <div class="flex gap-2">
+              <select class="field flex-1" [(ngModel)]="newGroupId">
+                <option value="">Sin grupo</option>
+                @for (g of groups(); track g.id) {
+                  <option [value]="g.id">{{ g.name }}</option>
+                }
+              </select>
+              <button type="button" class="btn-outline shrink-0 px-3" (click)="showGroupForm.set(true)" title="Nuevo grupo">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+              </button>
+            </div>
           </div>
           <div>
             <label class="form-label">Género *</label>
@@ -216,10 +237,33 @@
           <button class="btn-solid"
                   style="display:flex; align-items:center; gap:0.5rem;"
                   (click)="addUser()"
-                  [disabled]="saving() || !newName.trim() || (!teacherId() && !selectedTeacherId)">
+                  [disabled]="saving() || !newName.trim() || selectedTeacherIds.length === 0">
             @if (saving()) { <span class="spinner" style="width:16px; height:16px; border-width:2px;"></span> }
             Guardar
           </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal: nuevo grupo -->
+  @if (showGroupForm()) {
+    <div class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/45" (click)="showGroupForm.set(false)">
+      <div class="card w-full max-w-sm p-5" (click)="$event.stopPropagation()">
+        <h3 class="font-serif text-lg font-semibold text-ink m-0 mb-3">Nuevo grupo</h3>
+        <div class="space-y-3 mb-4">
+          <div>
+            <label class="form-label">Nombre</label>
+            <input class="field w-full" type="text" [(ngModel)]="newGroupName" placeholder="Ej: Grupo A" />
+          </div>
+          <div>
+            <label class="form-label">Número / Código (opcional)</label>
+            <input class="field w-full" type="text" [(ngModel)]="newGroupNumber" placeholder="Ej: 01, A1" />
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button class="btn-outline flex-1" (click)="showGroupForm.set(false)">Cancelar</button>
+          <button class="btn-solid flex-1" (click)="addGroup()" [disabled]="!newGroupName.trim()">Crear</button>
         </div>
       </div>
     </div>

@@ -21,6 +21,15 @@ export  enum Gender {
   IV = 'IV'
 }
 
+export interface UserGroup {
+  id: string;
+  name: string;
+}
+
+export interface UserProfileWithGroups extends UserProfile {
+  groups?: UserGroup[];
+}
+
 export interface UserProfile {
     id: string;
     name?: string;
@@ -60,6 +69,12 @@ export class profileService {
 
     getProfile(): Observable<UserProfile> {
         return this.http.get<UserProfile>(`${environment.apiUrl}${this.apiUrl}`, {
+            headers: this.getAuthHeaders()
+        });
+    }
+
+    getProfileWithGroups(): Observable<UserProfileWithGroups> {
+        return this.http.get<UserProfileWithGroups>(`${environment.apiUrl}${this.apiUrl}/with-groups`, {
             headers: this.getAuthHeaders()
         });
     }

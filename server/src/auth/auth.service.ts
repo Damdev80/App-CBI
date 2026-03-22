@@ -19,6 +19,10 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
+    if (!user.isActive) {
+      throw new UnauthorizedException('Tu cuenta ha sido desactivada. Contacta al administrador.');
+    }
+
     // Incluir el rol en el payload del JWT
     const payload = { sub: user.id, username: user.name, role: user.role };
 
