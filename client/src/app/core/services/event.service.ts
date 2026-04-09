@@ -7,6 +7,9 @@ export interface EventModel {
   id: string;
   title: string;
   description?: string;
+  eventType: 'EVENTO' | 'ACTIVIDAD' | 'REUNION';
+  hasPrice: boolean;
+  priceTier: number;
   eventDate: string;
   createdAt?: string;
 }
@@ -14,6 +17,9 @@ export interface EventModel {
 export interface CreateEventDto {
   title: string;
   description?: string;
+  eventType: 'EVENTO' | 'ACTIVIDAD' | 'REUNION';
+  hasPrice: boolean;
+  priceTier: number;
   eventDate: string;
 }
 

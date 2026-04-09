@@ -3,7 +3,14 @@ import {jwtDecode} from "jwt-decode";
 
 export interface JwtPayload {
     id: string;
-    role: 'USER' | 'LIDER' | 'ADMIN';
+    role:
+      | 'USER'
+      | 'LIDER'
+      | 'LIDER_GRUPO'
+      | 'SEMI_ADMIN'
+      | 'CONTADORA'
+      | 'SERVIDOR'
+      | 'ADMIN';
     groupId?: string;
 }
 

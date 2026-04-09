@@ -24,6 +24,7 @@ export  enum Gender {
 export interface UserGroup {
   id: string;
   name: string;
+  groupRole?: 'LIDER_CABEZA' | 'LIDER' | 'MIEMBRO';
 }
 
 export interface UserProfileWithGroups extends UserProfile {

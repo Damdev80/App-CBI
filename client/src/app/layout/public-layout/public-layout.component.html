@@ -1,19 +1,17 @@
 <!-- ─── HEADER ─── -->
 <header class="bg-surface border-b border-line sticky top-0 z-50">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-[60px] gap-4">
+  <div class="max-w-6xl mx-auto px-3 sm:px-6 flex items-center justify-between h-[60px] gap-2 sm:gap-4">
 
     <button (click)="navigateTo('/')" class="flex items-center gap-3 btn-ghost" style="padding: 0.375rem 0.5rem;">
       <img src="/img/cbiLogo.svg" alt="CBI" style="width: 32px; height: 32px;" />
-      <span style="font-family: var(--serif); font-size: 1.25rem; font-weight: 600; color: var(--ink); letter-spacing: -0.01em;">
+      <span class="hidden sm:inline" style="font-family: var(--serif); font-size: 1.25rem; font-weight: 600; color: var(--ink); letter-spacing: -0.01em;">
         Iglesia CBI
       </span>
     </button>
 
-    <nav class="flex items-center gap-1 flex-shrink-0">
+    <nav class="flex items-center gap-1 shrink-0">
       <app-theme-toggle />
-      <button class="btn-ghost" style="padding: 0.375rem 0.75rem; font-size: 0.875rem; color: var(--ink-2);"
-              type="button" (click)="navigateTo('/foro')">Foro</button>
-      <button class="btn-ghost" style="padding: 0.375rem 0.75rem; font-size: 0.875rem; color: var(--ink-2);"
+      <button class="btn-ghost hidden sm:inline-flex" style="padding: 0.375rem 0.75rem; font-size: 0.875rem; color: var(--ink-2);"
               type="button" (click)="navigateTo('/biblia')">Estudio Bíblico</button>
       <button class="btn-ghost" style="padding: 0.375rem 0.75rem; font-size: 0.875rem; color: var(--ink-2);"
               type="button" (click)="navigateTo('/login')">

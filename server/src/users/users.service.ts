@@ -58,7 +58,10 @@ export class UsersService {
     const { members, ...rest } = user;
     return {
       ...rest,
-      groups: members.map((m) => m.group),
+      groups: members.map((m) => ({
+        ...m.group,
+        groupRole: m.groupRole,
+      })),
     };
   }
 

@@ -11,7 +11,6 @@ import { DashboardEventService } from '@app/core/services/dashboard-event.servic
 import { AuthService } from '@app/core/services/auth.service';
 import { MembersService } from '@app/core/services/members.service';
 import { EventService, EventModel } from '@app/core/services/event.service';
-import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -64,20 +63,25 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }
 
-    forkJoin({
-      users:    this.dashboardEventService.getNumberUser(),
-      bautized: this.dashboardEventService.getNumberBautized(),
-      women:    this.dashboardEventService.getNumberWomenRegistered(),
-      unpaid:   this.dashboardEventService.getcountUnpaid(),
-    }).subscribe({
-      next: ({ users, bautized, women, unpaid }) => {
-        this.totalUsers.set(users);
-        this.totalBautized.set(bautized);
-        this.totalWomenRegistered.set(women);
-        this.totalcountUnpaid.set(unpaid);
+    const role = this.role();
+    const canSeeGender = role === 'ADMIN' || role === 'SEMI_ADMIN' || role === 'LIDER_GRUPO' || role === 'LIDER';
+    if (canSeeGender) {
+      this.dashboardEventService.getNumberWomenRegistered().subscribe({
+        next: (value) => this.totalWomenRegistered.set(value),
+        error: () => this.totalWomenRegistered.set(0),
+      });
+    }
+
+    this.dashboardEventService.getRoleSummary().subscribe({
+      next: (summary) => {
+        this.totalUsers.set(summary.kpis.totalUsers ?? 0);
+        this.totalBautized.set(summary.kpis.totalBaptized ?? 0);
+        this.totalWomenRegistered.set(0);
+        this.totalcountUnpaid.set(
+          summary.kpis.pendingServicePayments ?? summary.kpis.totalUnpaidEvents ?? 0,
+        );
         this.isLoading.set(false);
         this.chartsReady = true;
-        // Build charts after data arrives (only if AfterViewInit already ran)
         setTimeout(() => this.buildCharts(), 50);
       },
       error: (err) => {

@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { encryp } from '../lib/bcrypt';
+import { GroupRole, Role } from '@prisma/client';
 
 const DEFAULT_PASSWORD = '12345678';
 
@@ -86,13 +87,65 @@ export class AdminService {
     };
   }
 
+  async setUserRole(userId: string, role: Role) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    const updated = await this.prisma.user.update({
+      where: { id: userId },
+      data: { role },
+      select: { id: true, name: true, email: true, role: true },
+    });
+    return {
+      message: `Rol actualizado a ${role}`,
+      user: updated,
+    };
+  }
+
+  async setMemberGroupRole(
+    userId: string,
+    groupId: string,
+    groupRole: GroupRole,
+  ) {
+    const member = await this.prisma.members.findUnique({
+      where: { userId_groupId: { userId, groupId } },
+    });
+    if (!member) {
+      throw new NotFoundException('Membresía usuario-grupo no encontrada');
+    }
+    const updated = await this.prisma.members.update({
+      where: { userId_groupId: { userId, groupId } },
+      data: { groupRole },
+      include: {
+        user: { select: { id: true, name: true, role: true } },
+        group: { select: { id: true, name: true } },
+      },
+    });
+    return {
+      message: `Rol de grupo actualizado a ${groupRole}`,
+      member: updated,
+    };
+  }
+
   /** Estadísticas para el panel de administración */
   async getStats() {
-    const [total, active, admins] = await Promise.all([
+    const [total, active, admins, semis, leaders, accountants] = await Promise.all([
       this.prisma.user.count(),
       this.prisma.user.count({ where: { isActive: true } }),
       this.prisma.user.count({ where: { role: 'ADMIN' } }),
+      this.prisma.user.count({ where: { role: 'SEMI_ADMIN' } }),
+      this.prisma.user.count({ where: { role: 'LIDER_GRUPO' } }),
+      this.prisma.user.count({ where: { role: 'CONTADORA' } }),
     ]);
-    return { total, active, inactive: total - active, admins };
+    return {
+      total,
+      active,
+      inactive: total - active,
+      admins,
+      semis,
+      leaders,
+      accountants,
+    };
   }
 }

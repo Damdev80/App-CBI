@@ -14,7 +14,7 @@ const ministerios = [
   'Departamento Intercesión',
   'Departamento Entrelazados',
   'Departamento Protocolo',
-  'Servicio Social',
+  'Departamento Servicio Social',
 ];
 
 const prisma = new PrismaClient();

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { adminGuard } from '@app/core/guards/admin.guard';
+import { roleGuard } from '@app/core/guards/role.guard';
 import { PublicLayoutComponent } from './layout/public-layout/public-layout.component';
 import { PrivateLayoutComponent } from './layout/private-layout/private-layout.component';
 import { UserLayoutComponent } from './layout/user-layout/user-layout.component';
@@ -33,10 +34,6 @@ export const routes: Routes = [
                 component: PreRegisterComponent
             },
             {
-                path: 'foro',
-                loadComponent: () => import('./features/foro/foro.component').then(m => m.ForoComponent)
-            },
-            {
                 path: 'biblia',
                 loadComponent: () => import('./features/ModuleBiblia/module-biblia.component').then(m => m.ModuleBibliaComponent)
             }
@@ -50,7 +47,11 @@ export const routes: Routes = [
             {
                 path: '',
                 loadComponent: () => import('./features/dashboard/dashboard.component')
-                  .then(m => m.DashboardComponent)
+                  .then(m => m.DashboardComponent),
+                canActivate: [roleGuard],
+                data: {
+                  roles: ['ADMIN', 'SEMI_ADMIN', 'LIDER_GRUPO', 'LIDER', 'CONTADORA']
+                }
             },
             {
                 path: 'event-registration',
@@ -98,6 +99,11 @@ export const routes: Routes = [
                   .then(m => m.EventsComponent)
             },
             {
+                path: 'visitantes',
+                loadComponent: () => import('./features/visitantes/visitantes.component')
+                  .then(m => m.VisitantesComponent)
+            },
+            {
                 path: 'foro',
                 loadComponent: () => import('./features/foro/foro.component')
                   .then(m => m.ForoComponent)
@@ -109,6 +115,30 @@ export const routes: Routes = [
                 canActivate: [adminGuard]
             },
             {
+                path: 'finanzas',
+                redirectTo: 'ministerio/exploradores-rey/finanzas',
+                pathMatch: 'full'
+            },
+            {
+                path: 'finanza',
+                redirectTo: 'ministerio/exploradores-rey/finanzas',
+                pathMatch: 'full'
+            },
+            {
+                path: 'ministerio/exploradores-rey/finanza',
+                redirectTo: 'ministerio/exploradores-rey/finanzas',
+                pathMatch: 'full'
+            },
+            {
+                path: 'ministerio/exploradores-rey/finanzas',
+                loadComponent: () => import('./features/finanzas/finanzas-dashboard.component')
+                  .then(m => m.FinanzasDashboardComponent),
+                canActivate: [roleGuard],
+                data: {
+                  roles: ['ADMIN', 'SEMI_ADMIN', 'CONTADORA', 'LIDER_GRUPO']
+                }
+            },
+            {
                 path: 'crear-evento',
                 loadComponent: () => import('./features/events/events.component')
                   .then(m => m.EventsComponent)
@@ -118,6 +148,16 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/user-service/user-service')
                   .then(m => m.UserServiceComponent)
             },
+                        {
+                                path: 'ministerio/adoresmos',
+                                redirectTo: 'ministerio/adoremos',
+                                pathMatch: 'full'
+                        },
+                        {
+                                path: 'ministerio/adoremos',
+                                loadComponent: () => import('./features/adoremos/adoremos.component')
+                                    .then(m => m.AdoremosComponent)
+                        },
             {
                 path: 'ministerio/:slug',
                 loadComponent: () => import('./features/en-desarrollo/en-desarrollo.component')
@@ -133,7 +173,7 @@ export const routes: Routes = [
             { path: '', loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent) },
             { path: 'profile', loadComponent: () => import('./pages/profile/profile.component').then(m => m.Profile) },
             { path: 'eventos', loadComponent: () => import('./features/events/events.component').then(m => m.EventsComponent) },
-            { path: 'foro', loadComponent: () => import('./features/foro/foro.component').then(m => m.ForoComponent) },
+            { path: 'visitantes', loadComponent: () => import('./features/visitantes/visitantes.component').then(m => m.VisitantesComponent) },
             { path: 'biblia', loadComponent: () => import('./features/ModuleBiblia/module-biblia.component').then(m => m.ModuleBibliaComponent) },
             { path: 'event-registration', loadComponent: () => import('./features/event-registration/event-registration.component').then(m => m.EventRegistrationComponent) },
         ]

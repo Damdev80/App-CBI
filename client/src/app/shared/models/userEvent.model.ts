@@ -48,6 +48,17 @@ export interface User {
   id: string;
   email: string;
   name?: string;
+  members?: Member[];
+}
+
+export interface Member {
+  id: string;
+  group?: Group;
+}
+
+export interface Group {
+  id: string;
+  name: string;
 }
 
 export type WayPay = 'EFECTIVO' | 'TRANSFERENCIA';

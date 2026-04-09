@@ -1,7 +1,7 @@
 <!-- ═══════════════════════════════════════════════
      CREAR EVENTO
      ═══════════════════════════════════════════════ -->
-<div class="w-full max-w-[860px] mx-auto px-4 sm:px-6 fade-up">
+<div class="w-full max-w-215 mx-auto px-4 sm:px-6 fade-up">
 
   <!-- Page header -->
   <div style="margin-bottom: 2rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--line);">
@@ -54,6 +54,47 @@
           <textarea id="ev-desc" class="field" formControlName="description"
                     placeholder="Descripción del evento, detalles, lugar…"
                     style="resize:vertical; min-height:100px;"></textarea>
+        </div>
+
+        <!-- Tipo -->
+        <div>
+          <label class="form-label" for="ev-type">Tipo <span style="color:var(--err);">*</span></label>
+          <select id="ev-type" class="field" formControlName="eventType">
+            @for (opt of eventTypeOptions; track opt.value) {
+              <option [value]="opt.value">{{ opt.label }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Costo por rango -->
+        <div class="card" style="padding:0.85rem 1rem; background:var(--surface-2); border:1px solid var(--line);">
+          <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.875rem; color:var(--ink); margin-bottom:0.75rem;">
+            <input type="checkbox" style="width:1rem; height:1rem;" formControlName="hasPrice" (change)="onHasPriceToggle()" />
+            Este ítem tiene costo
+          </label>
+
+          @if (form.get('hasPrice')?.value) {
+            <label class="form-label" for="ev-price-tier">Precio libre (COP)</label>
+            <input id="ev-price-tier" type="range" min="1" max="1000000" step="1000" [value]="currentPriceTier()" (input)="onPriceSliderInput($event)" style="width:100%; accent-color:var(--accent);" />
+            <div style="display:flex; justify-content:space-between; gap:0.5rem; margin-top:0.4rem; font-size:0.75rem; color:var(--ink-2);">
+              <span>Mínimo: $ 1</span>
+              <span>Máximo: $ 1.000.000</span>
+            </div>
+
+            <div style="margin-top:0.75rem;">
+              <label class="form-label" for="ev-price-input">Valor exacto</label>
+              <input id="ev-price-input" class="field" type="number" min="1" max="1000000" step="1" formControlName="priceTier" (blur)="onPriceInputBlur()" />
+              <p style="font-size:0.75rem; color:var(--ink-2); margin:0.35rem 0 0;">
+                Seleccionado: <strong>$ {{ formatCop(currentPriceTier()) }} COP</strong>
+              </p>
+            </div>
+
+            @if (form.get('priceTier')?.invalid && form.get('priceTier')?.touched) {
+              <p style="font-size:0.75rem; color:var(--err); margin-top:0.35rem;">Ingresa un valor entre 1 y 1.000.000 COP.</p>
+            }
+          } @else {
+            <p style="font-size:0.75rem; color:var(--ink-3); margin:0;">Se publicará como actividad gratuita.</p>
+          }
         </div>
 
         <!-- Fecha -->

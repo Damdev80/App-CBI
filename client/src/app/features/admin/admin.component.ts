@@ -1,7 +1,7 @@
 import { Component, inject, signal, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AdminService, AdminUser } from '@app/core/services/admin.service';
+import { AdminService, AdminUser, SystemRole } from '@app/core/services/admin.service';
 
 @Component({
   selector: 'app-admin',
@@ -26,7 +26,7 @@ import { AdminService, AdminUser } from '@app/core/services/admin.service';
 
       <!-- Stats -->
       @if (stats()) {
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
           <div class="card py-4 px-4">
             <p class="text-2xl font-bold text-ink m-0">{{ stats()!.total }}</p>
             <p class="text-xs text-ink-3 m-0">Usuarios totales</p>
@@ -42,6 +42,14 @@ import { AdminService, AdminUser } from '@app/core/services/admin.service';
           <div class="card py-4 px-4">
             <p class="text-2xl font-bold m-0" style="color: var(--accent);">{{ stats()!.admins }}</p>
             <p class="text-xs text-ink-3 m-0">Administradores</p>
+          </div>
+          <div class="card py-4 px-4">
+            <p class="text-2xl font-bold m-0" style="color: #5B6ABF;">{{ stats()!.semis }}</p>
+            <p class="text-xs text-ink-3 m-0">SemiAdmin</p>
+          </div>
+          <div class="card py-4 px-4">
+            <p class="text-2xl font-bold m-0" style="color: #0E7490;">{{ stats()!.accountants }}</p>
+            <p class="text-xs text-ink-3 m-0">Contadoras</p>
           </div>
         </div>
       }
@@ -78,6 +86,13 @@ import { AdminService, AdminUser } from '@app/core/services/admin.service';
                     </p>
                   </div>
                   <div class="flex flex-wrap items-center gap-2 shrink-0">
+                    <select class="field text-xs py-1 px-2 min-w-[130px]"
+                            [ngModel]="u.role"
+                            (ngModelChange)="setRole(u, $event)">
+                      @for (r of systemRoles; track r) {
+                        <option [value]="r">{{ r }}</option>
+                      }
+                    </select>
                     <button type="button" class="btn-outline text-sm py-1.5 px-2"
                             (click)="toggleActive(u)"
                             [disabled]="toggling() === u.id"
@@ -140,7 +155,15 @@ export class AdminComponent implements OnInit {
   private adminService = inject(AdminService);
 
   users = signal<AdminUser[]>([]);
-  stats = signal<{ total: number; active: number; inactive: number; admins: number } | null>(null);
+  stats = signal<{
+    total: number;
+    active: number;
+    inactive: number;
+    admins: number;
+    semis: number;
+    leaders: number;
+    accountants: number;
+  } | null>(null);
   searchTerm = signal('');
   loading = signal(true);
   resetting = signal<string | null>(null);
@@ -149,6 +172,16 @@ export class AdminComponent implements OnInit {
   success = signal('');
   customPasswordUser = signal<AdminUser | null>(null);
   customPassword = signal('');
+  changingRole = signal<string | null>(null);
+  systemRoles: SystemRole[] = [
+    'ADMIN',
+    'SEMI_ADMIN',
+    'LIDER_GRUPO',
+    'LIDER',
+    'CONTADORA',
+    'SERVIDOR',
+    'USER',
+  ];
 
   filteredUsers = computed(() => {
     const list = this.users();
@@ -252,9 +285,32 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  setRole(user: AdminUser, role: SystemRole) {
+    if (user.role === role) return;
+    this.changingRole.set(user.id);
+    this.error.set('');
+    this.success.set('');
+    this.adminService.setUserRole(user.id, role).subscribe({
+      next: (res) => {
+        this.success.set(res.message);
+        this.changingRole.set(null);
+        this.loadUsers();
+        this.loadStats();
+      },
+      error: (err) => {
+        this.error.set(err?.error?.message || 'No se pudo actualizar el rol.');
+        this.changingRole.set(null);
+      },
+    });
+  }
+
   getRoleColor(role: string): string {
     if (role === 'ADMIN') return 'var(--err)';
+    if (role === 'SEMI_ADMIN') return '#5B6ABF';
+    if (role === 'CONTADORA') return '#0E7490';
+    if (role === 'LIDER_GRUPO') return '#2563EB';
     if (role === 'LIDER') return 'var(--accent)';
+    if (role === 'SERVIDOR') return '#334155';
     return 'var(--ink-3)';
   }
 }

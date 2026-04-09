@@ -291,4 +291,9 @@ export class EventRegistrationListComponent implements OnInit {
   navigateToNewRegistration() {
     this.router.navigate(['/dashboard/event-registration']);
   }
+
+  getDepartmentName(registration: UsersEvent): string {
+    const firstMembership = registration.user?.members?.[0];
+    return firstMembership?.group?.name ?? 'Sin departamento';
+  }
 }

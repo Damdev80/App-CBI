@@ -40,6 +40,20 @@ export class PrivateLayoutComponent implements OnInit {
 
     canSee = (key: SidebarModuleKey): boolean => {
         if (this.userRole === 'ADMIN') return true;
+        if (this.userRole === 'SEMI_ADMIN') {
+            return key !== SIDEBAR_MODULES.admin;
+        }
+        if (this.userRole === 'CONTADORA') {
+            return new Set<SidebarModuleKey>([
+                SIDEBAR_MODULES.dashboard,
+                SIDEBAR_MODULES.deptExploradoresRey,
+                SIDEBAR_MODULES.finanzas,
+            ]).has(key);
+        }
+        if (this.userRole === 'LIDER_GRUPO') {
+            if (key === SIDEBAR_MODULES.admin) return false;
+            return this.visibleModules().has(key) || key === SIDEBAR_MODULES.foro;
+        }
         if (key === SIDEBAR_MODULES.admin) return false;
         return this.visibleModules().has(key);
     };
@@ -50,7 +64,8 @@ export class PrivateLayoutComponent implements OnInit {
         this.profileService.getProfileWithGroups().subscribe({
             next: (p) => {
                 const groups = p.groups || [];
-                if (groups.length === 0 && this.userRole !== 'ADMIN') {
+                const privilegedRoles = new Set(['ADMIN', 'SEMI_ADMIN', 'CONTADORA']);
+                if (groups.length === 0 && !privilegedRoles.has(this.userRole || '')) {
                     this.router.navigate(['/app']);
                     return;
                 }
@@ -59,7 +74,8 @@ export class PrivateLayoutComponent implements OnInit {
                 if (this.userRole === 'ADMIN') {
                     const allModules = new Set<SidebarModuleKey>([
                         SIDEBAR_MODULES.dashboard, SIDEBAR_MODULES.eventos, SIDEBAR_MODULES.usuarios,
-                        SIDEBAR_MODULES.admin, SIDEBAR_MODULES.foro, SIDEBAR_MODULES.servSocial,
+                        SIDEBAR_MODULES.admin, SIDEBAR_MODULES.visitantes, SIDEBAR_MODULES.servSocial,
+                        SIDEBAR_MODULES.finanzas, SIDEBAR_MODULES.foro,
                         SIDEBAR_MODULES.biblia,
                         SIDEBAR_MODULES.deptStaff, SIDEBAR_MODULES.deptVisionJuvenil, SIDEBAR_MODULES.deptAdoremos,
                         SIDEBAR_MODULES.deptEscuelaFormacion, SIDEBAR_MODULES.deptExploradoresRey,
@@ -69,9 +85,30 @@ export class PrivateLayoutComponent implements OnInit {
                         SIDEBAR_MODULES.deptEntrelazados, SIDEBAR_MODULES.deptProtocolo,
                     ]);
                     this.visibleModules.set(allModules);
+                } else if (this.userRole === 'SEMI_ADMIN') {
+                    const allNoAdmin = new Set<SidebarModuleKey>([
+                        SIDEBAR_MODULES.dashboard,
+                        SIDEBAR_MODULES.eventos,
+                        SIDEBAR_MODULES.visitantes,
+                        SIDEBAR_MODULES.usuarios,
+                        SIDEBAR_MODULES.servSocial,
+                        SIDEBAR_MODULES.deptExploradoresRey,
+                        SIDEBAR_MODULES.finanzas,
+                        SIDEBAR_MODULES.foro,
+                        SIDEBAR_MODULES.biblia,
+                    ]);
+                    this.visibleModules.set(allNoAdmin);
+                } else if (this.userRole === 'CONTADORA') {
+                    this.visibleModules.set(
+                        new Set<SidebarModuleKey>([
+                            SIDEBAR_MODULES.dashboard,
+                            SIDEBAR_MODULES.deptExploradoresRey,
+                            SIDEBAR_MODULES.finanzas,
+                        ]),
+                    );
                 }
             },
-            error: () => this.visibleModules.set(new Set([SIDEBAR_MODULES.dashboard, SIDEBAR_MODULES.eventos, SIDEBAR_MODULES.foro, SIDEBAR_MODULES.biblia])),
+            error: () => this.visibleModules.set(new Set([SIDEBAR_MODULES.dashboard, SIDEBAR_MODULES.eventos, SIDEBAR_MODULES.visitantes, SIDEBAR_MODULES.biblia])),
         });
 
         this.notificationService.notification$.subscribe((n) => {
@@ -95,6 +132,15 @@ export class PrivateLayoutComponent implements OnInit {
 
     toggleMobileMenu() {
         this.sidebarOpen.update((v) => !v);
+    }
+
+    onMenuToggle() {
+        const isMobile = window.matchMedia('(max-width: 1023px)').matches;
+        if (isMobile) {
+            this.toggleMobileMenu();
+            return;
+        }
+        this.toggleSidebarCollapsed();
     }
 
     toggleSidebarCollapsed() {

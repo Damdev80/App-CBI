@@ -14,6 +14,15 @@ export interface AdminUser {
   createdAt: string;
 }
 
+export type SystemRole =
+  | 'ADMIN'
+  | 'SEMI_ADMIN'
+  | 'LIDER_GRUPO'
+  | 'LIDER'
+  | 'CONTADORA'
+  | 'SERVIDOR'
+  | 'USER';
+
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private http = inject(HttpClient);
@@ -32,10 +41,21 @@ export class AdminService {
     active: number;
     inactive: number;
     admins: number;
+    semis: number;
+    leaders: number;
+    accountants: number;
   }> {
     return this.http.get(`${this.apiUrl}/stats`, {
       headers: this.getHeaders(),
-    }) as Observable<{ total: number; active: number; inactive: number; admins: number }>;
+    }) as Observable<{
+      total: number;
+      active: number;
+      inactive: number;
+      admins: number;
+      semis: number;
+      leaders: number;
+      accountants: number;
+    }>;
   }
 
   getUsers(): Observable<AdminUser[]> {
@@ -64,5 +84,13 @@ export class AdminService {
       { isActive },
       { headers: this.getHeaders() }
     ) as Observable<{ message: string; isActive: boolean }>;
+  }
+
+  setUserRole(userId: string, role: SystemRole): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(
+      `${this.apiUrl}/users/${userId}/set-role`,
+      { role },
+      { headers: this.getHeaders() },
+    );
   }
 }

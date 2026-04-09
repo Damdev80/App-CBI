@@ -14,7 +14,11 @@
     "start:prod": "node dist/main",
     "vercel-build": "prisma generate && nest build",
     "postinstall": "prisma generate",
+    "db:push": "prisma db push",
     "db:seed": "npx ts-node prisma/seed.ts",
+    "finance:import": "npx ts-node prisma/import-finanzas.ts",
+    "finance:sync": "npx ts-node prisma/import-finanzas-sync.ts",
+    "finance:sync:prune": "npx ts-node prisma/import-finanzas-sync.ts --prune-missing=true",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -32,9 +36,11 @@
     "bcrypt": "^6.0.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
+    "pdf-lib": "^1.17.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "tsconfig-paths": "^4.2.0",
+    "xlsx": "^0.18.5",
     "zod": "^4.0.17"
   },
   "devDependencies": {

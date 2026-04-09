@@ -8,7 +8,8 @@ import localeEs from '@angular/common/locales/es';
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { HttpClient, provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from '@app/core/interceptors/auth.interceptor';
 
 registerLocaleData(localeEs, 'es');
 
@@ -18,7 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideAnimationsAsync(),
     provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(withFetch()),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     { provide: LOCALE_ID, useValue: 'es' },
     provideClientHydration(withEventReplay()),
     providePrimeNG({

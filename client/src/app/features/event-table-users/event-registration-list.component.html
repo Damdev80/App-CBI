@@ -86,6 +86,7 @@
             <th>Email</th>
             <th>Teléfono</th>
             <th>Evento</th>
+            <th>Departamento</th>
             <th>Hermanos</th>
             <th>Abonado</th>
             <th>Estado de Pago</th>
@@ -98,6 +99,7 @@
             <td>{{ registration.email }}</td>
             <td>{{ registration.phone || 'N/A' }}</td>
             <td>{{ registration.event?.title || 'N/A' }}</td>
+            <td>{{ getDepartmentName(registration) }}</td>
             <td>
               <p-tag [value]="registration.hasSiblings ? 'Sí' : 'No'" 
                      [severity]="registration.hasSiblings ? 'info' : 'secondary'" />

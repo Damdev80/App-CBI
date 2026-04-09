@@ -7,7 +7,7 @@ import { ThemeToggleComponent } from '@app/shared/components/theme-toggle/theme-
 
 /**
  * Vista general para usuarios que no pertenecen a ningún ministerio/grupo.
- * Sidebar simplificado: Inicio, Perfil, Eventos, Foro, Estudio Bíblico.
+ * Sidebar simplificado: Inicio, Perfil, Eventos, Visitantes, Estudio Bíblico.
  */
 @Component({
   selector: 'app-user-layout',

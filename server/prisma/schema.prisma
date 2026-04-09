@@ -46,7 +46,23 @@ enum Pay {
 enum Role {
   USER
   LIDER
+  LIDER_GRUPO
+  SEMI_ADMIN
+  CONTADORA
+  SERVIDOR
   ADMIN
+}
+
+enum GroupRole {
+  LIDER_CABEZA
+  LIDER
+  MIEMBRO
+}
+
+enum EventType {
+  EVENTO
+  ACTIVIDAD
+  REUNION
 }
 
 
@@ -109,6 +125,7 @@ model Members {
   groupId        String
   group          Groups         @relation(fields: [groupId], references: [id])
   levelDicipules LevelDicipules
+  groupRole      GroupRole      @default(MIEMBRO)
   joinedAt       DateTime       @default(now())
 
   @@unique([userId, groupId]) // un usuario solo puede estar una vez en un grupo
@@ -138,6 +155,9 @@ model Event {
   id          String        @id @default(uuid())
   title       String
   description String?
+  eventType   EventType     @default(EVENTO)
+  hasPrice    Boolean       @default(false)
+  priceTier   Int           @default(0)
   eventDate   DateTime
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt

@@ -18,7 +18,7 @@
          style="transition: width 0.25s ease, transform 0.25s ease;">
 
     <!-- Logo / Toggle -->
-    <div class="flex items-center justify-between border-b border-line h-[60px] px-2 shrink-0"
+    <div class="flex items-center border-b border-line h-15 px-2 shrink-0"
          [class.px-4]="!sidebarCollapsed()">
       <div class="flex items-center gap-2.5 min-w-0">
         <img src="img/cbiLogo.svg" alt="CBI" class="shrink-0" style="width: 28px; height: 28px;" />
@@ -28,20 +28,12 @@
           </span>
         }
       </div>
-      <button class="btn-ghost hidden lg:flex shrink-0" style="padding: 0.25rem;" (click)="toggleSidebarCollapsed()"
-              [attr.aria-label]="sidebarCollapsed() ? 'Expandir menú' : 'Colapsar menú'">
-        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-             [class.rotate-180]="sidebarCollapsed()"
-             style="transition: transform 0.2s;">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
-        </svg>
-      </button>
     </div>
 
     <!-- Nav items -->
     <nav class="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-0" style="padding: 0.75rem 0;">
 
-      <!-- Arriba: Dashboard, Eventos, Foro, Estudio Bíblico -->
+      <!-- Arriba: Dashboard, Eventos, Visitantes, Estudio Bíblico -->
       @if (canSee('dashboard')) {
         <button class="sidebar-btn shrink-0" [class.collapsed]="sidebarCollapsed()"
                 (click)="navegateTo('/dashboard'); sidebarOpen.set(false)">
@@ -62,14 +54,14 @@
           @if (!sidebarCollapsed()) { <span>Eventos</span> }
         </button>
       }
-      @if (canSee('foro')) {
+      @if (canSee('visitantes')) {
         <button class="sidebar-btn shrink-0" [class.collapsed]="sidebarCollapsed()"
-                (click)="navegateTo('/dashboard/foro'); sidebarOpen.set(false)">
+                (click)="navegateTo('/dashboard/visitantes'); sidebarOpen.set(false)">
           <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="shrink-0">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857M15 7a3 3 0 11-6 0 3 3 0 016 0"/>
           </svg>
-          @if (!sidebarCollapsed()) { <span>Foro</span> }
+          @if (!sidebarCollapsed()) { <span>Visitantes</span> }
         </button>
       }
       @if (canSee('biblia')) {
@@ -81,6 +73,40 @@
           </svg>
           @if (!sidebarCollapsed()) { <span>Estudio Bíblico</span> }
         </button>
+      }
+
+      @if (canSee('dept-exploradores-rey')) {
+        <details class="shrink-0 mt-1">
+          <summary class="sidebar-btn" [class.collapsed]="sidebarCollapsed()" style="list-style:none; border-radius:6px; cursor:pointer;">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="shrink-0">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                    [attr.d]="deptIcons['exploradores-rey']"/>
+            </svg>
+            @if (!sidebarCollapsed()) { <span>Exploradores del Rey</span> }
+          </summary>
+          @if (!sidebarCollapsed()) {
+            <div class="flex flex-col gap-0" style="padding-left: 1.25rem;">
+              <button class="sidebar-btn shrink-0" style="font-size:0.8125rem;"
+                      (click)="navegateTo('/dashboard/profesores'); sidebarOpen.set(false)">
+                Profesores
+              </button>
+              <button class="sidebar-btn shrink-0" style="font-size:0.8125rem;"
+                      (click)="navegateTo('/dashboard/asistencia'); sidebarOpen.set(false)">
+                Asistencia dominical
+              </button>
+              <button class="sidebar-btn shrink-0" style="font-size:0.8125rem;"
+                      (click)="navegateTo('/dashboard/ministerio/exploradores-rey'); sidebarOpen.set(false)">
+                Alumnos
+              </button>
+              @if (canSee('finanzas')) {
+                <button class="sidebar-btn shrink-0" style="font-size:0.8125rem;"
+                        (click)="navegateTo('/dashboard/ministerio/exploradores-rey/finanzas'); sidebarOpen.set(false)">
+                  Finanzas Exploradores del Rey
+                </button>
+              }
+            </div>
+          }
+        </details>
       }
 
       <!-- Ministerios / Departamentos (resto, sin Exploradores del Rey) -->
@@ -113,6 +139,17 @@
                   d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
           </svg>
           @if (!sidebarCollapsed()) { <span>Usuarios</span> }
+        </button>
+      }
+
+      @if (canSee('foro')) {
+        <button class="sidebar-btn shrink-0" [class.collapsed]="sidebarCollapsed()"
+                (click)="navegateTo('/dashboard/foro'); sidebarOpen.set(false)">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="shrink-0">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+          @if (!sidebarCollapsed()) { <span>Foro</span> }
         </button>
       }
 
@@ -152,32 +189,6 @@
         </details>
       }
 
-      <!-- Spacer para empujar Exploradores al final -->
-      <div class="flex-1 min-h-4" aria-hidden="true"></div>
-
-      <!-- Ministerio Exploradores del Rey (abajo, solo para ese grupo) -->
-      @if (canSee('dept-exploradores-rey')) {
-        <details class="shrink-0 border-t border-line pt-2 mt-2" style="padding: 0 0.5rem;">
-          <summary class="sidebar-btn" [class.collapsed]="sidebarCollapsed()" style="list-style:none; border-radius:6px; cursor:pointer;">
-            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="shrink-0">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                    [attr.d]="deptIcons['exploradores-rey']"/>
-            </svg>
-            @if (!sidebarCollapsed()) { <span>Exploradores del Rey</span> }
-          </summary>
-          @if (!sidebarCollapsed()) {
-            <div class="flex flex-col gap-0" style="padding-left: 1.25rem;">
-              <button class="sidebar-btn shrink-0" style="font-size:0.8125rem;"
-                      (click)="navegateTo('/dashboard/profesores'); sidebarOpen.set(false)">Profesores</button>
-              <button class="sidebar-btn shrink-0" style="font-size:0.8125rem;"
-                      (click)="navegateTo('/dashboard/asistencia'); sidebarOpen.set(false)">Asistencia dominical</button>
-              <button class="sidebar-btn shrink-0" style="font-size:0.8125rem;"
-                      (click)="navegateTo('/dashboard/ministerio/exploradores-rey'); sidebarOpen.set(false)">Alumnos</button>
-            </div>
-          }
-        </details>
-      }
-
     </nav>
 
     <!-- Logout -->
@@ -197,11 +208,11 @@
   <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
 
     <!-- Header -->
-    <header class="bg-surface border-b border-line flex items-center justify-between flex-shrink-0 h-[60px] px-4 sm:px-5 lg:px-6">
+    <header class="bg-surface border-b border-line flex items-center justify-between shrink-0 h-[60px] px-4 sm:px-5 lg:px-6">
 
       <!-- Hamburger (móvil) — único control: 1 clic abre menú expandido -->
-      <button class="btn-ghost lg:hidden flex items-center justify-center" style="padding: 0.375rem;"
-              (click)="toggleMobileMenu()" aria-label="Menú">
+      <button class="btn-ghost flex items-center justify-center" style="padding: 0.375rem;"
+              (click)="onMenuToggle()" aria-label="Menú">
         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
@@ -252,7 +263,7 @@
 
     <!-- Notificación -->
     @if (notification()) {
-      <div class="px-4 sm:px-5 lg:px-6 pt-2.5 flex-shrink-0">
+      <div class="px-4 sm:px-5 lg:px-6 pt-2.5 shrink-0">
         <div [class]="'alert ' + (
           notification()!.type === 'success' ? 'alert-ok' :
           notification()!.type === 'error'   ? 'alert-err' :

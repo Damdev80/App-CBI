@@ -50,7 +50,7 @@
       />
 
       <app-stat-card
-        *ngIf="role() === 'ADMIN' || role() === 'LIDER'"
+        *ngIf="role() === 'ADMIN' || role() === 'SEMI_ADMIN' || role() === 'LIDER_GRUPO' || role() === 'LIDER'"
         [title]="'Hermanas'"
         [value]="totalWomenRegistered()"
         [description]="'Mujeres registradas'"
@@ -59,7 +59,7 @@
       />
 
       <app-stat-card
-        *ngIf="role() === 'ADMIN' || (role() === 'LIDER' && groupIds().includes('1a6def74-d335-4c66-892d-ee02cd5cb96c'))"
+        *ngIf="role() === 'ADMIN' || role() === 'SEMI_ADMIN' || role() === 'CONTADORA' || role() === 'LIDER_GRUPO'"
         [title]="'Sin Pagar'"
         [value]="totalcountUnpaid()"
         [description]="'Pendientes de pago'"
@@ -141,7 +141,7 @@
         </div>
 
         <!-- Mujeres progress -->
-        <div style="margin-bottom: 1.25rem;" *ngIf="role() === 'ADMIN' || role() === 'LIDER'">
+        <div style="margin-bottom: 1.25rem;" *ngIf="role() === 'ADMIN' || role() === 'SEMI_ADMIN' || role() === 'LIDER_GRUPO' || role() === 'LIDER'">
           <div style="display: flex; justify-content: space-between; margin-bottom: 0.375rem;">
             <span style="font-size: 0.875rem; color: var(--ink-2);">Hermanas en congregación</span>
             <span style="font-size: 0.875rem; font-weight: 600; color: var(--warn);">

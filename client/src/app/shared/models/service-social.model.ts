@@ -66,5 +66,23 @@ export interface MoneyCollection {
   studentId: string;
   student?: UserServiceSocial;
   notes?: string | null;
+  invoice?: MoneyCollectionInvoiceMeta | null;
   createdAt: string;
+}
+
+export interface MoneyCollectionInvoiceMeta {
+  invoiceUrl: string;
+  invoiceNumber: string;
+  invoiceFileName: string;
+}
+
+export interface StudentDebtStatus {
+  studentId: string;
+  name: string;
+  number?: string | null;
+  group?: { id: string; name: string } | null;
+  expectedAmount: number;
+  totalPaid: number;
+  debt: number;
+  status: 'PAGO' | 'DEBE';
 }

@@ -236,8 +236,13 @@ export class AttendanceComponent implements OnInit {
         notes: this.newCollectionNotes || undefined,
       })
       .subscribe({
-        next: () => {
+        next: (created) => {
           this.success.set('Recolección registrada.');
+
+          if (created?.id) {
+            this.downloadInvoiceForCollection(created.id, created.invoice?.invoiceFileName);
+          }
+
           this.showMoneyModal.set(false);
           this.loadData();
           this.saving.set(false);
@@ -247,6 +252,24 @@ export class AttendanceComponent implements OnInit {
           this.error.set('No se pudo registrar la recolección.');
         },
       });
+  }
+
+  private downloadInvoiceForCollection(collectionId: string, fileName?: string) {
+    this.moneyCollectionService.downloadInvoice(collectionId).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = fileName || `factura-${collectionId}.pdf`;
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+        window.URL.revokeObjectURL(url);
+      },
+      error: () => {
+        this.error.set('Pago registrado, pero no se pudo descargar la factura.');
+      },
+    });
   }
 
   formatCurrency(n: number): string {

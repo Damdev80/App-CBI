@@ -53,6 +53,9 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.17
         version: 4.1.18
+      '@tonaljs/tonal':
+        specifier: ^4.10.0
+        version: 4.10.0
       echarts:
         specifier: ^6.0.0
         version: 6.0.0
@@ -150,6 +153,9 @@ importers:
       passport-jwt:
         specifier: ^4.0.1
         version: 4.0.1
+      pdf-lib:
+        specifier: ^1.17.1
+        version: 1.17.1
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -159,6 +165,9 @@ importers:
       tsconfig-paths:
         specifier: ^4.2.0
         version: 4.2.0
+      xlsx:
+        specifier: ^0.18.5
+        version: 0.18.5
       zod:
         specifier: ^4.0.17
         version: 4.3.5
@@ -1787,6 +1796,12 @@ packages:
     resolution: {integrity: sha512-WYa2tUVV5HiArWPB3ydlOc4R2ivq0IDrlqhMi3l7mVsFEXNcTfxYFPIHXHXIh/ca/y/V5N4E1zecyxdIBjYnkQ==}
     engines: {node: '>= 10.0.0'}
 
+  '@pdf-lib/standard-fonts@1.0.0':
+    resolution: {integrity: sha512-hU30BK9IUN/su0Mn9VdlVKsWBS6GyhVfqjwl1FjZN4TxP6cCw0jP2w7V3Hf5uX7M0AZJ16vey9yE0ny7Sa59ZA==}
+
+  '@pdf-lib/upng@1.0.1':
+    resolution: {integrity: sha512-dQK2FUMQtowVP00mtIksrlZhdFXQZPC+taih1q4CvPZ5vqdxR/LKBaFg0oAfzd1GlHZXXSPdQfzQnt+ViGvEIQ==}
+
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
@@ -2221,6 +2236,102 @@ packages:
   '@tokenizer/token@0.3.0':
     resolution: {integrity: sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==}
 
+  '@tonaljs/abc-notation@4.9.1':
+    resolution: {integrity: sha512-2fDUdPsFDdgZgyIiZCTYGKy30QiwIQxSXCSN2thGrSMXbQKCp8iTC8haStYcrA+25MPWhWlmvC/pz3tGcTNAqQ==}
+
+  '@tonaljs/array@4.8.4':
+    resolution: {integrity: sha512-97HVdpZy82PqNBDMM9PRSbO2DUrnxNg3++N4xqLpfby70fKHAHhTWrMXWZK+Dzs76HDPQLd+qhd4cq28eBZzjw==}
+
+  '@tonaljs/chord-detect@4.9.1':
+    resolution: {integrity: sha512-rV/9+R7aZ9cQorQ3jdNMMMh63onosglYZM71Q0n7KKcWMAGrxF66MzxBG82xy+w1QDMJQslB3iHfDHUiS6wRjA==}
+
+  '@tonaljs/chord-type@4.8.2':
+    resolution: {integrity: sha512-GzSTjQmZjkUdPhyesFDeJbxpW8R7L/bAE34E8ApGAh9FMcKYpRdX3Tn+gkluRsXOiRMfW07p3E0Adx4bjtyN+Q==}
+
+  '@tonaljs/chord-type@5.1.1':
+    resolution: {integrity: sha512-ti4WzRYvvjH7to0G3zlJFq7WsjHqmcqbk8Jv98aZSR5YumLdY/ua2yOPPyoPq82n6vfgjZsacnAZ3v8/SodOcw==}
+
+  '@tonaljs/chord@4.10.2':
+    resolution: {integrity: sha512-Zlqtq6c6T4y+EqvwHRQp9icEjHqyniCpnIwwCFg5amgAQwXmWzarouOOSmcdJ1Is92eEvcPVuCoLiVUtajS30A==}
+
+  '@tonaljs/chord@6.1.2':
+    resolution: {integrity: sha512-39crsPVyBJxdGJ1DGl+4diM+6+mZ/ws6crkQMlqX4zTYHMUVfJOQrko4mPF1CD89AFhHJe1zCT9Js+nNp3Gffg==}
+
+  '@tonaljs/collection@4.9.0':
+    resolution: {integrity: sha512-Mk0h7O54nT6PgNVcUYauzxa5KOB23+0AOKudWzRH7JhJIN9vhVIC7PtwZXE+/G051UTbHSFIcN/afkgF4nB/8A==}
+
+  '@tonaljs/core@4.10.4':
+    resolution: {integrity: sha512-PhGlQ2Js6rFQ6CufkSiBpEJoPS8QIIhbXSXhT4U+5ffqckli+YBZRN24vjZ4AEKuX8xoYDmCCbl+r6agauvzmw==}
+
+  '@tonaljs/duration-value@4.9.0':
+    resolution: {integrity: sha512-Muz54HyIe0nMYKWx6wyTa4y17ma29DtpJF4/oqJphy6A124rAVDe/SKit8JGOvDYAQj71FUXqs17sXBxO/ExVw==}
+
+  '@tonaljs/interval@4.8.2':
+    resolution: {integrity: sha512-9SEuJuqFdmu9lnvMmJtxbReQcQvZ1YHXhCcxaF6Re23/w+BqiJvvkvNZhfWH+n1+g0uaSdTsuvMfamp7hAvPMw==}
+
+  '@tonaljs/interval@5.1.0':
+    resolution: {integrity: sha512-GR9dUjn0j7yhjwjRh8HQxZYXOiVl05WfY3AFyMB9rfg807K4dSJmWfPTULPQXyHJ6NiZOPXcwRs8MxMLDxgdbg==}
+
+  '@tonaljs/key@4.11.2':
+    resolution: {integrity: sha512-fc1y5+NwS4S3amirzYLLB324PxJDO00oIBbLJclAddc46UBeYnu4FNz+1nZboHCXRQ/06/ftuaWD/l7HrAoulw==}
+
+  '@tonaljs/midi@4.10.2':
+    resolution: {integrity: sha512-MPamXhEwPL7L1udLfYMm3Ft8mLYtHr62Zi2w5zYHM2P7YwIvNoiX0+dvAN5is1Wvq4iVRa8AjFHerjOW/SZhGg==}
+
+  '@tonaljs/mode@4.9.2':
+    resolution: {integrity: sha512-Il48fWX9SnGMzwNFVbizkWkr/SJ+aCIIHhjWfSf1agrQAoq81536qBXEyEyvia6aqEXC4OaXAQ5rSoBcmQRj1Q==}
+
+  '@tonaljs/note@4.12.1':
+    resolution: {integrity: sha512-yh6cnhu21bUb0VuIQWxObSbWBVp2cHIkJj4zZ4qsNOW4jSqn74+wHpSbOTDF8q+2hl6upz7TtBRavtqwPtLUCQ==}
+
+  '@tonaljs/pcset@4.10.1':
+    resolution: {integrity: sha512-CZG1rpKc38yMfpEJsbDTvsTmQqsek9xxcuMgK64Tr6sP1lEiDuZJbQeKVWWRnreBF2FQ1cEGLmfOpvSO+40csA==}
+
+  '@tonaljs/pitch-distance@5.0.2':
+    resolution: {integrity: sha512-DPxfGJCf4BvfIVRxl2v142tuCKIziM6PomOBT0/s7U5o+Z5qFAIW0tNx/MKyL83guV74p+XIf5VI0w1flmXxDA==}
+
+  '@tonaljs/pitch-distance@5.0.5':
+    resolution: {integrity: sha512-dTfjsU0zyrj5YmiFio5prPaD5w7sBmHp4nnmlEg70nHY+SerAH0KiO9HM9usttVgRFUaXl0Gc7OI8YMGfSFmug==}
+
+  '@tonaljs/pitch-interval@5.0.2':
+    resolution: {integrity: sha512-bQmxeenRFNuuABs9mDc+bSUp3ySGw8I49pHMoGDdCcro9n3MDN8IsSwhvKoGOYErFMx76rNn1t+7WL8ukpvX5w==}
+
+  '@tonaljs/pitch-interval@6.1.0':
+    resolution: {integrity: sha512-9ZMxA7V4UgySnOKPIG6HECzhDb8mbiTCIdNNIzCIfz5XpjUmohku2YZpVVWMacLHgyeQicJzNoRiPel5oSAn4A==}
+
+  '@tonaljs/pitch-note@5.0.3':
+    resolution: {integrity: sha512-JsPgqPa8VZdZtfwvgoHJz996BZqzvlnRxUF6c/Q9q8E0iq30UHBEid0Y6XldK+h6tuIENsG3a9jyvNNxRqIeYw==}
+
+  '@tonaljs/pitch-note@6.1.0':
+    resolution: {integrity: sha512-A4OSLo8DjM38u73862LnDmL4YInDDRBmg0fojXcvu4cyU3oOlqndyeHOra1OVoH/WW46uNIxNs1wJDZNPWL5KQ==}
+
+  '@tonaljs/pitch@5.0.1':
+    resolution: {integrity: sha512-5HYkF4hGY0jS2y5V3Hf5gNFXX46kT4cAcI7JLEn+qQb9N1dU9Gz9koI9di0mD1Tbam+kviceiCsJl4WX/FqYjA==}
+
+  '@tonaljs/pitch@5.0.2':
+    resolution: {integrity: sha512-mxaXJPPe+LIJdjzpZEl8I8Wx3dEvlzkBbsr2Ltwc2dTAdnErAZ5R0TxVq2egF27lMvQN2QPQPWI9iDPPdVUmrg==}
+
+  '@tonaljs/progression@4.9.2':
+    resolution: {integrity: sha512-1Pmau5tKoWmY2H/fp9WVJ5Qm4c+xlu7IEZb3R3uLbc26kJq97DbuSnfArIAQoZTum2V6lOEN/Dt34E9OrGKnoA==}
+
+  '@tonaljs/range@4.9.2':
+    resolution: {integrity: sha512-XhFbCJCrEEIVz3MNmdVp9QUyiJA6eqnNnQeNqto8AuT5BYuffHDoMkBmvvjPuV5Lh8zfF9D0aqglvqPbZ+neKQ==}
+
+  '@tonaljs/roman-numeral@4.9.1':
+    resolution: {integrity: sha512-dJGKBNHdPrNTE97ZDk4t6wpNmgYcpHyLkAvWkRP9I/HsDkeTFFQqNXosYIvspPWrFySlRpeqqFwcqV74MYoOag==}
+
+  '@tonaljs/scale-type@4.9.2':
+    resolution: {integrity: sha512-XDRPySg0X6owJ6AVzVRpS4ZpgleAUQakuq5VtfQ0JitnJKGRYo5Y0w7Fl/wEz/X9aEMk2lxcdF8VGGMIsQFo0g==}
+
+  '@tonaljs/scale@4.13.4':
+    resolution: {integrity: sha512-hyilnmsCmoGQiRhYWKM1QPrqaNH3KGEfrSfxeXcicPnEh12yvrVRm4djKmTVw7Rc/5P4GniPAA51+CS0C5dbLw==}
+
+  '@tonaljs/time-signature@4.9.0':
+    resolution: {integrity: sha512-zRo8CBqg/2guzTlF2vxyVIuB5gmwWQaxlknJPUSDII8CTdQ/x3a1LlNoMKkvTUnqwCihe3WrNPZ5XUfOOTthYA==}
+
+  '@tonaljs/tonal@4.10.0':
+    resolution: {integrity: sha512-F2T9Fiy+j0MVped89kCrX1XF68mQOLUnny4pDOHrIf+OkrjtLQOzzaSOrX1tx0o72WUwQm1knz6D1d57b9X1HA==}
+
   '@ts-morph/common@0.11.1':
     resolution: {integrity: sha512-7hWZS0NRpEsNV8vWJzg7FEz6V8MaLNeJOmwmghqUXTpzk16V1LLZhdo+4QvE/+zv4cVci0OviuJFnqhEfoV3+g==}
 
@@ -2580,6 +2691,10 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
+  adler-32@1.3.1:
+    resolution: {integrity: sha512-ynZ4w/nUUv5rrsR8UUGoe1VC9hZj6V5hU9Qw1HlMDJGEJw5S7TfTErWTjMys6M7vr0YWcPqs3qAr4ss0nDfP+A==}
+    engines: {node: '>=0.8'}
+
   agent-base@7.1.4:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
@@ -2875,6 +2990,10 @@ packages:
   caniuse-lite@1.0.30001764:
     resolution: {integrity: sha512-9JGuzl2M+vPL+pz70gtMF9sHdMFbY9FJaQBi186cHKH3pSzDvzoUJUPV6fqiKIMyXbud9ZLg4F3Yza1vJ1+93g==}
 
+  cfb@1.2.2:
+    resolution: {integrity: sha512-KfdUZsSOw19/ObEWasvBP/Ac4reZvAGauZhs6S/gqNhXhI7cKwvlH7ulj+dOEYnca4bm4SGo8C1bTAQvnTjgQA==}
+    engines: {node: '>=0.8'}
+
   chalk@4.1.2:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
     engines: {node: '>=10'}
@@ -2968,6 +3087,10 @@ packages:
 
   code-block-writer@10.1.1:
     resolution: {integrity: sha512-67ueh2IRGst/51p0n6FvPrnRjAGHY5F8xdjkgrYE7DDzpJe6qA07RYQ9VcoUeo5ATOjSOiWpSL3SWBRRbempMw==}
+
+  codepage@1.15.0:
+    resolution: {integrity: sha512-3g6NUTPd/YtuuGrhMnOMRjFc+LJw/bnMp3+0r/Wcz3IXUuCosKRJvMphm5+Q+bvTVGcJJuRvVLuYba+WojaFaA==}
+    engines: {node: '>=0.8'}
 
   collect-v8-coverage@1.0.3:
     resolution: {integrity: sha512-1L5aqIkwPfiodaMgQunkF1zRhNqifHBmtbbbxcr6yVxxBnliw4TDOW6NxpO8DJLgJ16OT+Y4ztZqP6p/FtXnAw==}
@@ -3074,6 +3197,11 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  crc-32@1.2.2:
+    resolution: {integrity: sha512-ROmzCKrTnOwybPcJApAA6WBWij23HVfGVNKqqrZpuyZOHqK2CwHSvpGuyt/UNNvaIjEd8X5IFGp4Mh+Ie1IHJQ==}
+    engines: {node: '>=0.8'}
+    hasBin: true
 
   create-jest@29.7.0:
     resolution: {integrity: sha512-Adz2bdH0Vq3F53KEMJOoftQFutWCukm6J24wbPWRO4k1kMY7gS7ds/uoJkNuV8wDCtWWnuwGcJwpWcih+zEW1Q==}
@@ -3636,6 +3764,10 @@ packages:
   forwarded@0.2.0:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
     engines: {node: '>= 0.6'}
+
+  frac@1.1.2:
+    resolution: {integrity: sha512-w/XBfkibaTl3YDqASwfDUqkna4Z2p9cFSr1aHDt0WoMTECnRfBOv2WArlZILlqgWlmdIlALXGpM2AOhEk5W3IA==}
+    engines: {node: '>=0.8'}
 
   fresh@2.0.0:
     resolution: {integrity: sha512-Rx/WycZ60HOaqLKAi6cHRKKI7zxWbJ31MhntmtwMoaTeF7XFH9hhBp8vITaMidfljRQ6eYWCKkaTK+ykVJHP2A==}
@@ -4801,6 +4933,9 @@ packages:
     engines: {node: ^20.17.0 || >=22.9.0}
     hasBin: true
 
+  pako@1.0.11:
+    resolution: {integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==}
+
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
     engines: {node: '>=6'}
@@ -4881,6 +5016,9 @@ packages:
 
   pause@0.0.1:
     resolution: {integrity: sha512-KG8UEiEVkR3wGEb4m5yZkVCzigAD+cVEJck2CzYZO37ZGJfctvVptVO192MwrtPhzONn6go8ylnOdMhKqi4nfg==}
+
+  pdf-lib@1.17.1:
+    resolution: {integrity: sha512-V/mpyJAoTsN4cnP31vc0wfNA1+p20evqqnap0KLoRUN0Yk/p3wN52DOEsL4oBFcLdb76hlpKPtzJIgo67j/XLw==}
 
   pend@1.2.0:
     resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
@@ -5402,6 +5540,10 @@ packages:
   sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
 
+  ssf@0.11.2:
+    resolution: {integrity: sha512-+idbmIXoYET47hH+d7dfm2epdOMUDjqcB4648sTZ+t2JwoyBFL/insLfB/racrDmsKB3diwsDA696pZMieAC5g==}
+    engines: {node: '>=0.8'}
+
   ssri@12.0.0:
     resolution: {integrity: sha512-S7iGNosepx9RadX82oimUkvr0Ct7IjJbEbs4mJcTxst8um95J3sDYU1RBEOvdu6oL1Wek2ODI5i4MAw+dZ6cAQ==}
     engines: {node: ^18.17.0 || >=20.5.0}
@@ -5682,6 +5824,9 @@ packages:
     resolution: {integrity: sha512-NoZ4roiN7LnbKn9QqE1amc9DJfzvZXxF4xDavcOWt1BPkdx+m+0gJuPM+S0vCe7zTJMYUP0R8pO2XMr+Y8oLIg==}
     engines: {node: '>=6'}
 
+  tslib@1.14.1:
+    resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
+
   tslib@2.3.0:
     resolution: {integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==}
 
@@ -5916,9 +6061,17 @@ packages:
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
+  wmf@1.0.2:
+    resolution: {integrity: sha512-/p9K7bEh0Dj6WbXg4JG0xvLQmIadrner1bi45VMJTfnbVHsc7yIajZyoSoK60/dtVBs12Fm6WkUI5/3WAVsNMw==}
+    engines: {node: '>=0.8'}
+
   word-wrap@1.2.5:
     resolution: {integrity: sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==}
     engines: {node: '>=0.10.0'}
+
+  word@0.3.0:
+    resolution: {integrity: sha512-OELeY0Q61OXpdUfTp+oweA/vtLVg5VDOXh+3he3PNzLGG/y0oylSOC1xRVj0+l4vQ3tj/bB1HVHv1ocXkQceFA==}
+    engines: {node: '>=0.8'}
 
   wordwrap@1.0.0:
     resolution: {integrity: sha512-gvVzJFlPycKc5dZN4yPkP8w7Dc37BtP1yczEneOb4uq34pXZcvrtRTmWV8W+Ume+XCxKgbjM+nevkyFPMybd4Q==}
@@ -5961,6 +6114,11 @@ packages:
   xhr2@0.2.1:
     resolution: {integrity: sha512-sID0rrVCqkVNUn8t6xuv9+6FViXjUVXq8H5rWOH2rz9fDNQEd4g0EA2XlcEdJXRz5BMEn4O1pJFdT+z4YHhoWw==}
     engines: {node: '>= 6'}
+
+  xlsx@0.18.5:
+    resolution: {integrity: sha512-dmg3LCjBPHZnQp5/F/+nnTa+miPJxUXB6vtk42YjBBKayDNagxGEeIdWApkYPOf3Z3pm3k62Knjzp7lMeTEtFQ==}
+    engines: {node: '>=0.8'}
+    hasBin: true
 
   xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
@@ -7727,6 +7885,14 @@ snapshots:
       '@parcel/watcher-win32-x64': 2.5.4
     optional: true
 
+  '@pdf-lib/standard-fonts@1.0.0':
+    dependencies:
+      pako: 1.0.11
+
+  '@pdf-lib/upng@1.0.1':
+    dependencies:
+      pako: 1.0.11
+
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
@@ -8120,6 +8286,197 @@ snapshots:
       - supports-color
 
   '@tokenizer/token@0.3.0': {}
+
+  '@tonaljs/abc-notation@4.9.1':
+    dependencies:
+      '@tonaljs/pitch-distance': 5.0.5
+      '@tonaljs/pitch-note': 6.1.0
+
+  '@tonaljs/array@4.8.4':
+    dependencies:
+      '@tonaljs/pitch-note': 6.1.0
+
+  '@tonaljs/chord-detect@4.9.1':
+    dependencies:
+      '@tonaljs/chord-type': 5.1.1
+      '@tonaljs/pcset': 4.10.1
+      '@tonaljs/pitch-note': 6.1.0
+
+  '@tonaljs/chord-type@4.8.2':
+    dependencies:
+      '@tonaljs/core': 4.10.4
+      '@tonaljs/pcset': 4.10.1
+
+  '@tonaljs/chord-type@5.1.1':
+    dependencies:
+      '@tonaljs/pcset': 4.10.1
+
+  '@tonaljs/chord@4.10.2':
+    dependencies:
+      '@tonaljs/chord-detect': 4.9.1
+      '@tonaljs/chord-type': 4.8.2
+      '@tonaljs/collection': 4.9.0
+      '@tonaljs/core': 4.10.4
+      '@tonaljs/pcset': 4.10.1
+      '@tonaljs/scale-type': 4.9.2
+
+  '@tonaljs/chord@6.1.2':
+    dependencies:
+      '@tonaljs/chord-detect': 4.9.1
+      '@tonaljs/chord-type': 5.1.1
+      '@tonaljs/collection': 4.9.0
+      '@tonaljs/interval': 5.1.0
+      '@tonaljs/pcset': 4.10.1
+      '@tonaljs/pitch-distance': 5.0.5
+      '@tonaljs/pitch-note': 6.1.0
+      '@tonaljs/scale-type': 4.9.2
+
+  '@tonaljs/collection@4.9.0': {}
+
+  '@tonaljs/core@4.10.4':
+    dependencies:
+      '@tonaljs/pitch': 5.0.1
+      '@tonaljs/pitch-distance': 5.0.2
+      '@tonaljs/pitch-interval': 5.0.2
+      '@tonaljs/pitch-note': 5.0.3
+
+  '@tonaljs/duration-value@4.9.0': {}
+
+  '@tonaljs/interval@4.8.2':
+    dependencies:
+      '@tonaljs/pitch': 5.0.2
+      '@tonaljs/pitch-distance': 5.0.5
+      '@tonaljs/pitch-interval': 5.0.2
+
+  '@tonaljs/interval@5.1.0':
+    dependencies:
+      '@tonaljs/pitch': 5.0.2
+      '@tonaljs/pitch-distance': 5.0.5
+      '@tonaljs/pitch-interval': 6.1.0
+
+  '@tonaljs/key@4.11.2':
+    dependencies:
+      '@tonaljs/note': 4.12.1
+      '@tonaljs/pitch-note': 6.1.0
+      '@tonaljs/roman-numeral': 4.9.1
+
+  '@tonaljs/midi@4.10.2':
+    dependencies:
+      '@tonaljs/pitch-note': 6.1.0
+
+  '@tonaljs/mode@4.9.2':
+    dependencies:
+      '@tonaljs/collection': 4.9.0
+      '@tonaljs/interval': 5.1.0
+      '@tonaljs/pcset': 4.10.1
+      '@tonaljs/pitch-distance': 5.0.5
+      '@tonaljs/pitch-note': 6.1.0
+      '@tonaljs/scale-type': 4.9.2
+
+  '@tonaljs/note@4.12.1':
+    dependencies:
+      '@tonaljs/midi': 4.10.2
+      '@tonaljs/pitch': 5.0.2
+      '@tonaljs/pitch-distance': 5.0.5
+      '@tonaljs/pitch-interval': 6.1.0
+      '@tonaljs/pitch-note': 6.1.0
+
+  '@tonaljs/pcset@4.10.1':
+    dependencies:
+      '@tonaljs/collection': 4.9.0
+      '@tonaljs/pitch': 5.0.2
+      '@tonaljs/pitch-distance': 5.0.5
+      '@tonaljs/pitch-interval': 6.1.0
+      '@tonaljs/pitch-note': 6.1.0
+
+  '@tonaljs/pitch-distance@5.0.2':
+    dependencies:
+      '@tonaljs/pitch': 5.0.1
+      '@tonaljs/pitch-interval': 5.0.2
+      '@tonaljs/pitch-note': 5.0.3
+
+  '@tonaljs/pitch-distance@5.0.5':
+    dependencies:
+      '@tonaljs/pitch': 5.0.2
+      '@tonaljs/pitch-interval': 6.1.0
+      '@tonaljs/pitch-note': 6.1.0
+
+  '@tonaljs/pitch-interval@5.0.2':
+    dependencies:
+      '@tonaljs/pitch': 5.0.1
+
+  '@tonaljs/pitch-interval@6.1.0':
+    dependencies:
+      '@tonaljs/pitch': 5.0.2
+
+  '@tonaljs/pitch-note@5.0.3':
+    dependencies:
+      '@tonaljs/pitch': 5.0.1
+
+  '@tonaljs/pitch-note@6.1.0':
+    dependencies:
+      '@tonaljs/pitch': 5.0.2
+
+  '@tonaljs/pitch@5.0.1': {}
+
+  '@tonaljs/pitch@5.0.2': {}
+
+  '@tonaljs/progression@4.9.2':
+    dependencies:
+      '@tonaljs/chord': 6.1.2
+      '@tonaljs/pitch-distance': 5.0.5
+      '@tonaljs/pitch-interval': 6.1.0
+      '@tonaljs/pitch-note': 6.1.0
+      '@tonaljs/roman-numeral': 4.9.1
+
+  '@tonaljs/range@4.9.2':
+    dependencies:
+      '@tonaljs/collection': 4.9.0
+      '@tonaljs/midi': 4.10.2
+
+  '@tonaljs/roman-numeral@4.9.1':
+    dependencies:
+      '@tonaljs/pitch': 5.0.2
+      '@tonaljs/pitch-interval': 6.1.0
+      '@tonaljs/pitch-note': 6.1.0
+
+  '@tonaljs/scale-type@4.9.2':
+    dependencies:
+      '@tonaljs/pcset': 4.10.1
+
+  '@tonaljs/scale@4.13.4':
+    dependencies:
+      '@tonaljs/chord-type': 5.1.1
+      '@tonaljs/collection': 4.9.0
+      '@tonaljs/note': 4.12.1
+      '@tonaljs/pcset': 4.10.1
+      '@tonaljs/pitch-distance': 5.0.5
+      '@tonaljs/pitch-note': 6.1.0
+      '@tonaljs/scale-type': 4.9.2
+
+  '@tonaljs/time-signature@4.9.0': {}
+
+  '@tonaljs/tonal@4.10.0':
+    dependencies:
+      '@tonaljs/abc-notation': 4.9.1
+      '@tonaljs/array': 4.8.4
+      '@tonaljs/chord': 4.10.2
+      '@tonaljs/chord-type': 4.8.2
+      '@tonaljs/collection': 4.9.0
+      '@tonaljs/core': 4.10.4
+      '@tonaljs/duration-value': 4.9.0
+      '@tonaljs/interval': 4.8.2
+      '@tonaljs/key': 4.11.2
+      '@tonaljs/midi': 4.10.2
+      '@tonaljs/mode': 4.9.2
+      '@tonaljs/note': 4.12.1
+      '@tonaljs/pcset': 4.10.1
+      '@tonaljs/progression': 4.9.2
+      '@tonaljs/range': 4.9.2
+      '@tonaljs/roman-numeral': 4.9.1
+      '@tonaljs/scale': 4.13.4
+      '@tonaljs/scale-type': 4.9.2
+      '@tonaljs/time-signature': 4.9.0
 
   '@ts-morph/common@0.11.1':
     dependencies:
@@ -8664,6 +9021,8 @@ snapshots:
 
   acorn@8.15.0: {}
 
+  adler-32@1.3.1: {}
+
   agent-base@7.1.4: {}
 
   ajv-formats@2.1.1(ajv@8.17.1):
@@ -9019,6 +9378,11 @@ snapshots:
 
   caniuse-lite@1.0.30001764: {}
 
+  cfb@1.2.2:
+    dependencies:
+      adler-32: 1.3.1
+      crc-32: 1.2.2
+
   chalk@4.1.2:
     dependencies:
       ansi-styles: 4.3.0
@@ -9109,6 +9473,8 @@ snapshots:
 
   code-block-writer@10.1.1: {}
 
+  codepage@1.15.0: {}
+
   collect-v8-coverage@1.0.3: {}
 
   color-convert@2.0.1:
@@ -9196,6 +9562,8 @@ snapshots:
       path-type: 4.0.0
     optionalDependencies:
       typescript: 5.9.3
+
+  crc-32@1.2.2: {}
 
   create-jest@29.7.0(@types/node@22.19.7)(ts-node@10.9.2(@swc/core@1.15.8)(@types/node@22.19.7)(typescript@5.9.3)):
     dependencies:
@@ -9853,6 +10221,8 @@ snapshots:
       once: 1.4.0
 
   forwarded@0.2.0: {}
+
+  frac@1.1.2: {}
 
   fresh@2.0.0: {}
 
@@ -11250,6 +11620,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  pako@1.0.11: {}
+
   parent-module@1.0.1:
     dependencies:
       callsites: 3.1.0
@@ -11323,6 +11695,13 @@ snapshots:
   pathe@2.0.3: {}
 
   pause@0.0.1: {}
+
+  pdf-lib@1.17.1:
+    dependencies:
+      '@pdf-lib/standard-fonts': 1.0.0
+      '@pdf-lib/upng': 1.0.1
+      pako: 1.0.11
+      tslib: 1.14.1
 
   pend@1.2.0: {}
 
@@ -11880,6 +12259,10 @@ snapshots:
 
   sprintf-js@1.0.3: {}
 
+  ssf@0.11.2:
+    dependencies:
+      frac: 1.1.2
+
   ssri@12.0.0:
     dependencies:
       minipass: 7.1.2
@@ -12193,6 +12576,8 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
+  tslib@1.14.1: {}
+
   tslib@2.3.0: {}
 
   tslib@2.8.1: {}
@@ -12404,7 +12789,11 @@ snapshots:
     dependencies:
       isexe: 3.1.1
 
+  wmf@1.0.2: {}
+
   word-wrap@1.2.5: {}
+
+  word@0.3.0: {}
 
   wordwrap@1.0.0: {}
 
@@ -12442,6 +12831,16 @@ snapshots:
   ws@8.18.3: {}
 
   xhr2@0.2.1: {}
+
+  xlsx@0.18.5:
+    dependencies:
+      adler-32: 1.3.1
+      cfb: 1.2.2
+      codepage: 1.15.0
+      crc-32: 1.2.2
+      ssf: 0.11.2
+      wmf: 1.0.2
+      word: 0.3.0
 
   xtend@4.0.2: {}
 

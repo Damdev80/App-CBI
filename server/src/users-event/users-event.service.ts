@@ -146,7 +146,15 @@ export class UsersEventService {
     return this.prisma.usersEvent.findMany({
       include: {
         event: true,
-        user: true,
+        user: {
+          include: {
+            members: {
+              include: {
+                group: true,
+              },
+            },
+          },
+        },
       },
     });
   }
@@ -156,7 +164,15 @@ export class UsersEventService {
       where: { id },
       include: {
         event: true,
-        user: true,
+        user: {
+          include: {
+            members: {
+              include: {
+                group: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -171,7 +187,15 @@ export class UsersEventService {
     return this.prisma.usersEvent.findMany({
       where: { eventId },
       include: {
-        user: true,
+        user: {
+          include: {
+            members: {
+              include: {
+                group: true,
+              },
+            },
+          },
+        },
       },
     });
   }

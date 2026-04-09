@@ -4,6 +4,8 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { EventService, EventModel } from '@app/core/services/event.service';
 
+type EventType = 'EVENTO' | 'ACTIVIDAD' | 'REUNION';
+
 @Component({
   selector: 'app-create-event',
   standalone: true,
@@ -14,16 +16,26 @@ export class CreateEventComponent {
   private fb = inject(FormBuilder);
   private eventService = inject(EventService);
   private router = inject(Router);
+  private readonly minPrice = 1;
+  private readonly maxPrice = 1_000_000;
 
   isLoading = signal(false);
   errorMessage = signal('');
   successMessage = signal('');
   recentEvents = signal<EventModel[]>([]);
+  eventTypeOptions: Array<{ value: EventType; label: string }> = [
+    { value: 'EVENTO', label: 'Evento' },
+    { value: 'ACTIVIDAD', label: 'Actividad' },
+    { value: 'REUNION', label: 'Reunión' },
+  ];
 
   form = this.fb.group({
-    title: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(255)]],
-    description: [''],
-    eventDate: ['', [Validators.required]],
+    title: this.fb.control<string>('', { nonNullable: true, validators: [Validators.required, Validators.minLength(1), Validators.maxLength(255)] }),
+    description: this.fb.control<string>('', { nonNullable: true }),
+    eventType: this.fb.control<EventType>('EVENTO', { nonNullable: true }),
+    hasPrice: this.fb.control<boolean>(false, { nonNullable: true }),
+    priceTier: this.fb.control<number>(0, { nonNullable: true, validators: [Validators.min(0), Validators.max(this.maxPrice)] }),
+    eventDate: this.fb.control<string>('', { nonNullable: true, validators: [Validators.required] }),
   });
 
   ngOnInit() {
@@ -43,15 +55,26 @@ export class CreateEventComponent {
     this.errorMessage.set('');
     this.successMessage.set('');
 
-    const { title, description, eventDate } = this.form.value;
+    const { title, description, eventType, hasPrice, priceTier, eventDate } = this.form.getRawValue();
+    const normalizedPrice = hasPrice ? this.normalizePriceAmount(priceTier) : 0;
     this.eventService.createEvent({
-      title: title!,
-      description: description || undefined,
-      eventDate: eventDate!,
+      title: title.trim(),
+      description: description?.trim() || undefined,
+      eventType,
+      hasPrice,
+      priceTier: normalizedPrice,
+      eventDate,
     }).subscribe({
       next: () => {
         this.successMessage.set('Evento creado correctamente.');
-        this.form.reset();
+        this.form.reset({
+          title: '',
+          description: '',
+          eventType: 'EVENTO',
+          hasPrice: false,
+          priceTier: 0,
+          eventDate: '',
+        });
         this.loadEvents();
         this.isLoading.set(false);
       },
@@ -60,6 +83,51 @@ export class CreateEventComponent {
         this.isLoading.set(false);
       }
     });
+  }
+
+  onHasPriceToggle() {
+    const hasPrice = Boolean(this.form.get('hasPrice')?.value);
+    const priceControl = this.form.get('priceTier');
+    if (!priceControl) return;
+
+    if (!hasPrice) {
+      priceControl.setValue(0);
+      return;
+    }
+
+    priceControl.setValue(this.normalizePriceAmount(priceControl.value));
+  }
+
+  onPriceSliderInput(event: Event) {
+    const target = event.target as HTMLInputElement | null;
+    if (!target) return;
+    this.form.get('priceTier')?.setValue(this.normalizePriceAmount(target.value));
+  }
+
+  onPriceInputBlur() {
+    const hasPrice = Boolean(this.form.get('hasPrice')?.value);
+    if (!hasPrice) return;
+    const priceControl = this.form.get('priceTier');
+    if (!priceControl) return;
+    priceControl.setValue(this.normalizePriceAmount(priceControl.value));
+  }
+
+  currentPriceTier(): number {
+    return Number(this.form.get('priceTier')?.value ?? 0);
+  }
+
+  formatCop(amount: number): string {
+    return new Intl.NumberFormat('es-CO', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(Math.max(0, Math.round(Number(amount) || 0)));
+  }
+
+  private normalizePriceAmount(value: unknown): number {
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed)) return this.minPrice;
+    const rounded = Math.round(parsed);
+    return Math.min(this.maxPrice, Math.max(this.minPrice, rounded));
   }
 
   formatDate(dateStr: string): string {

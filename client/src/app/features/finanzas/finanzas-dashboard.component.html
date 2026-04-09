@@ -1,0 +1,343 @@
+<div class="w-full max-w-295 mx-auto px-4 sm:px-6 fade-up">
+  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+    <div>
+      <p class="text-[0.6875rem] font-semibold tracking-wider uppercase text-ink-3 m-0 mb-1">Exploradores del Rey</p>
+      <h1 class="font-serif text-2xl sm:text-[2.1rem] font-semibold text-ink tracking-tight m-0">
+        Finanzas
+      </h1>
+      <p class="text-sm text-ink-2 mt-1 mb-0">
+        Vista simple para controlar deuda, registrar pagos y consultar movimientos.
+      </p>
+    </div>
+
+    <div class="flex gap-2 flex-wrap">
+      <button class="btn-outline" (click)="openMovementsModal()" [disabled]="movementsLoading()">
+        Ver movimientos
+      </button>
+      <button class="btn-solid" (click)="recalculateStatus()">Recalcular estado</button>
+    </div>
+  </div>
+
+  <div class="card p-4 sm:p-5 mb-5 fade-up fade-up-1">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-3">
+      <div class="xl:col-span-2">
+        <label class="form-label">Buscar</label>
+        <input
+          type="text"
+          class="field"
+          [ngModel]="searchQuery()"
+          (ngModelChange)="onSearchChange($event)"
+          placeholder="Busca por alumno, grupo, estado o nota"
+        />
+      </div>
+
+      <div>
+        <label class="form-label">Meta esperada</label>
+        <input
+          type="number"
+          class="field"
+          [ngModel]="expectedAmount()"
+          (ngModelChange)="expectedAmount.set(toNumber($event))"
+          min="0"
+          step="1000"
+          (change)="loadData()"
+        />
+      </div>
+
+      <div>
+        <label class="form-label">Grupo</label>
+        <select class="field" [ngModel]="selectedGroupId()" (ngModelChange)="selectedGroupId.set($event); loadData()">
+          <option value="">Todos los grupos</option>
+          @for (group of groups(); track group.id) {
+            <option [value]="group.id">{{ group.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label class="form-label">Desde</label>
+        <input
+          type="date"
+          class="field"
+          [ngModel]="periodFrom()"
+          (ngModelChange)="periodFrom.set($event); onDateRangeChange()"
+        />
+      </div>
+
+      <div>
+        <label class="form-label">Hasta</label>
+        <input
+          type="date"
+          class="field"
+          [ngModel]="periodTo()"
+          (ngModelChange)="periodTo.set($event); onDateRangeChange()"
+        />
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-between gap-2 mt-3">
+      <div class="flex items-center gap-2">
+        <label class="text-xs text-ink-3">Filas por tabla</label>
+        <select class="field" style="width: 88px;" [ngModel]="pageSize()" (ngModelChange)="onPageSizeChange($event)">
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button class="btn-outline" (click)="loadData()">Actualizar</button>
+        <button class="btn-ghost" type="button" (click)="resetFilters()">Limpiar</button>
+      </div>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert-err mb-4">{{ error() }}</div>
+  }
+
+  @if (success()) {
+    <div class="alert alert-ok mb-4">{{ success() }}</div>
+  }
+
+  <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 fade-up fade-up-2">
+    <div class="card p-4">
+      <p class="text-[0.6875rem] font-semibold tracking-wider uppercase text-ink-3 m-0 mb-1">Estudiantes</p>
+      <p class="font-serif text-xl sm:text-2xl font-semibold text-ink m-0">{{ debtStatus().length }}</p>
+    </div>
+    <div class="card p-4">
+      <p class="text-[0.6875rem] font-semibold tracking-wider uppercase text-ink-3 m-0 mb-1">Al día</p>
+      <p class="font-serif text-xl sm:text-2xl font-semibold text-ok m-0">{{ paidCount() }}</p>
+    </div>
+    <div class="card p-4">
+      <p class="text-[0.6875rem] font-semibold tracking-wider uppercase text-ink-3 m-0 mb-1">Morosos</p>
+      <p class="font-serif text-xl sm:text-2xl font-semibold text-err m-0">{{ morosos().length }}</p>
+    </div>
+    <div class="card p-4">
+      <p class="text-[0.6875rem] font-semibold tracking-wider uppercase text-ink-3 m-0 mb-1">Recaudado</p>
+      <p class="font-serif text-lg sm:text-xl font-semibold text-accent m-0">{{ formatMoney(totalCollected()) }}</p>
+    </div>
+    <div class="card p-4">
+      <p class="text-[0.6875rem] font-semibold tracking-wider uppercase text-ink-3 m-0 mb-1">Deuda total</p>
+      <p class="font-serif text-lg sm:text-xl font-semibold text-warn m-0">{{ formatMoney(totalDebt()) }}</p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <span class="spinner spinner-lg text-accent"></span>
+    </div>
+  } @else {
+    <div class="card overflow-hidden fade-up fade-up-3">
+      <div class="px-4 sm:px-5 py-4 border-b border-line bg-surface-2 flex items-center justify-between gap-3">
+        <h3 class="font-serif text-xl font-semibold text-ink m-0">Estado de pagos</h3>
+        <span class="badge badge-accent">{{ filteredDebtStatus().length }} / {{ debtStatus().length }}</span>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="cbi-table" style="min-width: 920px;">
+          <thead>
+            <tr>
+              <th>Estudiante</th>
+              <th>Grupo</th>
+              <th>Meta</th>
+              <th>Pagado</th>
+              <th>Deuda</th>
+              <th>Estado</th>
+              <th class="text-center">Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (filteredDebtStatus().length === 0) {
+              <tr>
+                <td colspan="7" class="text-center text-ink-2">No hay estudiantes para este filtro o búsqueda.</td>
+              </tr>
+            } @else {
+              @for (row of paginatedDebtStatus(); track row.studentId) {
+                <tr>
+                  <td class="font-medium">{{ row.name }}</td>
+                  <td>{{ row.group?.name || 'Sin grupo' }}</td>
+                  <td>{{ formatMoney(row.expectedAmount) }}</td>
+                  <td>{{ formatMoney(row.totalPaid) }}</td>
+                  <td [class.text-warn]="row.debt > 0" class="font-semibold">{{ formatMoney(row.debt) }}</td>
+                  <td>
+                    <span
+                      class="badge"
+                      [class.badge-ok]="row.status === 'PAGO'"
+                      [class.badge-err]="row.status === 'DEBE'"
+                    >
+                      {{ row.status }}
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <button class="btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;" (click)="openPaymentModal(row)">
+                      Registrar pago
+                    </button>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="px-4 sm:px-5 py-3 border-t border-line bg-surface-2 flex items-center justify-between gap-3">
+        <p class="text-xs text-ink-3 m-0">
+          Página {{ currentDebtPage() }} de {{ debtTotalPages() }}
+        </p>
+        <div class="flex gap-2">
+          <button class="btn-outline" style="font-size:0.75rem; padding:0.3rem 0.6rem;" (click)="prevDebtPage()" [disabled]="currentDebtPage() <= 1">
+            Anterior
+          </button>
+          <button class="btn-outline" style="font-size:0.75rem; padding:0.3rem 0.6rem;" (click)="nextDebtPage()" [disabled]="currentDebtPage() >= debtTotalPages()">
+            Siguiente
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+@if (showMovementsModal()) {
+  <div class="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/45" (click)="closeMovementsModal()">
+    <div class="card w-full max-w-6xl max-h-[88vh] overflow-hidden relative" (click)="$event.stopPropagation()">
+      <div class="px-4 sm:px-5 py-4 border-b border-line bg-surface-2 flex items-center justify-between gap-3">
+        <div>
+          <h3 class="font-serif text-xl font-semibold text-ink m-0">Movimientos</h3>
+          <p class="text-xs text-ink-3 m-0 mt-0.5">{{ filteredMovementsCount() }} / {{ movementsCount() }} registros</p>
+        </div>
+        <button class="btn-ghost p-2" (click)="closeMovementsModal()" aria-label="Cerrar">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      @if (movementsLoading()) {
+        <div class="flex justify-center py-12">
+          <span class="spinner text-accent"></span>
+        </div>
+      } @else {
+        <div class="table-wrapper" style="max-height: calc(88vh - 130px);">
+          <table class="cbi-table" style="min-width: 760px;">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Estudiante</th>
+                <th>Monto</th>
+                <th>Nota</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (filteredCollections().length === 0) {
+                <tr>
+                  <td colspan="4" class="text-center text-ink-2">No hay movimientos para este filtro o búsqueda.</td>
+                </tr>
+              } @else {
+                @for (movement of paginatedCollections(); track movement.id) {
+                  <tr>
+                    <td>{{ formatDate(movement.date) }}</td>
+                    <td>
+                      <p class="m-0 font-medium">{{ movement.student?.name || 'Estudiante no encontrado' }}</p>
+                      <p class="m-0 text-xs text-ink-3">{{ movement.student?.group?.name || 'Sin grupo' }}</p>
+                    </td>
+                    <td class="text-accent font-semibold">{{ formatMoney(movement.amount) }}</td>
+                    <td class="text-ink-2">{{ movement.notes || 'Sin nota' }}</td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="px-4 sm:px-5 py-3 border-t border-line bg-surface-2 flex items-center justify-between gap-3">
+          <p class="text-xs text-ink-3 m-0">
+            Página {{ currentMovementsPage() }} de {{ movementsTotalPages() }}
+          </p>
+          <div class="flex gap-2">
+            <button class="btn-outline" style="font-size:0.75rem; padding:0.3rem 0.6rem;" (click)="prevMovementsPage()" [disabled]="currentMovementsPage() <= 1">
+              Anterior
+            </button>
+            <button class="btn-outline" style="font-size:0.75rem; padding:0.3rem 0.6rem;" (click)="nextMovementsPage()" [disabled]="currentMovementsPage() >= movementsTotalPages()">
+              Siguiente
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+@if (showPaymentModal()) {
+  <div class="fixed inset-0 z-80 flex items-center justify-center p-4 bg-black/45" (click)="closePaymentModal()">
+    <div class="card w-full max-w-lg p-6 relative" (click)="$event.stopPropagation()">
+      <div class="flex items-start justify-between mb-4">
+        <div>
+          <h2 class="font-serif text-xl font-semibold text-ink m-0">Registrar pago</h2>
+          <p class="text-sm text-ink-2 m-0 mt-0.5">Se generará factura automáticamente.</p>
+        </div>
+        <button class="btn-ghost p-2" (click)="closePaymentModal()" aria-label="Cerrar">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      @if (paymentError()) {
+        <div class="alert alert-err mb-4">{{ paymentError() }}</div>
+      }
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="sm:col-span-2">
+          <label class="form-label">Estudiante *</label>
+          <select class="field" [ngModel]="paymentStudentId()" (ngModelChange)="onPaymentStudentChange($event)">
+            <option value="">Selecciona un estudiante</option>
+            @for (student of debtStatus(); track student.studentId) {
+              <option [value]="student.studentId">{{ student.name }} · {{ student.group?.name || 'Sin grupo' }}</option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label">Fecha *</label>
+          <input type="date" class="field" [ngModel]="paymentDate()" (ngModelChange)="paymentDate.set($event)" />
+        </div>
+
+        <div>
+          <label class="form-label">Monto (COP) *</label>
+          <input
+            type="number"
+            class="field"
+            min="0"
+            step="1000"
+            [ngModel]="paymentAmount()"
+            (ngModelChange)="paymentAmount.set(toNumber($event))"
+          />
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="form-label">Nota (opcional)</label>
+          <input
+            type="text"
+            class="field"
+            [ngModel]="paymentNotes()"
+            (ngModelChange)="paymentNotes.set($event)"
+            placeholder="Ej: Abono de marzo"
+          />
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-6">
+        <button class="btn-outline flex-1" (click)="closePaymentModal()" [disabled]="paymentSaving()">Cancelar</button>
+        <button
+          class="btn-solid flex-1"
+          (click)="savePayment()"
+          [disabled]="paymentSaving() || !paymentStudentId() || paymentAmount() <= 0"
+        >
+          @if (paymentSaving()) { <span class="spinner" style="width:16px; height:16px; border-width:2px;"></span> }
+          Guardar pago
+        </button>
+      </div>
+    </div>
+  </div>
+}

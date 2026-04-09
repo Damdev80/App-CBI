@@ -61,9 +61,10 @@ export class LoginComponent {
                 this.profileService.getProfileWithGroups().subscribe({
                     next: (profile) => {
                         const groups = profile.groups || [];
-                        const isAdmin = profile.role === 'ADMIN';
+                        const privilegedRoles = ['ADMIN', 'SEMI_ADMIN', 'CONTADORA'];
+                        const isPrivileged = privilegedRoles.includes(profile.role ?? '');
                         this.isLoading.set(false);
-                        if (groups.length === 0 && !isAdmin) {
+                        if (groups.length === 0 && !isPrivileged) {
                             this.router.navigate(['/app']);
                         } else {
                             this.router.navigate(['/dashboard']);

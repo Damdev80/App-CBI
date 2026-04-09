@@ -1,25 +1,64 @@
 <!-- ═══════════════════════════════════════════════
      EVENTOS — Tabla unificada + crear
      ═══════════════════════════════════════════════ -->
-<div class="w-full max-w-[1100px] mx-auto px-4 sm:px-6 fade-up">
+<div class="w-full max-w-275 mx-auto px-4 sm:px-6 fade-up">
 
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 pb-5 border-b border-line">
     <div>
       <p style="font-size:0.6875rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); font-weight:500; margin-bottom:0.25rem;">
-        Gestión
+        Gestión especializada
       </p>
       <h1 style="font-family:var(--serif); font-size:2.25rem; font-weight:600; color:var(--ink); letter-spacing:-0.02em; margin:0;">
         Eventos
       </h1>
+      <p style="font-size:0.875rem; color:var(--ink-2); margin-top:0.5rem; margin-bottom:0;">
+        Administra eventos, actividades y reuniones con precio libre entre 1 y 1.000.000 COP.
+      </p>
     </div>
+
+    <div class="card" style="padding:0.75rem 1rem; min-width:230px;">
+      <p style="font-size:0.625rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-3); margin:0;">Resumen de costos</p>
+      <p style="font-size:0.875rem; color:var(--ink); margin:0.25rem 0 0;">
+        Con costo: <strong>{{ priceSummary().paid }}</strong>
+      </p>
+      <p style="font-size:0.875rem; color:var(--ink); margin:0.125rem 0 0;">
+        Gratis: <strong>{{ priceSummary().free }}</strong>
+      </p>
+    </div>
+
     <!-- Botón crear -->
     <button class="btn-solid w-full sm:w-auto shrink-0" style="gap:0.5rem;" (click)="openModal()">
       <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
       </svg>
-      Nuevo evento
+      Nuevo ítem
     </button>
+  </div>
+
+  <!-- Filtros por tipo -->
+  <div class="card" style="padding:0.875rem 1rem; margin-bottom:1rem;">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div class="flex flex-wrap gap-2">
+        <button class="btn-outline" [class.btn-solid]="selectedTypeFilter() === 'ALL'" (click)="setTypeFilter('ALL')">
+          Todos ({{ events().length }})
+        </button>
+        <button class="btn-outline" [class.btn-solid]="selectedTypeFilter() === 'EVENTO'" (click)="setTypeFilter('EVENTO')">
+          Eventos ({{ eventCountByType().EVENTO }})
+        </button>
+        <button class="btn-outline" [class.btn-solid]="selectedTypeFilter() === 'ACTIVIDAD'" (click)="setTypeFilter('ACTIVIDAD')">
+          Actividades ({{ eventCountByType().ACTIVIDAD }})
+        </button>
+        <button class="btn-outline" [class.btn-solid]="selectedTypeFilter() === 'REUNION'" (click)="setTypeFilter('REUNION')">
+          Reuniones ({{ eventCountByType().REUNION }})
+        </button>
+      </div>
+
+      <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.8125rem; color:var(--ink-2);">
+        <input type="checkbox" class="field" style="width:1rem; height:1rem; padding:0;" [checked]="onlyWithPrice()" (change)="onlyWithPrice.set($any($event.target).checked)" />
+        Solo con costo
+      </label>
+    </div>
   </div>
 
   <!-- Loading -->
@@ -44,21 +83,29 @@
       </div>
     }
 
-    @if (events().length > 0) {
+    @if (events().length > 0 && filteredEvents().length === 0) {
+      <div style="text-align:center; padding:3rem 1.5rem; color:var(--ink-3); background:var(--surface); border:1px dashed var(--line); border-radius:var(--r2); margin-bottom:1rem;">
+        <p style="font-family:var(--serif); font-size:1.15rem; color:var(--ink-2); margin:0 0 0.4rem;">No hay resultados para este filtro</p>
+        <p style="font-size:0.8125rem; margin:0;">Prueba otro tipo o desactiva “Solo con costo”.</p>
+      </div>
+    }
+
+    @if (filteredEvents().length > 0) {
       <div class="card overflow-hidden">
         <div class="table-wrapper">
-        <table class="cbi-table min-w-[640px]" style="table-layout:fixed;">
+        <table class="cbi-table min-w-210" style="table-layout:fixed;">
           <thead>
             <tr>
               <th style="width:52px; text-align:center;">Fecha</th>
               <th>Evento</th>
-              <th style="width:130px;">Descripción</th>
+              <th style="width:120px; text-align:center;">Tipo</th>
+              <th style="width:180px;">Costo</th>
               <th style="width:90px; text-align:center;">Estado</th>
               <th style="width:100px; text-align:right;">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            @for (event of events(); track event.id) {
+            @for (event of filteredEvents(); track event.id) {
               <tr>
                 <!-- Date block -->
                 <td style="text-align:center; padding-left:1.25rem; padding-right:0.5rem;">
@@ -80,12 +127,22 @@
                   <p style="font-size:0.75rem; color:var(--ink-3); margin:0;">
                     {{ event.eventDate | date:'EEEE, dd MMMM yyyy':'':'es-MX' }}
                   </p>
+                  <p style="font-size:0.75rem; color:var(--ink-3); margin:0.125rem 0 0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                    {{ event.description || 'Sin descripción' }}
+                  </p>
                 </td>
 
-                <!-- Description -->
+                <!-- Type -->
+                <td style="text-align:center;">
+                  <span class="badge" [class]="getTypeBadgeClass(event.eventType)">
+                    {{ getEventTypeLabel(event.eventType) }}
+                  </span>
+                </td>
+
+                <!-- Cost -->
                 <td>
-                  <p style="font-size:0.8125rem; color:var(--ink-3); margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-                    {{ event.description || '—' }}
+                  <p style="font-size:0.8125rem; color:var(--ink); margin:0;">
+                    {{ getEventCostLabel(event) }}
                   </p>
                 </td>
 
@@ -113,7 +170,7 @@
       </div>
 
       <p style="font-size:0.8125rem; color:var(--ink-3); margin-top:0.875rem; text-align:right;">
-        {{ events().length }} evento{{ events().length !== 1 ? 's' : '' }} en total
+        Mostrando {{ filteredEvents().length }} de {{ events().length }}
       </p>
     }
   }
@@ -123,11 +180,11 @@
      MODAL — Crear evento
      ═══════════════════════════════════════════════ -->
 @if (showModal()) {
-  <div class="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+  <div class="fixed inset-0 z-200 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
     <div style="position:absolute; inset:0; background:rgba(0,0,0,0.3); backdrop-filter:blur(4px);"
          (click)="closeModal()"></div>
 
-    <div class="bg-surface fade-up relative w-full max-w-[480px] my-auto rounded-xl border border-line overflow-hidden"
+    <div class="bg-surface fade-up relative w-full max-w-120 my-auto rounded-xl border border-line overflow-hidden"
          style="box-shadow:0 24px 60px rgba(0,0,0,0.18);">
 
       <!-- Modal header -->
@@ -171,6 +228,45 @@
           </div>
 
           <div>
+            <label class="form-label" for="m-type">Tipo <span style="color:var(--err);">*</span></label>
+            <select id="m-type" class="field" formControlName="eventType">
+              @for (opt of eventTypeOptions; track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="card" style="padding:0.85rem 1rem; background:var(--surface-2); border:1px solid var(--line);">
+            <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.875rem; color:var(--ink); margin-bottom:0.75rem;">
+              <input type="checkbox" style="width:1rem; height:1rem;" formControlName="hasPrice" (change)="onHasPriceToggle()" />
+              Este ítem tiene costo
+            </label>
+
+            @if (form.get('hasPrice')?.value) {
+              <label class="form-label" for="m-price-tier">Precio libre (COP)</label>
+              <input id="m-price-tier" type="range" min="1" max="1000000" step="1000" [value]="currentPriceTier()" (input)="onPriceSliderInput($event)" style="width:100%; accent-color:var(--accent);" />
+              <div style="display:flex; justify-content:space-between; gap:0.5rem; margin-top:0.4rem; font-size:0.75rem; color:var(--ink-2);">
+                <span>Mínimo: $ 1</span>
+                <span>Máximo: $ 1.000.000</span>
+              </div>
+
+              <div style="margin-top:0.75rem;">
+                <label class="form-label" for="m-price-input">Valor exacto</label>
+                <input id="m-price-input" class="field" type="number" min="1" max="1000000" step="1" formControlName="priceTier" (blur)="onPriceInputBlur()" />
+                <p style="font-size:0.75rem; color:var(--ink-2); margin:0.35rem 0 0;">
+                  Seleccionado: <strong>$ {{ formatCop(currentPriceTier()) }} COP</strong>
+                </p>
+              </div>
+
+              @if (form.get('priceTier')?.invalid && form.get('priceTier')?.touched) {
+                <p style="font-size:0.75rem; color:var(--err); margin-top:0.35rem;">Ingresa un valor entre 1 y 1.000.000 COP.</p>
+              }
+            } @else {
+              <p style="font-size:0.75rem; color:var(--ink-3); margin:0;">Se publicará como ítem gratuito.</p>
+            }
+          </div>
+
+          <div>
             <label class="form-label" for="m-date">Fecha y hora <span style="color:var(--err);">*</span></label>
             <input id="m-date" class="field"
                    [class.field-error]="form.get('eventDate')?.invalid && form.get('eventDate')?.touched"
@@ -184,7 +280,7 @@
             <button type="button" class="btn-outline" (click)="closeModal()">Cancelar</button>
             <button type="submit" class="btn-solid" [disabled]="saving()">
               @if (saving()) { <span class="spinner"></span> }
-              Crear evento
+              Crear ítem
             </button>
           </div>
 

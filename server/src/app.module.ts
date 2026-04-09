@@ -22,10 +22,12 @@ import { AttendanceModule } from './attendance/attendance.module';
 import { MoneyCollectionModule } from './money-collection/money-collection.module';
 import { StudentGroupsModule } from './student-groups/student-groups.module';
 import { AdminModule } from './admin/admin.module';
+import { VisitorsModule } from './visitors/visitors.module';
+import { RolesGuard } from './common/guards/roles.guard';
 
 @Module({
-  imports: [AuthModule, PrismaModule, UsersModule, MembersModule, GroupsModule, ForumModule, EventModule, UsersEventModule, DashboardModule, PreRegisterModule, ProfileModule, SessionsModule, UsersServiceModule, TeachersServiceModule, AttendanceModule, MoneyCollectionModule, StudentGroupsModule, AdminModule],
+  imports: [AuthModule, PrismaModule, UsersModule, MembersModule, GroupsModule, ForumModule, EventModule, UsersEventModule, DashboardModule, PreRegisterModule, ProfileModule, SessionsModule, UsersServiceModule, TeachersServiceModule, AttendanceModule, MoneyCollectionModule, StudentGroupsModule, AdminModule, VisitorsModule],
   controllers: [AppController, MembersController],
-  providers: [AppService, AuthService, MembersService],
+  providers: [AppService, AuthService, MembersService, RolesGuard],
 })
 export class AppModule {}

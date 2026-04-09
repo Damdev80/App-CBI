@@ -155,12 +155,14 @@
     </div>
   }
 
-  <!-- Modal: nuevo alumno -->
-  @if (showForm()) {
-    <div style="position:fixed; inset:0; z-index:60; background:rgba(0,0,0,0.45); display:flex; align-items:center; justify-content:center; padding:1rem;"
-         (click)="showForm.set(false)">
-      <div class="card" style="width:100%; max-width:720px; padding:1.25rem 1.25rem 1.5rem;"
-           (click)="$event.stopPropagation()">
+</div>
+
+<!-- Modal: nuevo alumno -->
+@if (showForm()) {
+  <div class="fixed inset-0 flex items-center justify-center p-4 sm:p-6 overflow-y-auto" style="z-index: 200;">
+    <div style="position:absolute; inset:0; background:rgba(0,0,0,0.45);" (click)="showForm.set(false)"></div>
+    <div class="card fade-up relative" style="width:100%; max-width:720px; padding:1.25rem 1.25rem 1.5rem;"
+         (click)="$event.stopPropagation()">
         <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:1rem;">
           <div>
             <h2 style="font-family:var(--serif); font-size:1.5rem; font-weight:600; color:var(--ink); margin:0 0 0.25rem;">
@@ -242,14 +244,15 @@
             Guardar
           </button>
         </div>
-      </div>
     </div>
-  }
+  </div>
+}
 
-  <!-- Modal: nuevo grupo -->
-  @if (showGroupForm()) {
-    <div class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/45" (click)="showGroupForm.set(false)">
-      <div class="card w-full max-w-sm p-5" (click)="$event.stopPropagation()">
+<!-- Modal: nuevo grupo -->
+@if (showGroupForm()) {
+  <div class="fixed inset-0 flex items-center justify-center p-4" style="z-index: 210;" (click)="showGroupForm.set(false)">
+    <div style="position:absolute; inset:0; background:rgba(0,0,0,0.45);"></div>
+    <div class="card w-full max-w-sm p-5 fade-up relative" (click)="$event.stopPropagation()">
         <h3 class="font-serif text-lg font-semibold text-ink m-0 mb-3">Nuevo grupo</h3>
         <div class="space-y-3 mb-4">
           <div>
@@ -265,8 +268,6 @@
           <button class="btn-outline flex-1" (click)="showGroupForm.set(false)">Cancelar</button>
           <button class="btn-solid flex-1" (click)="addGroup()" [disabled]="!newGroupName.trim()">Crear</button>
         </div>
-      </div>
     </div>
-  }
-
-</div>
+  </div>
+}

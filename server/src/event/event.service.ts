@@ -9,6 +9,9 @@ export type UpdateEventDto = Prisma.EventUpdateInput;
 export class EventService {
     constructor(private prisma: PrismaService) {}
 
+    private readonly minPrice = 1;
+    private readonly maxPrice = 1_000_000;
+
     async getAllEvents(): Promise<Event[]> {
         return await this.prisma.event.findMany();
     }
@@ -20,8 +23,18 @@ export class EventService {
     }
 
     async createEvent(data: CreateEventDto): Promise<Event> {
+        const rawPrice = Number(data.priceTier ?? 0);
+        const boundedPrice = Number.isFinite(rawPrice)
+            ? Math.min(this.maxPrice, Math.max(this.minPrice, Math.round(rawPrice)))
+            : this.minPrice;
+
+        const normalizedData: CreateEventDto = {
+            ...data,
+            priceTier: data.hasPrice ? boundedPrice : 0,
+        };
+
         return await this.prisma.event.create({
-            data,
+            data: normalizedData,
         });
     }
 
