@@ -14,6 +14,9 @@
       <button class="btn-outline" (click)="openMovementsModal()" [disabled]="movementsLoading()">
         Ver movimientos
       </button>
+      <button class="btn-outline" (click)="openPaymentModal()" [disabled]="loading()">
+        Registrar pago
+      </button>
       <button class="btn-solid" (click)="recalculateStatus()">Recalcular estado</button>
     </div>
   </div>
@@ -37,8 +40,8 @@
           type="number"
           class="field"
           [ngModel]="expectedAmount()"
-          (ngModelChange)="expectedAmount.set(toNumber($event))"
-          min="0"
+          (ngModelChange)="setExpectedAmount($event)"
+          min="1"
           step="1000"
           (change)="loadData()"
         />

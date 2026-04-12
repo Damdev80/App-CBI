@@ -19,6 +19,7 @@ export class FinanzasDashboardComponent {
   private moneyCollectionService = inject(MoneyCollectionService);
   private studentGroupsService = inject(StudentGroupsService);
   private readonly initialRange = this.getCurrentMonthRange();
+  private readonly minExpectedAmount = 1;
 
   expectedAmount = signal<number>(280000);
   selectedGroupId = signal<string>('');
@@ -133,7 +134,7 @@ export class FinanzasDashboardComponent {
     this.movementsPage.set(1);
 
     const groupId = this.selectedGroupId() || undefined;
-    const expectedAmount = this.expectedAmount();
+    const expectedAmount = this.getNormalizedExpectedAmount();
     const from = this.periodFrom() || undefined;
     const to = this.periodTo() || undefined;
 
@@ -179,6 +180,11 @@ export class FinanzasDashboardComponent {
     }
 
     this.loadData();
+  }
+
+  setExpectedAmount(value: unknown) {
+    const raw = this.toNumber(value);
+    this.expectedAmount.set(Math.max(this.minExpectedAmount, Math.round(raw)));
   }
 
   resetFilters() {
@@ -347,7 +353,7 @@ export class FinanzasDashboardComponent {
   recalculateStatus() {
     this.moneyCollectionService
       .recalculatePayStatus({
-        expectedAmount: this.expectedAmount(),
+        expectedAmount: this.getNormalizedExpectedAmount(),
         groupId: this.selectedGroupId() || undefined,
       })
       .subscribe({
@@ -370,6 +376,10 @@ export class FinanzasDashboardComponent {
   toNumber(value: unknown): number {
     const parsed = Number(value);
     return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  private getNormalizedExpectedAmount(): number {
+    return Math.max(this.minExpectedAmount, Math.round(this.expectedAmount()));
   }
 
   private getCurrentMonthRange() {

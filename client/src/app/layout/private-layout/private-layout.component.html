@@ -14,7 +14,7 @@
   <!-- ─── SIDEBAR ─── -->
   <aside class="fixed lg:static inset-y-0 left-0 z-40 flex flex-col bg-surface border-r border-line shrink-0 overflow-hidden"
          [class.sidebar-visible]="sidebarOpen()"
-         [style.width]="sidebarCollapsed() ? '64px' : '240px'"
+      [style.width]="sidebarWidth()"
          style="transition: width 0.25s ease, transform 0.25s ease;">
 
     <!-- Logo / Toggle -->

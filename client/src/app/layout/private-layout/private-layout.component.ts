@@ -37,6 +37,13 @@ export class PrivateLayoutComponent implements OnInit {
     deptIcons = DEPT_ICONS;
     visibleModules = signal<Set<SidebarModuleKey>>(new Set());
     ministerios = MINISTERIOS;
+    sidebarWidth = computed(() => {
+        const isMobile = this.isMobileViewport();
+        if (isMobile) {
+            return this.sidebarCollapsed() ? '64px' : 'min(84vw, 280px)';
+        }
+        return this.sidebarCollapsed() ? '64px' : '240px';
+    });
 
     canSee = (key: SidebarModuleKey): boolean => {
         if (this.userRole === 'ADMIN') return true;
@@ -135,12 +142,20 @@ export class PrivateLayoutComponent implements OnInit {
     }
 
     onMenuToggle() {
-        const isMobile = window.matchMedia('(max-width: 1023px)').matches;
+        const isMobile = this.isMobileViewport();
         if (isMobile) {
-            this.toggleMobileMenu();
+            const willOpen = !this.sidebarOpen();
+            this.sidebarOpen.set(willOpen);
+            if (willOpen) {
+                this.sidebarCollapsed.set(false);
+            }
             return;
         }
         this.toggleSidebarCollapsed();
+    }
+
+    private isMobileViewport(): boolean {
+        return typeof window !== 'undefined' && window.matchMedia('(max-width: 1023px)').matches;
     }
 
     toggleSidebarCollapsed() {

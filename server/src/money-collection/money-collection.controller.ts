@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   StreamableFile,
   Controller,
   Get,
@@ -96,8 +97,9 @@ export class MoneyCollectionController {
     @Query('teacherId') teacherId?: string,
     @Query('groupId') groupId?: string,
   ) {
+    const parsedExpectedAmount = this.parseExpectedAmount(expectedAmount);
     return this.moneyCollection.getDebtStatus({
-      expectedAmount: Number(expectedAmount || 0),
+      expectedAmount: parsedExpectedAmount,
       studentId,
       teacherId,
       groupId,
@@ -111,8 +113,9 @@ export class MoneyCollectionController {
     @Query('teacherId') teacherId?: string,
     @Query('groupId') groupId?: string,
   ) {
+    const parsedExpectedAmount = this.parseExpectedAmount(expectedAmount);
     return this.moneyCollection.getMorosos({
-      expectedAmount: Number(expectedAmount || 0),
+      expectedAmount: parsedExpectedAmount,
       teacherId,
       groupId,
     });
@@ -129,6 +132,21 @@ export class MoneyCollectionController {
       groupId?: string;
     },
   ) {
-    return this.moneyCollection.recalculatePayStatusForStudents(body);
+    const parsedExpectedAmount = this.parseExpectedAmount(body.expectedAmount);
+
+    return this.moneyCollection.recalculatePayStatusForStudents({
+      ...body,
+      expectedAmount: parsedExpectedAmount,
+    });
+  }
+
+  private parseExpectedAmount(value: unknown): number {
+    const parsed = Number(value);
+
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      throw new BadRequestException('expectedAmount debe ser un numero mayor a 0.');
+    }
+
+    return Math.round(parsed);
   }
 }

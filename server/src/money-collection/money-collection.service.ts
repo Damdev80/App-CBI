@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { readFile } from 'node:fs/promises';
 import { Pay } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
@@ -19,15 +19,20 @@ export class MoneyCollectionService {
     notes?: string;
     targetAmount?: number;
   }, meta?: { issuerName?: string }) {
-    const dateObj = new Date(data.date);
-    dateObj.setHours(0, 0, 0, 0);
+    const dateObj = this.parseIsoDate(data.date, 'date');
+    const amount = Number(data.amount);
+    if (!Number.isFinite(amount) || amount <= 0) {
+      throw new BadRequestException('El monto debe ser mayor a 0.');
+    }
+
+    const notes = typeof data.notes === 'string' ? data.notes.trim() : undefined;
 
     const created = await this.prisma.moneyCollection.create({
       data: {
         date: dateObj,
-        amount: data.amount,
+        amount,
         studentId: data.studentId,
-        notes: data.notes,
+        notes,
       },
       include: { student: { include: { group: true, School: true } } },
     });
@@ -98,6 +103,12 @@ export class MoneyCollectionService {
     to?: string;
   }) {
     const where: Record<string, unknown> = {};
+    const fromDate = filters?.from ? this.parseIsoDate(filters.from, 'from') : undefined;
+    const toDate = filters?.to ? this.parseIsoDate(filters.to, 'to', true) : undefined;
+
+    if (fromDate && toDate && fromDate > toDate) {
+      throw new BadRequestException('El rango de fechas es invalido: from no puede ser mayor que to.');
+    }
 
     if (filters?.studentId) {
       where.studentId = filters.studentId;
@@ -118,11 +129,11 @@ export class MoneyCollectionService {
     }
     if (filters?.from || filters?.to) {
       where.date = {};
-      if (filters.from) {
-        (where.date as Record<string, Date>).gte = new Date(filters.from);
+      if (fromDate) {
+        (where.date as Record<string, Date>).gte = fromDate;
       }
-      if (filters.to) {
-        (where.date as Record<string, Date>).lte = new Date(filters.to);
+      if (toDate) {
+        (where.date as Record<string, Date>).lte = toDate;
       }
     }
 
@@ -144,6 +155,12 @@ export class MoneyCollectionService {
     to?: string;
   }) {
     const where: Record<string, unknown> = {};
+    const fromDate = filters?.from ? this.parseIsoDate(filters.from, 'from') : undefined;
+    const toDate = filters?.to ? this.parseIsoDate(filters.to, 'to', true) : undefined;
+
+    if (fromDate && toDate && fromDate > toDate) {
+      throw new BadRequestException('El rango de fechas es invalido: from no puede ser mayor que to.');
+    }
 
     if (filters?.studentId) {
       where.studentId = filters.studentId;
@@ -164,11 +181,11 @@ export class MoneyCollectionService {
     }
     if (filters?.from || filters?.to) {
       where.date = {};
-      if (filters.from) {
-        (where.date as Record<string, Date>).gte = new Date(filters.from);
+      if (fromDate) {
+        (where.date as Record<string, Date>).gte = fromDate;
       }
-      if (filters.to) {
-        (where.date as Record<string, Date>).lte = new Date(filters.to);
+      if (toDate) {
+        (where.date as Record<string, Date>).lte = toDate;
       }
     }
 
@@ -276,5 +293,29 @@ export class MoneyCollectionService {
       expectedAmount: filters.expectedAmount,
       debtors: status.filter((s) => s.status === 'DEBE').length,
     };
+  }
+
+  private parseIsoDate(value: string, field: string, endOfDay = false): Date {
+    const raw = String(value || '').trim();
+    const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+    if (!match) {
+      throw new BadRequestException(`${field} debe tener formato YYYY-MM-DD.`);
+    }
+
+    const year = Number(match[1]);
+    const month = Number(match[2]);
+    const day = Number(match[3]);
+    const parsed = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+
+    if (Number.isNaN(parsed.getTime())) {
+      throw new BadRequestException(`${field} es una fecha invalida.`);
+    }
+
+    if (endOfDay) {
+      parsed.setUTCHours(23, 59, 59, 999);
+    }
+
+    return parsed;
   }
 }
