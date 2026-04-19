@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal, computed, effect } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import Fuse, { IFuseOptions } from 'fuse.js';
 import { UsersEventService } from '../../core/services/users-event.services';
 import { UsersEvent, PaymentInfo, AddPaymentDto } from '../../shared/models/userEvent.model';
 import { CardModule } from 'primeng/card';
@@ -71,10 +72,22 @@ export class EventRegistrationListComponent implements OnInit {
   ];
   showPaymentModalVisible = false;
 
+  private readonly fuseOptions: IFuseOptions<UsersEvent> = {
+    keys: [
+      { name: 'name', weight: 0.45 },
+      { name: 'email', weight: 0.35 },
+      { name: 'phone', weight: 0.15 },
+      { name: 'event.title', weight: 0.05 },
+    ],
+    threshold: 0.32,
+    ignoreLocation: true,
+    minMatchCharLength: 1,
+  };
+
   // Computed signals para filtrado y paginación
   filteredRegistrations = computed(() => {
     let filtered = [...this.registrations()];
-    const term = this.searchTerm().toLowerCase();
+    const term = this.searchTerm().trim();
     const status = this.filterPayStatus();
     const eventId = this.selectedEventId();
 
@@ -83,17 +96,14 @@ export class EventRegistrationListComponent implements OnInit {
       filtered = filtered.filter(reg => reg.eventId === eventId);
     }
 
-    // Filtrar por término de búsqueda
-    if (term) {
-      filtered = filtered.filter(reg => 
-        reg.name.toLowerCase().includes(term) ||
-        reg.email.toLowerCase().includes(term)
-      );
-    }
-
     // Filtrar por estado de pago
     if (status !== 'ALL') {
       filtered = filtered.filter(reg => reg.payStatus === status);
+    }
+
+    if (term) {
+      const fuse = new Fuse(filtered, this.fuseOptions);
+      filtered = fuse.search(term).map((result) => result.item);
     }
 
     return filtered;

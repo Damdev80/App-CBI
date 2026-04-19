@@ -23,6 +23,6 @@ export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   }
   if (roles.length === 0 || roles.includes(role)) return true;
 
-  router.navigate(['/dashboard']);
+  router.navigate(['/app']);
   return false;
 };
