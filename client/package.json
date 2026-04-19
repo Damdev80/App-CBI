@@ -37,6 +37,7 @@
     "@tonaljs/tonal": "^4.10.0",
     "echarts": "^6.0.0",
     "express": "^5.1.0",
+    "fuse.js": "^7.3.0",
     "jwt-decode": "^4.0.0",
     "postcss": "^8.5.6",
     "primeng": "^20.4.0",
