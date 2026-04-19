@@ -55,24 +55,26 @@ export class LoginComponent {
 
         this.loginService.login(credentials).subscribe({
             next: (response: LoginResponse) => {
-                const storage = rememberMe ? localStorage : sessionStorage;
-                storage.setItem('access_token', response.access_token);
+                this.loginService.setToken(response.access_token, !!rememberMe);
                 this.notificationService.showSuccess('Inicio de sesión exitoso');
                 this.profileService.getProfileWithGroups().subscribe({
                     next: (profile) => {
                         const groups = profile.groups || [];
-                        const privilegedRoles = ['ADMIN', 'SEMI_ADMIN', 'CONTADORA'];
-                        const isPrivileged = privilegedRoles.includes(profile.role ?? '');
+                        const role = profile.role ?? '';
+                        const rolesWithDashboardAccess = ['ADMIN', 'SEMI_ADMIN', 'CONTADORA', 'LIDER_GRUPO', 'LIDER'];
+                        const rolesWithoutGroupsAllowed = ['ADMIN', 'SEMI_ADMIN', 'CONTADORA'];
+                        const hasDashboardAccess = rolesWithDashboardAccess.includes(role);
+                        const canEnterWithoutGroups = rolesWithoutGroupsAllowed.includes(role);
                         this.isLoading.set(false);
-                        if (groups.length === 0 && !isPrivileged) {
-                            this.router.navigate(['/app']);
-                        } else {
+                        if (hasDashboardAccess && (groups.length > 0 || canEnterWithoutGroups)) {
                             this.router.navigate(['/dashboard']);
+                        } else {
+                            this.router.navigate(['/app']);
                         }
                     },
                     error: () => {
                         this.isLoading.set(false);
-                        this.router.navigate(['/dashboard']);
+                        this.router.navigate(['/app']);
                     },
                 });
             },

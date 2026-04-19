@@ -22,7 +22,7 @@ export class AuthService {
     getToken(): string | null {
         // Evitar error en SSR: window puede no estar definido
         if (typeof window === 'undefined') return null;
-        return localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+        return sessionStorage.getItem('access_token') || localStorage.getItem('access_token');
     }
 
     getUser(): JwtPayload | null {

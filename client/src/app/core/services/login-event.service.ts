@@ -17,22 +17,38 @@ export class LoginEventService {
     private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
     isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
+    private clearTokenStorage(): void {
+        localStorage.removeItem('access_token');
+        sessionStorage.removeItem('access_token');
+    }
+
 
     private hasToken(): boolean {
         if (!isPlatformBrowser(this.platformId)) {
             return false;
         }
-        return !!(localStorage.getItem('access_token') || sessionStorage.getItem('access_token'));
+        return !!this.getToken();
     }
 
     login(credentials: LoginModel){
         return this.http.post<LoginResponse>(`${this.apiUrl}/log-in`, credentials);
     }
+
+    setToken(token: string, rememberMe: boolean): void {
+        if (!isPlatformBrowser(this.platformId)) {
+            return;
+        }
+
+        // Evita mezclar tokens viejos entre localStorage y sessionStorage.
+        this.clearTokenStorage();
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.setItem('access_token', token);
+        this.isAuthenticatedSubject.next(true);
+    }
   
     logout(): void {
         if (isPlatformBrowser(this.platformId)) {
-            localStorage.removeItem('access_token');
-            sessionStorage.removeItem('access_token');
+            this.clearTokenStorage();
         }
         this.isAuthenticatedSubject.next(false);
     }
@@ -41,7 +57,7 @@ export class LoginEventService {
         if (!isPlatformBrowser(this.platformId)) {
             return null;
         }
-        return localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+        return sessionStorage.getItem('access_token') || localStorage.getItem('access_token');
     }
 
     isAuthenticated(): boolean {

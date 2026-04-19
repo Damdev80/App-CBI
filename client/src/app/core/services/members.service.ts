@@ -1,17 +1,19 @@
-  
-import { Injectable } from '@angular/core';
+
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class MembersService {
   private apiUrl = environment.apiUrl + '/member/members';
+  private auth = inject(AuthService);
 
   constructor(private http: HttpClient) {}
 
   private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('access_token');
+    const token = this.auth.getToken();
     return new HttpHeaders({
       Authorization: token ? `Bearer ${token}` : '',
       'Content-Type': 'application/json',
