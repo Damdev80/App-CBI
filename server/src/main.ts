@@ -7,10 +7,12 @@ async function bootstrap() {
   // Configuración de CORS más permisiva
   app.enableCors({
     origin: [
+      'http://localhost:3000',
       'http://localhost:4200',
+      'https://iglesiacbi-sincelejo.vercel.app',
+      'https://app-cbi-api.vercel.app',
       'https://app-cbi.onrender.com',
-      'https://iglesiacbi-sincelejo.vercel.app', // Si tu frontend está en un dominio diferente
-      /\.onrender\.com$/ // Permite todos los subdominios de onrender.com
+      /\.onrender\.com$/,
     ],
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     credentials: true,
@@ -20,13 +22,10 @@ async function bootstrap() {
       'Content-Type',
       'Accept',
       'Authorization',
-      'Access-Control-Allow-Headers',
-      'Access-Control-Request-Method',
-      'Access-Control-Request-Headers'
     ],
     exposedHeaders: ['Authorization'],
     preflightContinue: false,
-    optionsSuccessStatus: 204
+    optionsSuccessStatus: 204,
   });
   
   await app.listen(process.env.PORT ?? 3000);
