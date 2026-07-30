@@ -30,11 +30,11 @@ function formatCop(amount: number): string {
   }).format(Math.max(0, Math.round(Number(amount) || 0)));
 }
 
-function isPast(dateStr: string): boolean {
+function isPast(dateStr: Date | string): boolean {
   return new Date(dateStr) < new Date();
 }
 
-function daysLabel(dateStr: string): string {
+function daysLabel(dateStr: Date | string): string {
   const diff = Math.ceil((new Date(dateStr).getTime() - Date.now()) / 86400000);
   if (diff < 0) return 'Realizado';
   if (diff === 0) return 'Hoy';
@@ -54,12 +54,12 @@ function getEventTypeLabel(type: EventType): string {
   return 'Evento';
 }
 
-function getEventCostLabel(event: Event & { hasPrice?: boolean; priceTier?: number }): string {
+function getEventCostLabel(event: { hasPrice?: boolean; priceTier?: number }): string {
   if (!event.hasPrice) return 'Gratis';
   return `$ ${formatCop(event.priceTier ?? 0)} COP`;
 }
 
-function formatDate(dateStr: string): string {
+function formatDate(dateStr: Date | string): string {
   return new Date(dateStr).toLocaleDateString('es-CO', {
     weekday: 'long',
     day: 'numeric',
@@ -68,7 +68,7 @@ function formatDate(dateStr: string): string {
   });
 }
 
-function getDayMonth(dateStr: string): { day: string; month: string } {
+function getDayMonth(dateStr: Date | string): { day: string; month: string } {
   const d = new Date(dateStr);
   return {
     day: d.toLocaleDateString('es-CO', { day: '2-digit' }),
@@ -114,7 +114,8 @@ export default function EventsPage() {
     setIsLoading(true);
     try {
       const data = await eventsApi.getAll();
-      const normalized = ((data as unknown[]) || []).map((event: Record<string, unknown>) => ({
+      const raw = (data ?? []) as Record<string, unknown>[];
+      const normalized = raw.map((event) => ({
         ...event,
         eventType: (event.eventType as string) || 'EVENTO',
         hasPrice: Boolean(event.hasPrice),
