@@ -1,14 +1,6 @@
 {
-  "version": 2,
-  "outputDirectory": "client/dist/client/browser",
-  "framework": null,
-  "routes": [
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ]
+  "buildCommand": "cd client && pnpm install && pnpm run build",
+  "outputDirectory": "client/.next",
+  "framework": "nextjs",
+  "installCommand": "pnpm install"
 }

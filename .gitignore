@@ -9,6 +9,8 @@ pnpm-debug.log*
 # Build output
 dist/
 build/
+.next/
+out/
 
 # TypeScript
 *.tsbuildinfo
@@ -55,3 +57,7 @@ client/test-results/
 # Ignore api documentation
 api/index.ts
 api/tsconfig.json
+
+# Next.js
+client/.next/
+client/out/
